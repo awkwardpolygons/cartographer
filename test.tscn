@@ -1,4 +1,4 @@
-[gd_scene load_steps=35 format=2]
+[gd_scene load_steps=24 format=2]
 
 [ext_resource path="res://pixelate.shader" type="Shader" id=1]
 [ext_resource path="res://pc.gd" type="Script" id=2]
@@ -6,8 +6,9 @@
 [ext_resource path="res://trees/BirchTree_1.fbx" type="PackedScene" id=4]
 [ext_resource path="res://trees/BirchTree_1.obj" type="ArrayMesh" id=5]
 [ext_resource path="res://particle_leaves.gd" type="Script" id=6]
-[ext_resource path="res://flowmap_up.png" type="Texture" id=7]
+[ext_resource path="res://flowmap_shader.tres" type="Shader" id=7]
 [ext_resource path="res://uv.png" type="Texture" id=8]
+[ext_resource path="res://flowmap_down.png" type="Texture" id=9]
 
 [sub_resource type="CubeMesh" id=1]
 size = Vector3( 2, 4, 2 )
@@ -20,141 +21,10 @@ albedo_color = Color( 1, 0, 0, 1 )
 [sub_resource type="CapsuleShape" id=4]
 height = 2.0
 
-[sub_resource type="VisualShaderNodeInput" id=5]
-input_name = "uv"
-
-[sub_resource type="VisualShaderNodeTexture" id=6]
-output_port_for_preview = 0
-texture = ExtResource( 8 )
-
-[sub_resource type="VisualShaderNodeVectorOp" id=7]
-output_port_for_preview = 0
-default_input_values = [ 0, Vector3( 0, 0, 0 ), 1, Vector3( 0.5, 0.5, 0 ) ]
-operator = 1
-
-[sub_resource type="VisualShaderNodeInput" id=8]
-input_name = "time"
-
-[sub_resource type="VisualShaderNodeTexture" id=9]
-texture = ExtResource( 7 )
-
-[sub_resource type="VisualShaderNodeScalarFunc" id=10]
-function = 17
-
-[sub_resource type="VisualShaderNodeScalarOp" id=11]
-default_input_values = [ 0, 0.0, 1, 0.1 ]
-operator = 2
-
-[sub_resource type="VisualShaderNodeVectorOp" id=12]
-output_port_for_preview = 0
-default_input_values = [ 0, Vector3( 0, 0, 0 ), 1, Vector3( 1, 0, 0 ) ]
-operator = 2
-
-[sub_resource type="VisualShaderNodeVectorOp" id=13]
-output_port_for_preview = 0
-default_input_values = [ 0, Vector3( 0, 0, 0 ), 1, Vector3( 0.5, 0.5, 0 ) ]
-
-[sub_resource type="VisualShaderNodeVectorOp" id=14]
-output_port_for_preview = 0
-default_input_values = [ 0, Vector3( 2, -2, 0 ), 1, Vector3( 2, 2, 0 ) ]
-operator = 2
-
-[sub_resource type="VisualShaderNodeScalarOp" id=15]
-default_input_values = [ 0, 0.0, 1, 1.0 ]
-operator = 2
-
-[sub_resource type="VisualShader" id=20]
-code = "shader_type spatial;
-uniform sampler2D tex_frg_2;
-uniform sampler2D tex_frg_12;
-
-
-
-void vertex() {
-// Output:0
-
-}
-
-void fragment() {
-// Input:10
-	vec3 n_out10p0 = vec3(UV, 0.0);
-
-// Input:19
-	float n_out19p0 = TIME;
-
-// ScalarOp:22
-	float n_in22p1 = 0.10000;
-	float n_out22p0 = n_out19p0 * n_in22p1;
-
-// ScalarFunc:20
-	float n_out20p0 = fract(n_out22p0);
-
-// ScalarOp:26
-	float n_in26p1 = 1.00000;
-	float n_out26p0 = n_out20p0 * n_in26p1;
-
-// Texture:2
-	vec4 tex_frg_2_read = texture(tex_frg_2, UV.xy);
-	vec3 n_out2p0 = tex_frg_2_read.rgb;
-	float n_out2p1 = tex_frg_2_read.a;
-
-// VectorOp:15
-	vec3 n_in15p1 = vec3(0.50000, 0.50000, 0.00000);
-	vec3 n_out15p0 = n_out2p0 - n_in15p1;
-
-// VectorOp:25
-	vec3 n_in25p0 = vec3(2.00000, -2.00000, 0.00000);
-	vec3 n_out25p0 = n_in25p0 * n_out15p0;
-
-// VectorOp:23
-	vec3 n_out23p0 = vec3(n_out26p0) * n_out25p0;
-
-// VectorOp:24
-	vec3 n_out24p0 = n_out10p0 + n_out23p0;
-
-// Texture:12
-	vec4 tex_frg_12_read = texture(tex_frg_12, n_out24p0.xy);
-	vec3 n_out12p0 = tex_frg_12_read.rgb;
-	float n_out12p1 = tex_frg_12_read.a;
-
-// Output:0
-	ALBEDO = n_out12p0;
-
-}
-
-void light() {
-// Output:0
-
-}
-"
-graph_offset = Vector2( -1036.5, -150 )
-nodes/fragment/0/position = Vector2( 300, 0 )
-nodes/fragment/2/node = SubResource( 9 )
-nodes/fragment/2/position = Vector2( -1000, 340 )
-nodes/fragment/10/node = SubResource( 5 )
-nodes/fragment/10/position = Vector2( -360, 0 )
-nodes/fragment/12/node = SubResource( 6 )
-nodes/fragment/12/position = Vector2( 60, 220 )
-nodes/fragment/15/node = SubResource( 7 )
-nodes/fragment/15/position = Vector2( -760, 340 )
-nodes/fragment/19/node = SubResource( 8 )
-nodes/fragment/19/position = Vector2( -1000, 0 )
-nodes/fragment/20/node = SubResource( 10 )
-nodes/fragment/20/position = Vector2( -600, 0 )
-nodes/fragment/22/node = SubResource( 11 )
-nodes/fragment/22/position = Vector2( -800, 0 )
-nodes/fragment/23/node = SubResource( 12 )
-nodes/fragment/23/position = Vector2( -340, 340 )
-nodes/fragment/24/node = SubResource( 13 )
-nodes/fragment/24/position = Vector2( -140, 340 )
-nodes/fragment/25/node = SubResource( 14 )
-nodes/fragment/25/position = Vector2( -560, 340 )
-nodes/fragment/26/node = SubResource( 15 )
-nodes/fragment/26/position = Vector2( -800, 120 )
-nodes/fragment/connections = PoolIntArray( 12, 0, 0, 0, 19, 0, 22, 0, 22, 0, 20, 0, 10, 0, 24, 0, 23, 0, 24, 1, 24, 0, 12, 0, 15, 0, 25, 1, 25, 0, 23, 1, 2, 0, 15, 0, 20, 0, 26, 0, 26, 0, 23, 0 )
-
 [sub_resource type="ShaderMaterial" id=21]
-shader = SubResource( 20 )
+shader = ExtResource( 7 )
+shader_param/flowmap = ExtResource( 9 )
+shader_param/texture = ExtResource( 8 )
 
 [sub_resource type="PlaneMesh" id=22]
 material = SubResource( 21 )
