@@ -38,6 +38,7 @@ shader_param/size_y = 0.003
 
 [sub_resource type="ShaderMaterial" id=31]
 shader = ExtResource( 10 )
+shader_param/factor = Vector3( 2.5, 2.5, 0 )
 
 [sub_resource type="SpatialMaterial" id=24]
 vertex_color_use_as_albedo = true

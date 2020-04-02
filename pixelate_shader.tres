@@ -1,4 +1,15 @@
-[gd_resource type="VisualShader" load_steps=5 format=2]
+[gd_resource type="VisualShader" load_steps=8 format=2]
+
+[sub_resource type="VisualShaderNodeVectorOp" id=39]
+default_input_values = [ 0, Vector3( 0, 0, 0 ), 1, Vector3( 0.003, 0.003, 0 ) ]
+operator = 1
+
+[sub_resource type="VisualShaderNodeVectorOp" id=40]
+default_input_values = [ 0, Vector3( 0, 0, 0 ), 1, Vector3( 1, 1, 0 ) ]
+operator = 2
+
+[sub_resource type="VisualShaderNodeVec3Uniform" id=41]
+uniform_name = "factor"
 
 [sub_resource type="VisualShaderNodeInput" id=31]
 input_name = "screen_uv"
@@ -10,13 +21,12 @@ source = 1
 default_input_values = [ 0, Vector3( 0, 0, 0 ), 1, Vector3( 0.002, 0.002, 0 ) ]
 operator = 4
 
-[sub_resource type="VisualShaderNodeVectorOp" id=35]
-output_port_for_preview = 0
-default_input_values = [ 0, Vector3( 0, 0, 0 ), 1, Vector3( 0.003, 0.003, 0 ) ]
-operator = 1
+[sub_resource type="VisualShaderNodeInput" id=38]
+input_name = "screen_pixel_size"
 
 [resource]
 code = "shader_type canvas_item;
+uniform vec3 factor;
 
 
 
@@ -29,18 +39,26 @@ void fragment() {
 // Input:2
 	vec3 n_out2p0 = vec3(SCREEN_UV, 0.0);
 
-// VectorOp:6
-	vec3 n_in6p1 = vec3(0.00200, 0.00200, 0.00000);
-	vec3 n_out6p0 = mod(n_out2p0, n_in6p1);
+// Input:9
+	vec3 n_out9p0 = vec3(SCREEN_PIXEL_SIZE, 1.0);
 
-// VectorOp:7
-	vec3 n_out7p0 = n_out2p0 - n_out6p0;
+// VectorUniform:14
+	vec3 n_out14p0 = factor;
+
+// VectorOp:13
+	vec3 n_out13p0 = n_out9p0 * n_out14p0;
+
+// VectorOp:6
+	vec3 n_out6p0 = mod(n_out2p0, n_out13p0);
+
+// VectorOp:12
+	vec3 n_out12p0 = n_out2p0 - n_out6p0;
 
 // Texture:5
 	vec3 n_out5p0;
 	float n_out5p1;
 	{
-		vec4 _tex_read = textureLod(SCREEN_TEXTURE, n_out7p0.xy, 0.0);
+		vec4 _tex_read = textureLod(SCREEN_TEXTURE, n_out12p0.xy, 0.0);
 		n_out5p0 = _tex_read.rgb;
 		n_out5p1 = _tex_read.a;
 	}
@@ -56,15 +74,22 @@ void light() {
 
 }
 "
-graph_offset = Vector2( -675.006, -60 )
+graph_offset = Vector2( -939.814, -60 )
 mode = 1
 flags/light_only = false
+nodes/fragment/0/position = Vector2( 400, 160 )
 nodes/fragment/2/node = SubResource( 31 )
-nodes/fragment/2/position = Vector2( -540, 240 )
+nodes/fragment/2/position = Vector2( -840, 160 )
 nodes/fragment/5/node = SubResource( 32 )
-nodes/fragment/5/position = Vector2( 100, 260 )
+nodes/fragment/5/position = Vector2( 120, 160 )
 nodes/fragment/6/node = SubResource( 34 )
-nodes/fragment/6/position = Vector2( -200, 200 )
-nodes/fragment/7/node = SubResource( 35 )
-nodes/fragment/7/position = Vector2( -200, 420 )
-nodes/fragment/connections = PoolIntArray( 6, 0, 7, 1, 2, 0, 6, 0, 5, 0, 0, 0, 2, 0, 7, 0, 5, 1, 0, 1, 7, 0, 5, 0 )
+nodes/fragment/6/position = Vector2( -320, 220 )
+nodes/fragment/9/node = SubResource( 38 )
+nodes/fragment/9/position = Vector2( -840, 260 )
+nodes/fragment/12/node = SubResource( 39 )
+nodes/fragment/12/position = Vector2( -100, 160 )
+nodes/fragment/13/node = SubResource( 40 )
+nodes/fragment/13/position = Vector2( -540, 280 )
+nodes/fragment/14/node = SubResource( 41 )
+nodes/fragment/14/position = Vector2( -840, 360 )
+nodes/fragment/connections = PoolIntArray( 5, 0, 0, 0, 5, 1, 0, 1, 12, 0, 5, 0, 2, 0, 6, 0, 6, 0, 12, 1, 2, 0, 12, 0, 9, 0, 13, 0, 13, 0, 6, 1, 14, 0, 13, 1 )
