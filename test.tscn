@@ -1,4 +1,4 @@
-[gd_scene load_steps=24 format=2]
+[gd_scene load_steps=26 format=2]
 
 [ext_resource path="res://pixelate.shader" type="Shader" id=1]
 [ext_resource path="res://pc.gd" type="Script" id=2]
@@ -9,6 +9,7 @@
 [ext_resource path="res://flowmap_shader.tres" type="Shader" id=7]
 [ext_resource path="res://uv.png" type="Texture" id=8]
 [ext_resource path="res://flowmap_down.png" type="Texture" id=9]
+[ext_resource path="res://pixelate_shader.tres" type="Shader" id=10]
 
 [sub_resource type="CubeMesh" id=1]
 size = Vector3( 2, 4, 2 )
@@ -34,6 +35,9 @@ size = Vector2( 100, 100 )
 shader = ExtResource( 1 )
 shader_param/size_x = 0.003
 shader_param/size_y = 0.003
+
+[sub_resource type="ShaderMaterial" id=31]
+shader = ExtResource( 10 )
 
 [sub_resource type="SpatialMaterial" id=24]
 vertex_color_use_as_albedo = true
@@ -110,6 +114,14 @@ mesh = SubResource( 22 )
 [node name="Pixelator" type="ColorRect" parent="."]
 visible = false
 material = SubResource( 23 )
+anchor_right = 1.0
+anchor_bottom = 1.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Pixelator2" type="ColorRect" parent="."]
+material = SubResource( 31 )
 anchor_right = 1.0
 anchor_bottom = 1.0
 __meta__ = {
