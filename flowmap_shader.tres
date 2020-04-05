@@ -1,47 +1,47 @@
 [gd_resource type="VisualShader" load_steps=12 format=2]
 
-[sub_resource type="VisualShaderNodeInput" id=5]
+[sub_resource type="VisualShaderNodeInput" id=1]
 input_name = "uv"
 
-[sub_resource type="VisualShaderNodeVectorOp" id=7]
+[sub_resource type="VisualShaderNodeVectorOp" id=2]
 output_port_for_preview = 0
 default_input_values = [ 0, Vector3( 0, 0, 0 ), 1, Vector3( 0.5, 0.5, 0 ) ]
 operator = 1
 
-[sub_resource type="VisualShaderNodeInput" id=8]
+[sub_resource type="VisualShaderNodeInput" id=3]
 input_name = "time"
 
-[sub_resource type="VisualShaderNodeScalarFunc" id=10]
+[sub_resource type="VisualShaderNodeScalarFunc" id=4]
 function = 17
 
-[sub_resource type="VisualShaderNodeScalarOp" id=11]
+[sub_resource type="VisualShaderNodeScalarOp" id=5]
 default_input_values = [ 0, 0.0, 1, 0.1 ]
 operator = 2
 
-[sub_resource type="VisualShaderNodeVectorOp" id=12]
+[sub_resource type="VisualShaderNodeVectorOp" id=6]
 output_port_for_preview = 0
 default_input_values = [ 0, Vector3( 0, 0, 0 ), 1, Vector3( 1, 0, 0 ) ]
 operator = 2
 
-[sub_resource type="VisualShaderNodeVectorOp" id=13]
+[sub_resource type="VisualShaderNodeVectorOp" id=7]
 output_port_for_preview = 0
 default_input_values = [ 0, Vector3( 0, 0, 0 ), 1, Vector3( 0.5, 0.5, 0 ) ]
 
-[sub_resource type="VisualShaderNodeVectorOp" id=14]
+[sub_resource type="VisualShaderNodeVectorOp" id=8]
 output_port_for_preview = 0
 default_input_values = [ 0, Vector3( 2, -2, 0 ), 1, Vector3( 2, -2, 0 ) ]
 operator = 2
 
-[sub_resource type="VisualShaderNodeScalarOp" id=15]
+[sub_resource type="VisualShaderNodeScalarOp" id=9]
 default_input_values = [ 0, 0.0, 1, 1.0 ]
 operator = 2
 
-[sub_resource type="VisualShaderNodeTextureUniform" id=16]
+[sub_resource type="VisualShaderNodeTextureUniform" id=10]
 output_port_for_preview = 0
 uniform_name = "flowmap"
 texture_type = 1
 
-[sub_resource type="VisualShaderNodeTextureUniform" id=17]
+[sub_resource type="VisualShaderNodeTextureUniform" id=11]
 output_port_for_preview = 0
 uniform_name = "texture"
 texture_type = 1
@@ -120,26 +120,26 @@ void light() {
 "
 graph_offset = Vector2( -1036.5, -203 )
 nodes/fragment/0/position = Vector2( 300, 0 )
-nodes/fragment/10/node = SubResource( 5 )
+nodes/fragment/10/node = SubResource( 1 )
 nodes/fragment/10/position = Vector2( -360, 0 )
-nodes/fragment/15/node = SubResource( 7 )
+nodes/fragment/15/node = SubResource( 2 )
 nodes/fragment/15/position = Vector2( -760, 340 )
-nodes/fragment/19/node = SubResource( 8 )
+nodes/fragment/19/node = SubResource( 3 )
 nodes/fragment/19/position = Vector2( -1200, -200 )
-nodes/fragment/20/node = SubResource( 10 )
+nodes/fragment/20/node = SubResource( 4 )
 nodes/fragment/20/position = Vector2( -800, -200 )
-nodes/fragment/22/node = SubResource( 11 )
+nodes/fragment/22/node = SubResource( 5 )
 nodes/fragment/22/position = Vector2( -1000, -200 )
-nodes/fragment/23/node = SubResource( 12 )
+nodes/fragment/23/node = SubResource( 6 )
 nodes/fragment/23/position = Vector2( -360, 340 )
-nodes/fragment/24/node = SubResource( 13 )
+nodes/fragment/24/node = SubResource( 7 )
 nodes/fragment/24/position = Vector2( -160, 340 )
-nodes/fragment/25/node = SubResource( 14 )
+nodes/fragment/25/node = SubResource( 8 )
 nodes/fragment/25/position = Vector2( -560, 340 )
-nodes/fragment/26/node = SubResource( 15 )
+nodes/fragment/26/node = SubResource( 9 )
 nodes/fragment/26/position = Vector2( -1000, -80 )
-nodes/fragment/27/node = SubResource( 16 )
+nodes/fragment/27/node = SubResource( 10 )
 nodes/fragment/27/position = Vector2( -1000, 340 )
-nodes/fragment/28/node = SubResource( 17 )
+nodes/fragment/28/node = SubResource( 11 )
 nodes/fragment/28/position = Vector2( 40, 260 )
 nodes/fragment/connections = PoolIntArray( 19, 0, 22, 0, 22, 0, 20, 0, 10, 0, 24, 0, 23, 0, 24, 1, 20, 0, 26, 0, 26, 0, 23, 0, 27, 0, 15, 0, 24, 0, 28, 0, 28, 0, 0, 0, 15, 0, 25, 0, 25, 0, 23, 1 )

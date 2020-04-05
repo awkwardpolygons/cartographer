@@ -22,25 +22,25 @@ albedo_color = Color( 1, 0, 0, 1 )
 [sub_resource type="CapsuleShape" id=4]
 height = 2.0
 
-[sub_resource type="ShaderMaterial" id=21]
+[sub_resource type="ShaderMaterial" id=5]
 shader = ExtResource( 7 )
 shader_param/flowmap = ExtResource( 9 )
 shader_param/texture = ExtResource( 8 )
 
-[sub_resource type="PlaneMesh" id=22]
-material = SubResource( 21 )
+[sub_resource type="PlaneMesh" id=6]
+material = SubResource( 5 )
 size = Vector2( 100, 100 )
 
-[sub_resource type="ShaderMaterial" id=23]
+[sub_resource type="ShaderMaterial" id=7]
 shader = ExtResource( 1 )
 shader_param/size_x = 0.003
 shader_param/size_y = 0.003
 
-[sub_resource type="ShaderMaterial" id=31]
+[sub_resource type="ShaderMaterial" id=8]
 shader = ExtResource( 10 )
 shader_param/factor = Vector3( 2.5, 2.5, 0 )
 
-[sub_resource type="SpatialMaterial" id=24]
+[sub_resource type="SpatialMaterial" id=9]
 vertex_color_use_as_albedo = true
 emission_enabled = true
 emission = Color( 1, 0, 0, 1 )
@@ -48,8 +48,8 @@ emission_energy = 1.0
 emission_operator = 0
 emission_on_uv2 = false
 
-[sub_resource type="ParticlesMaterial" id=25]
-next_pass = SubResource( 24 )
+[sub_resource type="ParticlesMaterial" id=10]
+next_pass = SubResource( 9 )
 direction = Vector3( 1, 1, 1 )
 spread = 180.0
 gravity = Vector3( 0, 0, 0 )
@@ -58,22 +58,22 @@ scale = 3.0
 scale_random = 0.5
 color = Color( 0.141176, 0.658824, 0.160784, 1 )
 
-[sub_resource type="SpatialMaterial" id=26]
+[sub_resource type="SpatialMaterial" id=11]
 vertex_color_use_as_albedo = true
 
-[sub_resource type="SphereMesh" id=27]
-material = SubResource( 26 )
+[sub_resource type="SphereMesh" id=12]
+material = SubResource( 11 )
 radius = 0.75
 height = 1.5
 
-[sub_resource type="ProceduralSky" id=28]
+[sub_resource type="ProceduralSky" id=13]
 
-[sub_resource type="Environment" id=29]
+[sub_resource type="Environment" id=14]
 background_mode = 2
-background_sky = SubResource( 28 )
+background_sky = SubResource( 13 )
 tonemap_mode = 2
 
-[sub_resource type="ParticlesMaterial" id=30]
+[sub_resource type="ParticlesMaterial" id=15]
 emission_shape = 2
 emission_box_extents = Vector3( 20, 1, 20 )
 direction = Vector3( 0, 0, 0 )
@@ -110,11 +110,11 @@ shape = SubResource( 4 )
 
 [node name="Ground" type="CSGMesh" parent="."]
 use_collision = true
-mesh = SubResource( 22 )
+mesh = SubResource( 6 )
 
 [node name="Pixelator" type="ColorRect" parent="."]
 visible = false
-material = SubResource( 23 )
+material = SubResource( 7 )
 anchor_right = 1.0
 anchor_bottom = 1.0
 __meta__ = {
@@ -122,7 +122,8 @@ __meta__ = {
 }
 
 [node name="Pixelator2" type="ColorRect" parent="."]
-material = SubResource( 31 )
+visible = false
+material = SubResource( 8 )
 anchor_right = 1.0
 anchor_bottom = 1.0
 __meta__ = {
@@ -136,14 +137,14 @@ amount = 4
 speed_scale = 0.0
 randomness = 0.39
 draw_order = 2
-process_material = SubResource( 25 )
-draw_pass_1 = SubResource( 27 )
+process_material = SubResource( 10 )
+draw_pass_1 = SubResource( 12 )
 
 [node name="WiltTree" parent="." instance=ExtResource( 3 )]
 visible = false
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
-environment = SubResource( 29 )
+environment = SubResource( 14 )
 
 [node name="DirectionalLight" type="DirectionalLight" parent="WorldEnvironment"]
 transform = Transform( 1, 0, 0, 0, 0.745401, 0.666616, 0, -0.666616, 0.745401, 5.45039, 6.722, 7.00962 )
@@ -162,6 +163,6 @@ lifetime = 8.0
 preprocess = 20.0
 speed_scale = 0.5
 randomness = 0.45
-process_material = SubResource( 30 )
+process_material = SubResource( 15 )
 draw_pass_1 = ExtResource( 5 )
 script = ExtResource( 6 )
