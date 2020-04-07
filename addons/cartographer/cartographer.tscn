@@ -8,7 +8,7 @@ anchor_bottom = 1.0
 rect_min_size = Vector2( 0, 300 )
 script = ExtResource( 1 )
 __meta__ = {
-"_edit_use_anchors_": false
+"_edit_use_anchors_": true
 }
 
 [node name="HSplitContainer" type="HSplitContainer" parent="."]
@@ -51,13 +51,11 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Layers" type="ItemList" parent="HSplitContainer/MarginContainer/VBoxContainer/ScrollContainer"]
+[node name="Layers" type="Tree" parent="HSplitContainer/MarginContainer/VBoxContainer/ScrollContainer"]
 margin_right = 75.0
 margin_bottom = 544.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
-items = [ "Layer 1", null, false, "Layer 2", null, false ]
-fixed_column_width = 120
 
 [node name="VBoxContainer2" type="VBoxContainer" parent="HSplitContainer"]
 margin_left = 103.0

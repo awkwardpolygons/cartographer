@@ -9,7 +9,11 @@ extends Control
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	#find_node("Layers").add_item("Layer 1", null, true)
+	var layers = find_node("Layers")
+	var root = layers.create_item()
+	var item = layers.create_item(root)
+	item.set_text(0, "Layer 1")
+	
 	#find_node("Layers").add_item("Layer 2", null, true)
 	print("Cartographer")
 
