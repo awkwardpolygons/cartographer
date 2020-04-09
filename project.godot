@@ -8,9 +8,32 @@
 
 config_version=4
 
-_global_script_classes=[  ]
+_global_script_classes=[ {
+"base": "Spatial",
+"class": "CartoLayer",
+"language": "GDScript",
+"path": "res://addons/cartographer/carto_layer.gd"
+}, {
+"base": "CSGMesh",
+"class": "CartoTerrain",
+"language": "GDScript",
+"path": "res://addons/cartographer/carto_terrain.gd"
+}, {
+"base": "SpatialMaterial",
+"class": "CartoTerrainMaterial",
+"language": "GDScript",
+"path": "res://addons/cartographer/carto_terrain_material.gd"
+}, {
+"base": "VisualShaderNodeCustom",
+"class": "VisualShaderNodeCartoTerrain",
+"language": "GDScript",
+"path": "res://addons/cartographer/carto_shader_node.gd"
+} ]
 _global_script_class_icons={
-
+"CartoLayer": "res://addons/cartographer/layer_icon.svg",
+"CartoTerrain": "res://addons/cartographer/terrain_icon.svg",
+"CartoTerrainMaterial": "res://addons/cartographer/terrain_icon.svg",
+"VisualShaderNodeCartoTerrain": ""
 }
 
 [application]
@@ -18,6 +41,10 @@ _global_script_class_icons={
 config/name="awkpol1"
 run/main_scene="res://test.tscn"
 config/icon="res://icon.png"
+
+[editor_plugins]
+
+enabled=PoolStringArray( "cartographer" )
 
 [input]
 
