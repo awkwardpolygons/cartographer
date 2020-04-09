@@ -15,16 +15,20 @@ func _get_return_icon_type():
 	return VisualShaderNode.PORT_TYPE_SCALAR
 
 func _get_input_port_count():
-	return 1
+	return 2
 
 func _get_input_port_name(port):
 	match port:
 		0:
+			return "uv"
+		1:
 			return "index"
 
 func _get_input_port_type(port):
 	match port:
 		0:
+			return VisualShaderNode.PORT_TYPE_VECTOR
+		1:
 			return VisualShaderNode.PORT_TYPE_SCALAR
 
 func _get_output_port_count():
@@ -38,13 +42,10 @@ func _get_output_port_type(port):
 
 func _get_global_code(mode):
 	return """
-
-		uniform sampler2DArray layers;
-
-		void fragment() {
-			//ALBEDO = texture(layers, vec3(UV, 0)).rgb;
-		}
-	"""
+uniform sampler2DArray layers;
+"""
 
 func _get_code(input_vars, output_vars, mode, type):
-	return output_vars[0] + " = texture(layers, vec3(UV, %s)).rgb" % input_vars
+	print(input_vars[0])
+	input_vars[0] = "UV" if !input_vars[0] else input_vars[0]
+	return output_vars[0] + " = texture(layers, vec3(%s.xy, %s)).rgb" % input_vars

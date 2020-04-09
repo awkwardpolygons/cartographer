@@ -1,4 +1,4 @@
-[gd_resource type="VisualShader" load_steps=10 format=2]
+[gd_resource type="VisualShader" load_steps=5 format=2]
 
 [ext_resource path="res://addons/cartographer/carto_shader_node.gd" type="Script" id=1]
 
@@ -8,27 +8,8 @@
 output_port_for_preview = 0
 script = ExtResource( 1 )
 
-[sub_resource type="VisualShaderNodeTextureUniform" id=1]
-output_port_for_preview = 0
-uniform_name = "tex_layers"
-texture_type = 1
-
-[sub_resource type="VisualShaderNodeScalarUniform" id=2]
-uniform_name = "num_layers"
-
-[sub_resource type="VisualShaderNodeVectorCompose" id=3]
-default_input_values = [ 0, 0.0, 1, 0.0, 2, 1.0 ]
-
-[sub_resource type="VisualShaderNodeInput" id=4]
+[sub_resource type="VisualShaderNodeInput" id=9]
 input_name = "uv"
-
-[sub_resource type="VisualShaderNodeVectorDecompose" id=5]
-
-[sub_resource type="VisualShaderNodeExpression" id=6]
-size = Vector2( 475, 299 )
-expression = "vec4 t = texture(tex, uvw.xyz);
-color = t.rgb;
-alpha = t.a;"
 
 [resource]
 code = "shader_type spatial;
@@ -36,13 +17,8 @@ code = "shader_type spatial;
 
 // CartoTerrain
 
+uniform sampler2DArray layers;
 
-		uniform sampler2DArray layers;
-
-		void fragment() {
-			//ALBEDO = texture(layers, vec3(UV, 0)).rgb;
-		}
-	
 
 void vertex() {
 // Output:0
@@ -50,13 +26,16 @@ void vertex() {
 }
 
 void fragment() {
+// Input:12
+	vec3 n_out12p0 = vec3(UV, 0.0);
+
 // Scalar:10
 	float n_out10p0 = 0.000000;
 
 // CartoTerrain:11
 	vec3 n_out11p0;
 	{
-		n_out11p0 = texture(layers, vec3(UV, n_out10p0)).rgb
+		n_out11p0 = texture(layers, vec3(n_out12p0.xy, n_out10p0)).rgb
 	}
 
 // Output:0
@@ -69,27 +48,11 @@ void light() {
 
 }
 "
-graph_offset = Vector2( -693, -227 )
-nodes/fragment/2/node = SubResource( 1 )
-nodes/fragment/2/position = Vector2( -240, 200 )
-nodes/fragment/3/node = SubResource( 2 )
-nodes/fragment/3/position = Vector2( -220, 120 )
-nodes/fragment/5/node = SubResource( 3 )
-nodes/fragment/5/position = Vector2( 20, 40 )
-nodes/fragment/6/node = SubResource( 4 )
-nodes/fragment/6/position = Vector2( -99.5, -35 )
-nodes/fragment/7/node = SubResource( 5 )
-nodes/fragment/7/position = Vector2( 120, -80 )
-nodes/fragment/8/node = SubResource( 6 )
-nodes/fragment/8/position = Vector2( -20, 600 )
-nodes/fragment/8/size = Vector2( 475, 299 )
-nodes/fragment/8/input_ports = "0,1,uvw;1,4,tex;"
-nodes/fragment/8/output_ports = "0,1,color;1,0,alpha;"
-nodes/fragment/8/expression = "vec4 t = texture(tex, uvw.xyz);
-color = t.rgb;
-alpha = t.a;"
+graph_offset = Vector2( -769, -1 )
 nodes/fragment/10/node = SubResource( 7 )
-nodes/fragment/10/position = Vector2( -580, 360 )
+nodes/fragment/10/position = Vector2( -600, 360 )
 nodes/fragment/11/node = SubResource( 8 )
-nodes/fragment/11/position = Vector2( -320, 503 )
-nodes/fragment/connections = PoolIntArray( 6, 0, 7, 0, 7, 0, 5, 0, 7, 1, 5, 1, 2, 2, 8, 1, 2, 0, 8, 0, 10, 0, 11, 0, 11, 0, 0, 0 )
+nodes/fragment/11/position = Vector2( -320, 520 )
+nodes/fragment/12/node = SubResource( 9 )
+nodes/fragment/12/position = Vector2( -420, 300 )
+nodes/fragment/connections = PoolIntArray( 10, 0, 11, 1, 11, 0, 0, 0, 12, 0, 11, 0 )
