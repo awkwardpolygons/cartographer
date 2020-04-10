@@ -10,41 +10,31 @@ onready var gravity = -ProjectSettings.get_setting("physics/3d/default_gravity")
 var velocity: Vector3
 var face_dir: Vector3
 var move_dir: Vector3
+var is_moving: float
+var time: float = 0
 
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	$Camera.set_as_toplevel(true)
+	face_dir = Vector3(0, 0, 1)
 
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-#func _process(delta):
-#	pass
-
-func _physics_process(delta):
-	var direction = Vector3()
-	direction.x = Input.get_action_strength("move_right") - Input.get_action_strength("move_left")
-	direction.z = Input.get_action_strength("move_backward") - Input.get_action_strength("move_forward")  
+func move(delta):
+	move_dir = Vector3()
+	move_dir.x = Input.get_action_strength("move_right") - Input.get_action_strength("move_left")
+	move_dir.z = Input.get_action_strength("move_backward") - Input.get_action_strength("move_forward")
+	is_moving = Input.is_action_pressed("move_right") or Input.is_action_pressed("move_left") \
+		or Input.is_action_pressed("move_backward") or Input.is_action_pressed("move_forward")
 	
 	# Get the camera's transform basis, but remove the X rotation such
 	# that the Y axis is up and Z is horizontal.
 	var cam_basis = $Camera.global_transform.basis
 	var basis = cam_basis.rotated(cam_basis.x, -cam_basis.get_euler().x)
-	direction = basis.xform(direction)
+	move_dir = basis.xform(move_dir)
 	
 	# Limit the input to a length of 1. length_squared is faster to check.
-	if direction.length_squared() > 1:
-		direction /= direction.length()
-	
-	#if direction.length_squared() > 0:
-		#rotation = rotation.linear_interpolate(Vector3(0, direction.angle_to(Vector3.BACK) * sign(direction.x), 0), delta * 10)
-		#rotate_y(direction.angle_to(rotation))
-	#rotation = Vector3(0, 2, 0)
-	#print(Engine.get_frames_per_second())
-	var a = Quat(transform.basis)
-	var b = Quat(Vector3.UP, direction.angle_to(Vector3.BACK) * sign(direction.x))
-	transform.basis = Basis(a.slerp(b, 0.5))
-	
+	if move_dir.length_squared() > 1:
+		move_dir /= move_dir.length()
 	
 	# Apply gravity.
 	velocity.y += delta * gravity * 2
@@ -54,9 +44,9 @@ func _physics_process(delta):
 	var hvel = velocity
 	hvel.y = 0
 
-	var target = direction * MAX_SPEED
+	var target = move_dir * MAX_SPEED
 	var acceleration
-	if direction.dot(hvel) > 0:
+	if move_dir.dot(hvel) > 0:
 		acceleration = ACCELERATION
 	else:
 		acceleration = DECELERATION
@@ -72,3 +62,15 @@ func _physics_process(delta):
 	if is_on_floor() and Input.is_action_pressed("move_jump"):
 		velocity.y = JUMP_SPEED * 2
 		#velocity = velocity.linear_interpolate(Vector3.UP * JUMP_SPEED * 5, ACCELERATION * delta)
+
+func face(delta):
+	if is_moving:
+		face_dir = move_dir
+		var a = Quat(transform.basis)
+		var b = Quat(Vector3.UP, face_dir.angle_to(Vector3.BACK) * sign(face_dir.x))
+		transform.basis = Basis(a.slerp(b, 0.2))
+
+func _physics_process(delta):
+	time += delta
+	move(delta)
+	face(delta)
