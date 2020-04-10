@@ -28,12 +28,18 @@ _global_script_classes=[ {
 "class": "VisualShaderNodeCartoTerrain",
 "language": "GDScript",
 "path": "res://addons/cartographer/carto_shader_node.gd"
+}, {
+"base": "VisualShaderNodeCustom",
+"class": "VisualShaderNodePixelate",
+"language": "GDScript",
+"path": "res://vsn_pixelate.gd"
 } ]
 _global_script_class_icons={
 "CartoLayer": "res://addons/cartographer/layer_icon.svg",
 "CartoTerrain": "res://addons/cartographer/terrain_icon.svg",
 "CartoTerrainMaterial": "res://addons/cartographer/terrain_icon.svg",
-"VisualShaderNodeCartoTerrain": ""
+"VisualShaderNodeCartoTerrain": "",
+"VisualShaderNodePixelate": ""
 }
 
 [application]
