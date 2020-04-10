@@ -17,12 +17,12 @@ func _on_selection_changed(dock):
 	if len(selected) == 1:
 		var node = selected[0]
 		if node.get("isCartoTerrain"):
-			dock.show()
+			make_bottom_panel_item_visible(dock)
 			node.update_layer_data()
 		elif node.get("isCartoLayer"):
-			dock.show()
+			make_bottom_panel_item_visible(dock)
 		else:
-			dock.hide()
+			hide_bottom_panel()
 		
 
 func _exit_tree():
