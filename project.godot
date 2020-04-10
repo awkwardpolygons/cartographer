@@ -32,7 +32,7 @@ _global_script_classes=[ {
 "base": "VisualShaderNodeCustom",
 "class": "VisualShaderNodePixelate",
 "language": "GDScript",
-"path": "res://vsn_pixelate.gd"
+"path": "res://shaders/vsn_pixelate.gd"
 } ]
 _global_script_class_icons={
 "CartoLayer": "res://addons/cartographer/layer_icon.svg",
