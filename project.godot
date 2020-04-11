@@ -10,6 +10,11 @@ config_version=4
 
 _global_script_classes=[ {
 "base": "Spatial",
+"class": "CartoBrush",
+"language": "GDScript",
+"path": "res://addons/cartographer/carto_brush.gd"
+}, {
+"base": "Spatial",
 "class": "CartoLayer",
 "language": "GDScript",
 "path": "res://addons/cartographer/carto_layer.gd"
@@ -35,6 +40,7 @@ _global_script_classes=[ {
 "path": "res://shaders/vsn_pixelate.gd"
 } ]
 _global_script_class_icons={
+"CartoBrush": "res://addons/cartographer/layer_icon.svg",
 "CartoLayer": "res://addons/cartographer/layer_icon.svg",
 "CartoTerrain": "res://addons/cartographer/terrain_icon.svg",
 "CartoTerrainMaterial": "res://addons/cartographer/terrain_icon.svg",
