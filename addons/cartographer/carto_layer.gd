@@ -1,6 +1,5 @@
 tool
 extends Spatial
-
 class_name CartoLayer, "res://addons/cartographer/layer_icon.svg"
 
 export(Material) var material: Material

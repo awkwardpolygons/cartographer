@@ -1,6 +1,5 @@
 tool
 extends CSGMesh
-
 class_name CartoTerrain, "res://addons/cartographer/terrain_icon.svg"
 
 export(Vector2) var size: Vector2 = Vector2(20, 20) setget set_size
