@@ -1,0 +1,157 @@
+[gd_scene load_steps=16 format=2]
+
+[ext_resource path="res://addons/cartographer/textures/Sand.png" type="Texture" id=1]
+[ext_resource path="res://addons/cartographer/textures/Grass.png" type="Texture" id=2]
+[ext_resource path="res://addons/cartographer/textures/pnoise.jpg" type="Texture" id=3]
+
+[sub_resource type="VisualShaderNodeTexture" id=3]
+source = 2
+
+[sub_resource type="VisualShaderNodeScalarSmoothStep" id=5]
+output_port_for_preview = 0
+default_input_values = [ 0, 0.5, 1, 0.4, 2, 0.0 ]
+
+[sub_resource type="VisualShaderNodeTextureUniform" id=6]
+uniform_name = "noise"
+
+[sub_resource type="VisualShaderNodeInput" id=10]
+input_name = "uv"
+
+[sub_resource type="VisualShaderNodeVectorOp" id=11]
+default_input_values = [ 0, Vector3( 0, 0, 0 ), 1, Vector3( 4, 4, 0 ) ]
+operator = 2
+
+[sub_resource type="VisualShaderNodeVectorOp" id=12]
+default_input_values = [ 0, Vector3( 0, 0, 0 ), 1, Vector3( 1, 1, 0 ) ]
+operator = 4
+
+[sub_resource type="VisualShaderNodeInput" id=13]
+input_name = "screen_uv"
+
+[sub_resource type="VisualShader" id=1]
+code = "shader_type canvas_item;
+uniform sampler2D noise;
+
+
+
+void vertex() {
+// Output:0
+
+}
+
+void fragment() {
+// Input:9
+	vec3 n_out9p0 = vec3(SCREEN_UV, 0.0);
+
+// VectorOp:7
+	vec3 n_in7p1 = vec3(4.00000, 4.00000, 0.00000);
+	vec3 n_out7p0 = n_out9p0 * n_in7p1;
+
+// VectorOp:8
+	vec3 n_in8p1 = vec3(1.00000, 1.00000, 0.00000);
+	vec3 n_out8p0 = mod(n_out7p0, n_in8p1);
+
+// Texture:2
+	vec3 n_out2p0;
+	float n_out2p1;
+	{
+		vec4 _tex_read = texture(TEXTURE, n_out8p0.xy);
+		n_out2p0 = _tex_read.rgb;
+		n_out2p1 = _tex_read.a;
+	}
+
+// TextureUniform:5
+	vec3 n_out5p0;
+	float n_out5p1;
+	{
+		vec4 n_tex_read = texture(noise, n_out9p0.xy);
+		n_out5p0 = n_tex_read.rgb;
+		n_out5p1 = n_tex_read.a;
+	}
+
+// ScalarSmoothStep:4
+	float n_in4p0 = 0.50000;
+	float n_in4p1 = 0.40000;
+	float n_out4p0 = smoothstep(n_in4p0, n_in4p1, dot(n_out5p0, vec3(0.333333, 0.333333, 0.333333)));
+
+// Output:0
+	COLOR.rgb = n_out2p0;
+	COLOR.a = n_out4p0;
+
+}
+
+void light() {
+// Output:0
+
+}
+"
+graph_offset = Vector2( -1039.5, -354 )
+mode = 1
+flags/light_only = false
+nodes/fragment/2/node = SubResource( 3 )
+nodes/fragment/2/position = Vector2( -380, 60 )
+nodes/fragment/4/node = SubResource( 5 )
+nodes/fragment/4/position = Vector2( 55, -130 )
+nodes/fragment/5/node = SubResource( 6 )
+nodes/fragment/5/position = Vector2( -380, -200 )
+nodes/fragment/6/node = SubResource( 10 )
+nodes/fragment/6/position = Vector2( -940, 40 )
+nodes/fragment/7/node = SubResource( 11 )
+nodes/fragment/7/position = Vector2( -780, 40 )
+nodes/fragment/8/node = SubResource( 12 )
+nodes/fragment/8/position = Vector2( -600, 40 )
+nodes/fragment/9/node = SubResource( 13 )
+nodes/fragment/9/position = Vector2( -848.5, -195 )
+nodes/fragment/connections = PoolIntArray( 2, 0, 0, 0, 5, 0, 4, 2, 7, 0, 8, 0, 8, 0, 2, 0, 4, 0, 0, 1, 9, 0, 5, 0, 9, 0, 7, 0 )
+
+[sub_resource type="ShaderMaterial" id=2]
+shader = SubResource( 1 )
+shader_param/noise = ExtResource( 3 )
+
+[sub_resource type="PlaneMesh" id=7]
+size = Vector2( 20, 20 )
+
+[sub_resource type="ViewportTexture" id=14]
+viewport_path = NodePath("Viewport")
+
+[sub_resource type="SpatialMaterial" id=9]
+resource_local_to_scene = true
+albedo_texture = SubResource( 14 )
+
+[node name="Spatial" type="Spatial"]
+
+[node name="Viewport" type="Viewport" parent="."]
+size = Vector2( 4096, 4096 )
+handle_input_locally = false
+disable_3d = true
+usage = 0
+debug_draw = 1
+render_target_v_flip = true
+render_target_update_mode = 3
+
+[node name="Sand" type="TextureRect" parent="Viewport"]
+margin_right = 4096.0
+margin_bottom = 4096.0
+texture = ExtResource( 1 )
+stretch_mode = 2
+
+[node name="Grass" type="TextureRect" parent="Viewport"]
+material = SubResource( 2 )
+margin_right = 4096.0
+margin_bottom = 4096.0
+texture = ExtResource( 2 )
+stretch_mode = 2
+
+[node name="ViewportContainer" type="ViewportContainer" parent="."]
+margin_right = 512.0
+margin_bottom = 512.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="CSGMesh" type="CSGMesh" parent="."]
+mesh = SubResource( 7 )
+material = SubResource( 9 )
+
+[node name="Camera" type="Camera" parent="."]
+transform = Transform( 1, 0, 0, 0, 0.573576, 0.819152, 0, -0.819152, 0.573576, 0, 8, 4 )
