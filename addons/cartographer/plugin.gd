@@ -92,24 +92,7 @@ func forward_spatial_gui_input(camera, event):
 	return capture_event
 
 func raycast(origin: Vector3, direction: Vector3):
-#	var space_state = terrain.get_world().direct_space_state
-#	var result = space_state.intersect_ray(origin, direction * 800)
-#	print(result.get("position"))
-	
-	var aabb = terrain.get_aabb()
-	var pos = origin
-	var intersected = false
-	
-	var i = 0
-	while i < 800:
-		i += 1
-		pos += direction
-		if pos.x >= aabb.position.x and pos.x <= aabb.end.x and pos.z >= aabb.position.z and pos.z <= aabb.end.z \
-		and pos.y < 0:
-			intersected = true
-			pos -= direction
-			break
-	
-	if intersected:
-		return pos
-	return null
+	var space_state = terrain.get_world().direct_space_state
+	var result = space_state.intersect_ray(origin, direction * 800)
+	#print(result.get("position"))
+	return result.get("position")
