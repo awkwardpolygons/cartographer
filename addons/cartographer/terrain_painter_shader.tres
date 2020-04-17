@@ -1,0 +1,115 @@
+[gd_resource type="VisualShader" load_steps=11 format=2]
+
+[sub_resource type="VisualShaderNodeVectorOp" id=1]
+output_port_for_preview = 0
+
+[sub_resource type="VisualShaderNodeColorConstant" id=2]
+constant = Color( 1, 0, 0, 1 )
+
+[sub_resource type="VisualShaderNodeVectorOp" id=3]
+output_port_for_preview = 0
+operator = 2
+
+[sub_resource type="VisualShaderNodeVec3Uniform" id=4]
+uniform_name = "brush_pos"
+
+[sub_resource type="VisualShaderNodeTextureUniform" id=5]
+uniform_name = "brush_mask"
+
+[sub_resource type="VisualShaderNodeInput" id=6]
+input_name = "screen_uv"
+
+[sub_resource type="VisualShaderNodeTexture" id=7]
+source = 1
+
+[sub_resource type="VisualShaderNodeVectorOp" id=8]
+operator = 1
+
+[sub_resource type="VisualShaderNodeVectorLen" id=9]
+
+[sub_resource type="VisualShaderNodeCompare" id=10]
+default_input_values = [ 0, 0.0, 1, 0.2, 2, 1e-05 ]
+function = 4
+
+[resource]
+resource_local_to_scene = true
+code = "shader_type canvas_item;
+uniform vec3 brush_pos;
+
+
+
+void vertex() {
+// Output:0
+
+}
+
+void fragment() {
+// Texture:5
+	vec3 n_out5p0;
+	float n_out5p1;
+	{
+		vec4 _tex_read = textureLod(SCREEN_TEXTURE, UV.xy, 0.0 );
+		n_out5p0 = _tex_read.rgb;
+		n_out5p1 = _tex_read.a;
+	}
+
+// Input:4
+	vec3 n_out4p0 = vec3(SCREEN_UV, 0.0);
+
+// VectorUniform:2
+	vec3 n_out2p0 = brush_pos;
+
+// VectorOp:6
+	vec3 n_out6p0 = n_out4p0 - n_out2p0;
+
+// VectorLen:8
+	float n_out8p0 = length(n_out6p0);
+
+// Compare:9
+	float n_in9p1 = 0.20000;
+	bool n_out9p0 = n_out8p0<n_in9p1;
+
+// Color:11
+	vec3 n_out11p0 = vec3(1.000000, 0.000000, 0.000000);
+	float n_out11p1 = 1.000000;
+
+// VectorOp:12
+	vec3 n_out12p0 = vec3(n_out9p0 ? 1.0 : 0.0) * n_out11p0;
+
+// VectorOp:10
+	vec3 n_out10p0 = n_out5p0 + n_out12p0;
+
+// Output:0
+	COLOR.rgb = n_out10p0;
+
+}
+
+void light() {
+// Output:0
+
+}
+"
+graph_offset = Vector2( -693, 131 )
+mode = 1
+flags/light_only = false
+nodes/fragment/2/node = SubResource( 4 )
+nodes/fragment/2/position = Vector2( -620, 80 )
+nodes/fragment/3/node = SubResource( 5 )
+nodes/fragment/3/position = Vector2( -560, 480 )
+nodes/fragment/4/node = SubResource( 6 )
+nodes/fragment/4/position = Vector2( -360, 80 )
+nodes/fragment/5/node = SubResource( 7 )
+nodes/fragment/5/position = Vector2( -120, 80 )
+nodes/fragment/6/node = SubResource( 8 )
+nodes/fragment/6/position = Vector2( -360, 180 )
+nodes/fragment/8/node = SubResource( 9 )
+nodes/fragment/8/position = Vector2( -160, 240 )
+nodes/fragment/9/node = SubResource( 10 )
+nodes/fragment/9/position = Vector2( -160, 320 )
+nodes/fragment/10/node = SubResource( 1 )
+nodes/fragment/10/position = Vector2( 180, 180 )
+nodes/fragment/11/node = SubResource( 2 )
+nodes/fragment/11/position = Vector2( -160, 520 )
+nodes/fragment/12/node = SubResource( 3 )
+nodes/fragment/12/position = Vector2( 60, 360 )
+nodes/fragment/connections = PoolIntArray( 2, 0, 6, 1, 6, 0, 8, 0, 8, 0, 9, 0, 9, 0, 12, 0, 4, 0, 6, 0, 11, 0, 12, 1, 10, 0, 0, 0, 12, 0, 10, 1, 5, 0, 10, 0 )
