@@ -1,4 +1,4 @@
-[gd_resource type="VisualShader" load_steps=18 format=2]
+[gd_resource type="VisualShader" load_steps=20 format=2]
 
 [ext_resource path="res://addons/cartographer/carto_shader_node.gd" type="Script" id=1]
 [ext_resource path="res://addons/cartographer/rect_green.png" type="Texture" id=2]
@@ -38,19 +38,25 @@ output_port_for_preview = 0
 operator = 2
 
 [sub_resource type="VisualShaderNodeColorOp" id=12]
+operator = 1
 
-[sub_resource type="VisualShaderNodeVec3Uniform" id=14]
+[sub_resource type="VisualShaderNodeVec3Uniform" id=13]
 uniform_name = "area"
 
-[sub_resource type="VisualShaderNodeVectorOp" id=15]
+[sub_resource type="VisualShaderNodeVectorOp" id=14]
 operator = 2
 
-[sub_resource type="VisualShaderNodeScalarUniform" id=16]
+[sub_resource type="VisualShaderNodeScalarUniform" id=15]
 uniform_name = "brush_size"
+
+[sub_resource type="VisualShaderNodeInput" id=16]
+input_name = "color"
+
+[sub_resource type="VisualShaderNodeTextureUniform" id=17]
+uniform_name = "height_map"
 
 [resource]
 code = "shader_type spatial;
-uniform sampler2D tex_frg_13;
 uniform vec3 brush_tip;
 uniform vec3 area;
 uniform float brush_size;
@@ -63,10 +69,8 @@ void vertex() {
 }
 
 void fragment() {
-// Texture:13
-	vec4 tex_frg_13_read = texture(tex_frg_13, UV.xy);
-	vec3 n_out13p0 = tex_frg_13_read.rgb;
-	float n_out13p1 = tex_frg_13_read.a;
+// Input:27
+	vec3 n_out27p0 = COLOR.rgb;
 
 // VectorUniform:14
 	vec3 n_out14p0 = brush_tip;
@@ -100,7 +104,7 @@ void fragment() {
 	vec3 n_out20p0 = vec3(n_out18p0 ? 1.0 : 0.0) * n_out19p0;
 
 // ColorOp:21
-	vec3 n_out21p0 = vec3(1.0) - (vec3(1.0) - n_out13p0) * (vec3(1.0) - n_out20p0);
+	vec3 n_out21p0 = abs(n_out27p0 - n_out20p0);
 
 // Output:0
 	ALBEDO = n_out21p0;
@@ -112,7 +116,7 @@ void light() {
 
 }
 "
-graph_offset = Vector2( -1039.5, -374 )
+graph_offset = Vector2( -346.5, -226 )
 nodes/fragment/10/node = SubResource( 1 )
 nodes/fragment/10/position = Vector2( -960, 580 )
 nodes/fragment/11/node = SubResource( 2 )
@@ -137,10 +141,14 @@ nodes/fragment/20/node = SubResource( 11 )
 nodes/fragment/20/position = Vector2( -220, 340 )
 nodes/fragment/21/node = SubResource( 12 )
 nodes/fragment/21/position = Vector2( 63, 355 )
-nodes/fragment/24/node = SubResource( 14 )
+nodes/fragment/24/node = SubResource( 13 )
 nodes/fragment/24/position = Vector2( -1000, -200 )
-nodes/fragment/25/node = SubResource( 15 )
+nodes/fragment/25/node = SubResource( 14 )
 nodes/fragment/25/position = Vector2( -800, -200 )
-nodes/fragment/26/node = SubResource( 16 )
+nodes/fragment/26/node = SubResource( 15 )
 nodes/fragment/26/position = Vector2( -1000, -20 )
-nodes/fragment/connections = PoolIntArray( 10, 0, 11, 1, 12, 0, 11, 0, 16, 0, 15, 0, 15, 0, 18, 0, 19, 0, 20, 1, 18, 0, 20, 0, 20, 0, 21, 1, 13, 0, 21, 0, 21, 0, 0, 0, 24, 0, 25, 0, 17, 0, 25, 1, 14, 0, 16, 0, 25, 0, 16, 1, 26, 0, 18, 1 )
+nodes/fragment/27/node = SubResource( 16 )
+nodes/fragment/27/position = Vector2( -60, -20 )
+nodes/fragment/28/node = SubResource( 17 )
+nodes/fragment/28/position = Vector2( -1000, 140 )
+nodes/fragment/connections = PoolIntArray( 10, 0, 11, 1, 12, 0, 11, 0, 16, 0, 15, 0, 15, 0, 18, 0, 19, 0, 20, 1, 18, 0, 20, 0, 20, 0, 21, 1, 24, 0, 25, 0, 17, 0, 25, 1, 25, 0, 16, 1, 26, 0, 18, 1, 21, 0, 0, 0, 27, 0, 21, 0, 14, 0, 16, 0 )
