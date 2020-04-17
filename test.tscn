@@ -50,6 +50,14 @@ constant = Vector3( 2, 2, 0 )
 code = "shader_type canvas_item;
 
 
+// Pixelate
+
+vec4 pixelate(sampler2D sampler, vec2 uv, vec2 factor) {
+	vec2 xy = vec2(textureSize(sampler, 0)) * uv;
+	xy = xy - mod(xy, factor) + factor / vec2(2, 2);
+	return texelFetch(sampler, ivec2(round(xy)), 0);
+}
+
 
 void vertex() {
 // Output:0
@@ -57,10 +65,26 @@ void vertex() {
 }
 
 void fragment() {
-// Unnamed:2
+// Vector:5
+	vec3 n_out5p0 = vec3(2.000000, 2.000000, 0.000000);
+
+// Input:3
+	vec3 n_out3p0 = vec3(SCREEN_UV, 0.0);
+
+// Input:4
+
+// Pixelate:2
+	vec3 n_out2p0;
+	float n_out2p1;
+	{
+		
+		vec4 px = pixelate(SCREEN_TEXTURE, n_out3p0.xy, n_out5p0.xy);
+		n_out2p0 = px.rgb;
+		n_out2p1 = px.a;
+	}
 
 // Output:0
-	COLOR.rgb = vec3(n_out2p0);
+	COLOR.rgb = n_out2p0;
 	COLOR.a = n_out2p1;
 
 }

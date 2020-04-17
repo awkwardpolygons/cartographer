@@ -14,20 +14,20 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://addons/cartographer/carto_brush.gd"
 }, {
-"base": "Spatial",
-"class": "CartoLayer",
-"language": "GDScript",
-"path": "res://addons/cartographer/carto_layer.gd"
-}, {
 "base": "CSGMesh",
 "class": "CartoTerrain",
 "language": "GDScript",
 "path": "res://addons/cartographer/carto_terrain.gd"
 }, {
-"base": "SpatialMaterial",
-"class": "CartoTerrainMaterial",
+"base": "Resource",
+"class": "PaintBrush",
 "language": "GDScript",
-"path": "res://addons/cartographer/carto_terrain_material.gd"
+"path": "res://addons/cartographer/paint_brush_res.gd"
+}, {
+"base": "Viewport",
+"class": "TexturePainter",
+"language": "GDScript",
+"path": "res://addons/cartographer/texture_painter.gd"
 }, {
 "base": "VisualShaderNodeCustom",
 "class": "VisualShaderNodeCartoTerrain",
@@ -41,9 +41,9 @@ _global_script_classes=[ {
 } ]
 _global_script_class_icons={
 "CartoBrush": "res://addons/cartographer/layer_icon.svg",
-"CartoLayer": "res://addons/cartographer/layer_icon.svg",
 "CartoTerrain": "res://addons/cartographer/terrain_icon.svg",
-"CartoTerrainMaterial": "res://addons/cartographer/terrain_icon.svg",
+"PaintBrush": "",
+"TexturePainter": "",
 "VisualShaderNodeCartoTerrain": "",
 "VisualShaderNodePixelate": ""
 }
