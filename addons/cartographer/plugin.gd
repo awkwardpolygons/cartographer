@@ -6,6 +6,7 @@ var editor = get_editor_interface()
 var terrain: CartoTerrain
 var brush: CartoBrush
 var do_paint: bool = false
+var texture_painter: TexturePainter
 
 func _enter_tree():
 	dock = preload("res://addons/cartographer/cartographer.tscn").instance()
@@ -87,7 +88,18 @@ func forward_spatial_gui_input(camera, event):
 		#print(tex_pos)
 		#terrain.material.set_shader_param("brush_pos", tex_pos)
 		#terrain.get_parent().get_node("Viewport/ColorRect").material.set_shader_param("brush_pos", tex_pos)
-		terrain.get_parent().get_node("TexturePainter").paint(tex_pos, Color(1, 0, 0, 1))
+		#terrain.get_parent().get_node("TexturePainter").paint(tex_pos, Color(1, 0, 0, 1))
+		
+		if not texture_painter:
+			print("TexturePainter.new()")
+			texture_painter = TexturePainter.new()
+			texture_painter.material = ShaderMaterial.new()
+			texture_painter.material.shader = load("res://addons/cartographer/terrain_painter_shader.tres")
+			terrain.material.albedo_texture = texture_painter.get_texture()
+			terrain.get_node("/root").add_child(texture_painter)
+		terrain.material.albedo_texture = texture_painter.get_texture()
+		texture_painter.paint(tex_pos, Color(1, 0, 0, 1))
+		
 	
 	return capture_event
 

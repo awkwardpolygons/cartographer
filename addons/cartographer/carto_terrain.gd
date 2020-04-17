@@ -2,14 +2,19 @@ tool
 extends CSGMesh
 class_name CartoTerrain, "res://addons/cartographer/terrain_icon.svg"
 
-export(Vector2) var size: Vector2 = Vector2(20, 20) setget set_size
+export(Vector2) var size: Vector2 = Vector2(20, 20) setget _set_size
+export(Texture) var height_map: Texture setget _set_height_map
+export(Texture) var flow_map: Texture
 const isCartoTerrain: bool = true
+var height_img: Image
 var csg: CSGMesh = self
 var texarr: TextureArray
 
-func set_size(s: Vector2):
+func _set_size(s: Vector2):
 	size = s
 	csg.mesh.size = s
+func _set_height_map(t: Texture):
+	height_map = t
 
 func _enter_tree():
 	#if csg == null:
