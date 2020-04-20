@@ -69,6 +69,9 @@ func forward_spatial_gui_input(camera, event):
 	and not event.control and not event.alt:
 		capture_event = true
 		do_paint = event.pressed
+		if texture_painter:
+			terrain.get_node("/root").remove_child(texture_painter)
+			texture_painter = null
 	elif event is InputEventMouseMotion and do_paint:
 		capture_event = true
 		var viewport = camera.get_viewport()
@@ -81,20 +84,12 @@ func forward_spatial_gui_input(camera, event):
 		var aabb = terrain.get_aabb()
 		var pos = raycast(org, dir)
 		
-#		var tex_pos = (aabb.size/2 + pos) * 512/20
-#		tex_pos = Vector3(int(tex_pos.x), int(tex_pos.z), 0)
 		var tex_pos = (aabb.size/2 + pos) / 20
 		tex_pos = Vector2(clamp(tex_pos.x, 0, 1), clamp(tex_pos.z, 0, 1))
-		#print(tex_pos)
-		#terrain.material.set_shader_param("brush_pos", tex_pos)
-		#terrain.get_parent().get_node("Viewport/ColorRect").material.set_shader_param("brush_pos", tex_pos)
-		#terrain.get_parent().get_node("TexturePainter").paint(tex_pos, Color(1, 0, 0, 1))
 		
 		if not texture_painter:
 			print("TexturePainter.new()")
 			texture_painter = TexturePainter.new()
-			texture_painter.material = ShaderMaterial.new()
-			texture_painter.material.shader = load("res://addons/cartographer/terrain_painter_shader.tres")
 			terrain.material.albedo_texture = texture_painter.get_texture()
 			terrain.get_node("/root").add_child(texture_painter)
 		terrain.material.albedo_texture = texture_painter.get_texture()
