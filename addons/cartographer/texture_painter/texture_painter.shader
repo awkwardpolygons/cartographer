@@ -1,10 +1,11 @@
 shader_type canvas_item;
 
-uniform bool clear;
+const int NONE = 0, PAINT = 1, ERASE = 2, CLEAR = 3;
+
 uniform sampler2D brush_mask;
+uniform int action = 0;
 uniform vec2 brush_pos;
 uniform vec4 brush_color;
-
 
 float squircle(vec2 uv, vec2 pos, float r) {
 	vec2 tmp = pow(uv - pos, vec2(4));
@@ -27,7 +28,7 @@ void fragment() {
 	
 	vec4 bt = brush(SCREEN_UV, vec4(1, 0, 0, 1));
 	
-	if(clear) {
+	if(action == CLEAR) {
 		COLOR = tt
 	}
 	else {

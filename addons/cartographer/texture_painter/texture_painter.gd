@@ -2,6 +2,8 @@ tool
 extends Viewport
 class_name TexturePainter
 
+enum Action {NONE, PAINT, ERASE, CLEAR}
+
 export(Texture) var src: Texture setget load
 export(Material) var material: Material setget _set_material, _get_material
 
@@ -50,8 +52,8 @@ func _get_material():
 
 func clear():
 	print("CLEAR")
-	_cvi.material.set_shader_param("clear", true)
+	_cvi.material.set_shader_param("action", Action.CLEAR)
 
 func paint(pos: Vector2, color: Color):
-	_cvi.material.set_shader_param("clear", false)
+	_cvi.material.set_shader_param("action", Action.PAINT)
 	_cvi.material.set_shader_param("brush_pos", pos)

@@ -1,14 +1,13 @@
 tool
 extends EditorPlugin
 
+const Action = TexturePainter.Action
+
 var dock
 var editor = get_editor_interface()
 var terrain: CartoTerrain
 var brush: CartoBrush
 var do_paint: bool = false
-
-enum {NONE, PAINT, ERASE, CLEAR}
-
 
 func _enter_tree():
 	editor.get_selection().connect("selection_changed", self, "_on_selection_changed", [dock])
@@ -56,23 +55,24 @@ func make_visible(visible):
 
 func forward_spatial_gui_input(camera, event):
 	var action = get_action(event)
-	if action == CLEAR:
+	if action == Action.CLEAR:
 		terrain.painter.clear()
 		return false
 	return try_paint(camera, action) or action
 
 func get_action(event):
-	var action = NONE
+	var action = Action.NONE
 	if event is InputEventMouseMotion:
-		action = PAINT if Input.is_mouse_button_pressed(BUTTON_LEFT) else NONE
-		action = ERASE if action and event.alt else action
+		action = Action.PAINT if Input.is_mouse_button_pressed(BUTTON_LEFT) else Action.NONE
+		action = Action.ERASE if action and event.alt else action
 	if event is InputEventKey and event.scancode == KEY_BACKSPACE:
-		action = CLEAR
+		action = Action.CLEAR
 	return action
 
 func try_paint(camera, action):
-	if action == NONE:
+	if action == Action.NONE:
 		return false
+	
 	var viewport = camera.get_viewport()
 	var viewport_container = viewport.get_parent()
 	var screen_pos = viewport.get_mouse_position() * viewport.size / viewport_container.rect_size
