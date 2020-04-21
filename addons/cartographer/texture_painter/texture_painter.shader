@@ -1,5 +1,6 @@
 shader_type canvas_item;
 
+uniform bool clear;
 uniform sampler2D brush_mask;
 uniform vec2 brush_pos;
 uniform vec4 brush_color;
@@ -26,5 +27,10 @@ void fragment() {
 	
 	vec4 bt = brush(SCREEN_UV, vec4(1, 0, 0, 1));
 	
-	COLOR = st + bt;
+	if(clear) {
+		COLOR = tt
+	}
+	else {
+		COLOR = st + bt;
+	}
 }

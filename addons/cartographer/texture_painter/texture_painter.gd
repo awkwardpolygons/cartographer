@@ -48,6 +48,10 @@ func _set_material(m: Material):
 func _get_material():
 	return _cvi.material
 
+func clear():
+	print("CLEAR")
+	_cvi.material.set_shader_param("clear", true)
+
 func paint(pos: Vector2, color: Color):
+	_cvi.material.set_shader_param("clear", false)
 	_cvi.material.set_shader_param("brush_pos", pos)
-	_cvi.material.set_shader_param("is_painting", 1)
