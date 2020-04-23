@@ -42,9 +42,12 @@ void fragment() {
 	if (action == CLEAR) {
 		COLOR = tt;
 	}
-	else {
+	else if (action == PAINT) {
 //		COLOR.rgb = mix(st.rgb, bt.rgb, bt.a);
 		COLOR = alpha_blend(st, bt);
 //		COLOR = st + bt;
+	}
+	else if (action == ERASE) {
+		COLOR = brush(SCREEN_UV, vec4(0, 0, 0, 0));
 	}
 }

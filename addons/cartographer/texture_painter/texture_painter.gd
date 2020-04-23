@@ -32,7 +32,7 @@ func _init():
 	
 	_cvi.material = ShaderMaterial.new()
 	_cvi.material.shader = _shader
-	_cvi.texture = load("res://addons/cartographer/rect_green.png")
+	_cvi.texture = load("res://largetex.tres")
 #	_cvi.material.set_shader_param("texture", load("res://addons/cartographer/rect_green.png"))
 
 func load(t: Texture):
@@ -56,4 +56,8 @@ func clear():
 
 func paint(pos: Vector2, color: Color):
 	_cvi.material.set_shader_param("action", Action.PAINT)
+	_cvi.material.set_shader_param("brush_pos", pos)
+
+func erase(pos: Vector2):
+	_cvi.material.set_shader_param("action", Action.ERASE)
 	_cvi.material.set_shader_param("brush_pos", pos)
