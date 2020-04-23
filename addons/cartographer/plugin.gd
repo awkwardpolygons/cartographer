@@ -3,6 +3,7 @@ extends EditorPlugin
 
 const Action = TexturePainter.Action
 
+var _action = Action.NONE
 var dock
 var editor = get_editor_interface()
 var terrain: CartoTerrain
@@ -55,19 +56,24 @@ func make_visible(visible):
 
 func forward_spatial_gui_input(camera, event):
 	var action = get_action(event)
+#	print("--> ", action)
 	if action == Action.CLEAR:
 		terrain.painter.clear()
 		return false
-	return try_paint(camera, action) or action
+	return try_paint(camera, action)
 
 func get_action(event):
-	var action = Action.NONE
-	if event is InputEventMouseMotion:
-		action = Action.PAINT if Input.is_mouse_button_pressed(BUTTON_LEFT) else Action.NONE
-		action = Action.ERASE if action and event.alt else action
-	if event is InputEventKey and event.scancode == KEY_BACKSPACE:
-		action = Action.CLEAR
-	return action
+	if event is InputEventMouseMotion and Input.is_mouse_button_pressed(BUTTON_LEFT):
+		_action = Action.PAINT
+	elif event is InputEventMouseButton and event.button_index == BUTTON_LEFT:
+		_action = Action.PAINT if event.pressed else Action.NONE
+	elif event is InputEventKey and event.scancode == KEY_BACKSPACE:
+		_action = Action.CLEAR if event.is_pressed() else Action.NONE
+	if event.alt:
+		_action = Action.ERASE if _action == Action.PAINT else _action
+	else:
+		_action = Action.PAINT if _action == Action.ERASE else _action
+	return _action
 
 func try_paint(camera, action):
 	if action == Action.NONE:
@@ -85,7 +91,10 @@ func try_paint(camera, action):
 	if pos:
 		var tex_pos = (size/2 + pos) / size
 		var uv = Vector2(clamp(tex_pos.x, 0, 1), clamp(tex_pos.z, 0, 1))
-		terrain.painter.paint(uv, Color(1, 0, 0, 1))
+		if action == Action.PAINT:
+			terrain.painter.paint(uv, Color(1, 0, 0, 1))
+		elif action == Action.ERASE:
+			terrain.painter.erase(uv)
 		return true
 	return false
 
