@@ -20,7 +20,7 @@ float rectangle(vec2 uv, vec2 pos, float r) {
 
 vec4 brush(vec2 uv, vec4 color) {
 //	return smoothstep(0.2, 0.1, length(uv - brush_pos)) * color;
-	color.a = smoothstep(0.2, 0.1, length(uv - brush_pos));
+	color.a = smoothstep(0.1, 0.025, length(uv - brush_pos));
 	return color;
 //	return rectangle(uv, brush_pos, 0.25) * color;
 }
@@ -31,11 +31,15 @@ vec4 alpha_blend(vec4 dst, vec4 src) {
 	return vec4(rgb, a);
 }
 
+vec4 blend_add(vec4 dst, vec4 src) {
+	return src + dst;
+}
+
 void fragment() {
 	vec4 st = texture(SCREEN_TEXTURE, SCREEN_UV);
 	vec4 tt = texture(TEXTURE, SCREEN_UV);
 	
-	vec4 bt = brush(SCREEN_UV, vec4(1, 0, 0, 1));
+	vec4 bt = brush(SCREEN_UV, vec4(0.01, 0, 0, 1));
 	
 	
 	
@@ -44,7 +48,8 @@ void fragment() {
 	}
 	else if (action == PAINT) {
 //		COLOR.rgb = mix(st.rgb, bt.rgb, bt.a);
-		COLOR = alpha_blend(st, bt);
+		COLOR = blend_add(st, bt);
+//		COLOR = alpha_blend(st, bt);
 //		COLOR = st + bt;
 	}
 	else if (action == ERASE) {
