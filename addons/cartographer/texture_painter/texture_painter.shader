@@ -25,7 +25,7 @@ vec4 brush(vec2 uv, vec4 color) {
 //	return rectangle(uv, brush_pos, 0.25) * color;
 }
 
-vec4 alpha_blend(vec4 dst, vec4 src) {
+vec4 blend_alpha(vec4 dst, vec4 src) {
 	float a = src.a + dst.a * (1.0 - src.a);
 	vec3 rgb = (src.rgb * src.a + dst.rgb * dst.a * (1.0 - src.a)) / a;
 	return vec4(rgb, a);
