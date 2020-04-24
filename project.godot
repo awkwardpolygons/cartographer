@@ -22,12 +22,12 @@ _global_script_classes=[ {
 "base": "Resource",
 "class": "PaintBrush",
 "language": "GDScript",
-"path": "res://addons/cartographer/paint_brush_res.gd"
+"path": "res://addons/cartographer/texture_painter/paint_brush_res.gd"
 }, {
 "base": "Viewport",
 "class": "TexturePainter",
 "language": "GDScript",
-"path": "res://addons/cartographer/texture_painter.gd"
+"path": "res://addons/cartographer/texture_painter/texture_painter.gd"
 }, {
 "base": "VisualShaderNodeCustom",
 "class": "VisualShaderNodeCartoTerrain",
