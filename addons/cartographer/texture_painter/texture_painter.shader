@@ -8,6 +8,10 @@ uniform vec4 brush_color;
 const int NONE = 0, PAINT = 1, ERASE = 2, CLEAR = 3;
 
 
+float sdf_circle(vec2 p, float r) {
+	return length(p) - r/2.0;
+}
+
 float sdf_rbox(vec2 p, vec2 s, float r) {
 	s = s/2.0;
 	r = r/4.0;
