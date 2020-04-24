@@ -1,4 +1,6 @@
-[gd_resource type="VisualShader" load_steps=12 format=2]
+[gd_resource type="VisualShader" load_steps=20 format=2]
+
+[ext_resource path="res://uv.png" type="Texture" id=1]
 
 [sub_resource type="VisualShaderNodeInput" id=1]
 input_name = "uv"
@@ -45,6 +47,25 @@ texture_type = 1
 output_port_for_preview = 0
 uniform_name = "texture"
 texture_type = 1
+
+[sub_resource type="VisualShaderNodeVectorDecompose" id=12]
+
+[sub_resource type="VisualShaderNodeScalarOp" id=13]
+default_input_values = [ 0, 8.0, 1, 0.0 ]
+operator = 2
+
+[sub_resource type="VisualShaderNodeTexture" id=14]
+texture = ExtResource( 1 )
+
+[sub_resource type="VisualShaderNodeInput" id=15]
+input_name = "uv"
+
+[sub_resource type="VisualShaderNodeInput" id=16]
+input_name = "vertex"
+
+[sub_resource type="VisualShaderNodeVectorCompose" id=17]
+
+[sub_resource type="VisualShaderNodeVectorDecompose" id=18]
 
 [resource]
 code = "shader_type spatial;
@@ -118,7 +139,22 @@ void light() {
 
 }
 "
-graph_offset = Vector2( -1039.5, -151 )
+graph_offset = Vector2( -681.5, -232 )
+nodes/vertex/5/node = SubResource( 14 )
+nodes/vertex/5/position = Vector2( -180, 220 )
+nodes/vertex/6/node = SubResource( 15 )
+nodes/vertex/6/position = Vector2( -403.5, 143 )
+nodes/vertex/7/node = SubResource( 16 )
+nodes/vertex/7/position = Vector2( -220, -60 )
+nodes/vertex/8/node = SubResource( 17 )
+nodes/vertex/8/position = Vector2( 180, 100 )
+nodes/vertex/9/node = SubResource( 18 )
+nodes/vertex/9/position = Vector2( 40, 320 )
+nodes/vertex/10/node = SubResource( 12 )
+nodes/vertex/10/position = Vector2( -40, -40 )
+nodes/vertex/11/node = SubResource( 13 )
+nodes/vertex/11/position = Vector2( -20, 100 )
+nodes/vertex/connections = PoolIntArray( 6, 0, 5, 0, 5, 0, 9, 0, 7, 0, 10, 0, 10, 0, 8, 0, 10, 2, 8, 2, 9, 0, 11, 1, 11, 0, 8, 1 )
 nodes/fragment/0/position = Vector2( 300, 0 )
 nodes/fragment/10/node = SubResource( 1 )
 nodes/fragment/10/position = Vector2( -360, 0 )
