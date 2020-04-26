@@ -44,7 +44,8 @@ func init_painter():
 		painter = TexturePainter.new()
 		csg.add_child(painter)
 	if csg.material:
-		csg.material.albedo_texture = painter.get_texture()
+#		csg.material.albedo_texture = painter.get_texture()
+		csg.material.set_shader_param("texture", painter.get_texture())
 
 func update_layer_data():
 	var layers = get_children()
