@@ -8,11 +8,11 @@ uniform vec4 brush_color;
 const int NONE = 0, PAINT = 1, ERASE = 2, CLEAR = 3;
 
 
-vec4 mask(vec2 uv, float scale) {
+vec4 brush_tex(vec2 uv, vec2 scale) {
 	uv = uv + ((vec2(0.5) * scale));
 	uv = uv/scale;
 	if (uv.x > 1.0 || uv.y > 1.0 || uv.x < 0.0 || uv.y < 0.0) {
-		discard;
+		return vec4(0, 0, 0, 0);
 	}
 	return texture(brush_mask, uv);
 }
@@ -57,11 +57,13 @@ vec4 blend_add(vec4 dst, vec4 src) {
 }
 
 void fragment() {
+	vec2 brush_ratio = SCREEN_PIXEL_SIZE * vec2(textureSize(brush_mask, 0));
+	vec2 brush_rel_uv = SCREEN_UV - brush_pos;
 	vec4 st = texture(SCREEN_TEXTURE, SCREEN_UV);
 	vec4 tt = texture(TEXTURE, SCREEN_UV);
+	vec4 bt;
 	
-	vec4 bt = brush(SCREEN_UV, vec4(0.01, 0, 0, 1));
-	
+//	vec4 bt = brush(SCREEN_UV, vec4(0.01, 0, 0, 1));
 //	float a = step(0.0, -1.0 * squircle(brush_pos - SCREEN_UV, 0.25, 4));
 //	float a = smoothstep(0.0, 0.3, sdf_rbox(brush_pos - SCREEN_UV, vec2(0.5), 0.5));
 //	float a = -1.0 * sdf_rbox(brush_pos - SCREEN_UV, vec2(0.25), 0.15);
@@ -69,8 +71,7 @@ void fragment() {
 //	float a = rectangle(brush_pos - SCREEN_UV, vec2(0.15, 0.15)) - 0.2;
 //	bt = vec4(1, 0, 0, a);
 //	bt = vec4(a, a, a, 1);
-	float scale = SCREEN_PIXEL_SIZE.x * vec2(textureSize(brush_mask, 0)).x * 1.0/1.0;
-	bt = mask(SCREEN_UV - brush_pos, scale);
+	bt = brush_tex(brush_rel_uv, brush_ratio * 1.0/2.0);
 	bt = vec4(1, 1, 1, bt.a);
 	
 	if (action == NONE) {
