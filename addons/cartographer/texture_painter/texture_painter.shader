@@ -10,7 +10,11 @@ const int NONE = 0, PAINT = 1, ERASE = 2, CLEAR = 3;
 
 vec4 mask(vec2 uv, float scale) {
 	uv = uv + ((vec2(0.5) * scale));
-	return texture(brush_mask, clamp(uv/scale, 0.0, 1.0));
+	uv = uv/scale;
+	if (uv.x > 1.0 || uv.y > 1.0 || uv.x < 0.0 || uv.y < 0.0) {
+		discard;
+	}
+	return texture(brush_mask, uv);
 }
 
 float sdf_circle(vec2 p, float r) {
@@ -65,7 +69,7 @@ void fragment() {
 //	float a = rectangle(brush_pos - SCREEN_UV, vec2(0.15, 0.15)) - 0.2;
 //	bt = vec4(1, 0, 0, a);
 //	bt = vec4(a, a, a, 1);
-	float scale = SCREEN_PIXEL_SIZE.x * vec2(textureSize(brush_mask, 0)).x * 1.0/2.0;
+	float scale = SCREEN_PIXEL_SIZE.x * vec2(textureSize(brush_mask, 0)).x * 1.0/1.0;
 	bt = mask(SCREEN_UV - brush_pos, scale);
 	bt = vec4(1, 1, 1, bt.a);
 	
@@ -73,7 +77,7 @@ void fragment() {
 		COLOR = st;
 	}
 	else if (action == CLEAR) {
-		COLOR = tt;
+		COLOR = vec4(0, 0, 0, 1);
 	}
 	else if (action == PAINT) {
 //		COLOR.rgb = mix(st.rgb, bt.rgb, bt.a);
