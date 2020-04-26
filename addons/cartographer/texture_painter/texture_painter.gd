@@ -59,7 +59,7 @@ func clear():
 
 func paint(pos: Vector2, color: Color):
 	_cvi.material.set_shader_param("action", Action.PAINT)
-	_cvi.material.set_shader_param("brush_mask", load("res://addons/cartographer/brush_masks/bristles.png"))
+	_cvi.material.set_shader_param("brush_mask", load("res://addons/cartographer/brush_masks/vm_fine_dirt01.jpg"))
 	_cvi.material.set_shader_param("brush_pos", pos)
 
 func stop():
