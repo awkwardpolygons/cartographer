@@ -8,6 +8,11 @@ uniform vec4 brush_color;
 const int NONE = 0, PAINT = 1, ERASE = 2, CLEAR = 3;
 
 
+vec4 mask(vec2 uv, float scale) {
+	uv = uv + ((vec2(0.5) * scale));
+	return texture(brush_mask, clamp(uv/scale, 0.0, 1.0));
+}
+
 float sdf_circle(vec2 p, float r) {
 	return length(p) - r/2.0;
 }
@@ -36,6 +41,13 @@ vec4 blend_alpha(vec4 dst, vec4 src) {
 	return vec4(rgb, a);
 }
 
+float rectangle(vec2 samplePosition, vec2 halfSize){
+    vec2 componentWiseEdgeDistance = abs(samplePosition) - halfSize;
+    float outsideDistance = length(max(componentWiseEdgeDistance, 0));
+    float insideDistance = min(max(componentWiseEdgeDistance.x, componentWiseEdgeDistance.y), 0);
+    return outsideDistance + insideDistance;
+}
+
 vec4 blend_add(vec4 dst, vec4 src) {
 	return src + dst;
 }
@@ -47,11 +59,20 @@ void fragment() {
 	vec4 bt = brush(SCREEN_UV, vec4(0.01, 0, 0, 1));
 	
 //	float a = step(0.0, -1.0 * squircle(brush_pos - SCREEN_UV, 0.25, 4));
-	float a = step(0.0, -1.0 * sdf_rbox(brush_pos - SCREEN_UV, vec2(0.5), 1.0));
-	bt = vec4(1, 0, 0, a);
+//	float a = smoothstep(0.0, 0.3, sdf_rbox(brush_pos - SCREEN_UV, vec2(0.5), 0.5));
+//	float a = -1.0 * sdf_rbox(brush_pos - SCREEN_UV, vec2(0.25), 0.15);
+//	float a = -1.0 * sdf_rbox(brush_pos - SCREEN_UV, vec2(0.5), 0.5);
+//	float a = rectangle(brush_pos - SCREEN_UV, vec2(0.15, 0.15)) - 0.2;
+//	bt = vec4(1, 0, 0, a);
+//	bt = vec4(a, a, a, 1);
+	float scale = SCREEN_PIXEL_SIZE.x * vec2(textureSize(brush_mask, 0)).x * 1.0/2.0;
+	bt = mask(SCREEN_UV - brush_pos, scale);
+	bt = vec4(1, 1, 1, bt.a);
 	
-	
-	if (action == CLEAR) {
+	if (action == NONE) {
+		COLOR = st;
+	}
+	else if (action == CLEAR) {
 		COLOR = tt;
 	}
 	else if (action == PAINT) {

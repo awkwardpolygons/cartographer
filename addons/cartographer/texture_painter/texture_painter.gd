@@ -12,6 +12,7 @@ var _cvi: TextureRect
 #var _shader = preload("res://addons/cartographer/texture_painter/terrain_painter_shader.tres")
 var _shader = preload("res://addons/cartographer/texture_painter/texture_painter.shader")
 
+
 func _init():
 	#_vp = Viewport.new()
 	_vp = self
@@ -52,11 +53,17 @@ func _get_material():
 
 func clear():
 	print("CLEAR")
+	# Temporary for shader updates during dev:
+	_cvi.material.shader = load("res://addons/cartographer/texture_painter/texture_painter.shader")
 	_cvi.material.set_shader_param("action", Action.CLEAR)
 
 func paint(pos: Vector2, color: Color):
 	_cvi.material.set_shader_param("action", Action.PAINT)
+	_cvi.material.set_shader_param("brush_mask", load("res://addons/cartographer/brush_masks/bristles.png"))
 	_cvi.material.set_shader_param("brush_pos", pos)
+
+func stop():
+	_cvi.material.set_shader_param("action", Action.NONE)
 
 func erase(pos: Vector2):
 	_cvi.material.set_shader_param("action", Action.ERASE)

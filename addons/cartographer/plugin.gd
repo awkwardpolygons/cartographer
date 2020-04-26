@@ -77,6 +77,7 @@ func get_action(event):
 
 func try_paint(camera, action):
 	if action == Action.NONE:
+		terrain.painter.stop()
 		return false
 	
 	var viewport = camera.get_viewport()
