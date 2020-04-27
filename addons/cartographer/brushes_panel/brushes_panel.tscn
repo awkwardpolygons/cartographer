@@ -1,0 +1,135 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://addons/cartographer/brush_masks/dots.png" type="Texture" id=1]
+[ext_resource path="res://addons/cartographer/brushes_panel/brush_slider.tscn" type="PackedScene" id=2]
+[ext_resource path="res://addons/cartographer/brushes_panel/brushes_panel.gd" type="Script" id=3]
+
+[node name="Brushes" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource( 3 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="AddMaskFileDialog" type="FileDialog" parent="."]
+margin_top = 139.0
+margin_right = 1024.0
+margin_bottom = 269.0
+window_title = "Open File(s)"
+mode = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+custom_constants/separation = 8
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Preview" type="Panel" parent="VBoxContainer"]
+margin_right = 1024.0
+margin_bottom = 98.0
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.25
+
+[node name="MarginContainer4" type="MarginContainer" parent="VBoxContainer/Preview"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+custom_constants/margin_right = 8
+custom_constants/margin_top = 8
+custom_constants/margin_left = 8
+custom_constants/margin_bottom = 8
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="TextureRect" type="TextureRect" parent="VBoxContainer/Preview/MarginContainer4"]
+margin_left = 8.0
+margin_top = 8.0
+margin_right = 1016.0
+margin_bottom = 90.0
+texture = ExtResource( 1 )
+expand = true
+stretch_mode = 6
+
+[node name="ChannelPicker" type="MarginContainer" parent="VBoxContainer"]
+margin_top = 106.0
+margin_right = 1024.0
+margin_bottom = 126.0
+size_flags_horizontal = 3
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/ChannelPicker"]
+margin_right = 1024.0
+margin_bottom = 20.0
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="VBoxContainer/ChannelPicker/HBoxContainer"]
+margin_top = 3.0
+margin_right = 340.0
+margin_bottom = 17.0
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.5
+text = "Property Name"
+
+[node name="OptionButton" type="OptionButton" parent="VBoxContainer/ChannelPicker/HBoxContainer"]
+margin_left = 344.0
+margin_right = 1024.0
+margin_bottom = 20.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "Mask Channel"
+clip_text = true
+
+[node name="BrushSlider" parent="VBoxContainer" instance=ExtResource( 2 )]
+
+[node name="AddRemoveMasks" type="HBoxContainer" parent="VBoxContainer"]
+margin_top = 180.0
+margin_right = 1024.0
+margin_bottom = 200.0
+
+[node name="AddBrushMask" type="Button" parent="VBoxContainer/AddRemoveMasks"]
+margin_right = 680.0
+margin_bottom = 20.0
+size_flags_horizontal = 3
+text = "Add Brush Mask"
+
+[node name="RemBrushMask" type="Button" parent="VBoxContainer/AddRemoveMasks"]
+margin_left = 684.0
+margin_right = 1024.0
+margin_bottom = 20.0
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.5
+text = "Remove"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="BrushMasks" type="Panel" parent="VBoxContainer"]
+margin_top = 208.0
+margin_right = 1024.0
+margin_bottom = 600.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer/BrushMasks"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="BrushMaskList" type="ItemList" parent="VBoxContainer/BrushMasks/ScrollContainer"]
+margin_right = 1024.0
+margin_bottom = 392.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+fixed_icon_size = Vector2( 32, 32 )
+[connection signal="files_selected" from="AddMaskFileDialog" to="." method="_on_add_mask_file_dialog_files_selected"]
+[connection signal="pressed" from="VBoxContainer/AddRemoveMasks/AddBrushMask" to="." method="_on_add_brush_mask_pressed"]
+[connection signal="pressed" from="VBoxContainer/AddRemoveMasks/RemBrushMask" to="." method="_on_rem_brush_mask_pressed"]

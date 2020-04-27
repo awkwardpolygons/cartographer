@@ -1,0 +1,59 @@
+[gd_scene format=2]
+
+[node name="BrushSlider" type="MarginContainer"]
+margin_top = 134.0
+margin_right = 1024.0
+margin_bottom = 172.0
+size_flags_horizontal = 3
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="HBoxContainer" type="VBoxContainer" parent="."]
+margin_right = 1024.0
+margin_bottom = 38.0
+size_flags_horizontal = 3
+custom_constants/separation = 0
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="HBoxContainer"]
+margin_right = 1024.0
+margin_bottom = 14.0
+
+[node name="Label" type="Label" parent="HBoxContainer/HBoxContainer2"]
+margin_right = 96.0
+margin_bottom = 14.0
+text = "Property Name"
+
+[node name="HSeparator" type="HSeparator" parent="HBoxContainer/HBoxContainer2"]
+margin_left = 100.0
+margin_right = 1024.0
+margin_bottom = 14.0
+size_flags_horizontal = 3
+size_flags_vertical = 5
+
+[node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer"]
+margin_top = 14.0
+margin_right = 1024.0
+margin_bottom = 38.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="HSlider" type="HSlider" parent="HBoxContainer/HBoxContainer"]
+margin_right = 994.0
+margin_bottom = 24.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="LineEdit" type="LineEdit" parent="HBoxContainer/HBoxContainer"]
+margin_left = 998.0
+margin_right = 1024.0
+margin_bottom = 24.0
+custom_constants/minimum_spaces = 4
+max_length = 4
+__meta__ = {
+"_edit_use_anchors_": false
+}

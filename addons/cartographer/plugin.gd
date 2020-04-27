@@ -2,25 +2,33 @@ tool
 extends EditorPlugin
 
 const Action = TexturePainter.Action
+const BrushesPanel = preload("res://addons/cartographer/brushes_panel/brushes_panel.tscn")
 
 var _action = Action.NONE
-var dock
+var brushes_panel = BrushesPanel.instance()
 var editor = get_editor_interface()
 var terrain: CartoTerrain
 var brush: CartoBrush
 var do_paint: bool = false
 
 func _enter_tree():
-	editor.get_selection().connect("selection_changed", self, "_on_selection_changed", [dock])
+	add_control_to_dock(EditorPlugin.DOCK_SLOT_RIGHT_UL, brushes_panel)
+	editor.get_selection().connect("selection_changed", self, "_on_selection_changed", [brushes_panel])
 
-func _on_selection_changed(dock):
+func _on_selection_changed(brushes_panel):
 	var selected = editor.get_selection().get_selected_nodes()
 #	print("selected ", selected)
 	if len(selected) == 0:
 		handles(null)
 
 func _exit_tree():
-	pass
+	print(brushes_panel)
+	remove_control_from_docks(brushes_panel)
+	if brushes_panel:
+		brushes_panel.free()
+
+func get_plugin_name():
+	return "Cartographer"
 
 # TODO: Investigate MultiNodeEdit
 func handles(obj: Object):
