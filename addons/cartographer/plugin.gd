@@ -11,6 +11,9 @@ var terrain: CartoTerrain
 var brush: CartoBrush
 var do_paint: bool = false
 
+func _init():
+	add_autoload_singleton("Cartographer", "res://addons/cartographer/cartographer_singleton.gd")
+
 func _enter_tree():
 	add_control_to_dock(EditorPlugin.DOCK_SLOT_RIGHT_UL, brushes_panel)
 	editor.get_selection().connect("selection_changed", self, "_on_selection_changed", [brushes_panel])
