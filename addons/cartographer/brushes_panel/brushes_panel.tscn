@@ -18,25 +18,25 @@ margin_right = 1024.0
 margin_bottom = 269.0
 window_title = "Open File(s)"
 mode = 1
+filters = PoolStringArray( "*.png ; PNG Images", "*.jpg ; JPG Images" )
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="VBoxContainer" type="VBoxContainer" parent="."]
+[node name="BrushesBox" type="VBoxContainer" parent="."]
 anchor_right = 1.0
 anchor_bottom = 1.0
-custom_constants/separation = 8
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Preview" type="Panel" parent="VBoxContainer"]
+[node name="BrushPreviewPanel" type="Panel" parent="BrushesBox"]
 margin_right = 1024.0
-margin_bottom = 98.0
+margin_bottom = 84.0
 size_flags_vertical = 3
 size_flags_stretch_ratio = 0.25
 
-[node name="MarginContainer4" type="MarginContainer" parent="VBoxContainer/Preview"]
+[node name="BrushPreviewMargins" type="MarginContainer" parent="BrushesBox/BrushPreviewPanel"]
 anchor_right = 1.0
 anchor_bottom = 1.0
 custom_constants/margin_right = 8
@@ -47,57 +47,70 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="TextureRect" type="TextureRect" parent="VBoxContainer/Preview/MarginContainer4"]
+[node name="BrushPreview" type="TextureRect" parent="BrushesBox/BrushPreviewPanel/BrushPreviewMargins"]
 margin_left = 8.0
 margin_top = 8.0
 margin_right = 1016.0
-margin_bottom = 90.0
+margin_bottom = 76.0
 texture = ExtResource( 1 )
 expand = true
 stretch_mode = 6
 
-[node name="ChannelPicker" type="MarginContainer" parent="VBoxContainer"]
-margin_top = 106.0
+[node name="ChannelPicker" type="OptionButton" parent="BrushesBox"]
+margin_top = 88.0
 margin_right = 1024.0
-margin_bottom = 126.0
-size_flags_horizontal = 3
-
-[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/ChannelPicker"]
-margin_right = 1024.0
-margin_bottom = 20.0
-size_flags_horizontal = 3
-
-[node name="Label" type="Label" parent="VBoxContainer/ChannelPicker/HBoxContainer"]
-margin_top = 3.0
-margin_right = 340.0
-margin_bottom = 17.0
-size_flags_horizontal = 3
-size_flags_stretch_ratio = 0.5
-text = "Property Name"
-
-[node name="OptionButton" type="OptionButton" parent="VBoxContainer/ChannelPicker/HBoxContainer"]
-margin_left = 344.0
-margin_right = 1024.0
-margin_bottom = 20.0
-size_flags_horizontal = 3
-size_flags_vertical = 3
+margin_bottom = 108.0
 text = "Mask Channel"
-clip_text = true
 
-[node name="BrushSlider" parent="VBoxContainer" instance=ExtResource( 2 )]
-
-[node name="AddRemoveMasks" type="HBoxContainer" parent="VBoxContainer"]
-margin_top = 180.0
+[node name="BrushPropsMargin" type="MarginContainer" parent="BrushesBox"]
+margin_top = 112.0
 margin_right = 1024.0
-margin_bottom = 200.0
+margin_bottom = 236.0
+custom_constants/margin_top = 8
+custom_constants/margin_bottom = 12
 
-[node name="AddBrushMask" type="Button" parent="VBoxContainer/AddRemoveMasks"]
+[node name="BrushPropsBox" type="VBoxContainer" parent="BrushesBox/BrushPropsMargin"]
+margin_top = 8.0
+margin_right = 1024.0
+margin_bottom = 112.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="BrushStrength" parent="BrushesBox/BrushPropsMargin/BrushPropsBox" instance=ExtResource( 2 )]
+margin_bottom = 32.0
+label = "Brush Strength"
+max_value = 1.0
+step = 0.1
+value = 0.5
+
+[node name="BrushScale" parent="BrushesBox/BrushPropsMargin/BrushPropsBox" instance=ExtResource( 2 )]
+margin_top = 36.0
+margin_bottom = 68.0
+label = "Brush Scale"
+max_value = 2.0
+step = 0.1
+value = 1.0
+
+[node name="BrushRotation" parent="BrushesBox/BrushPropsMargin/BrushPropsBox" instance=ExtResource( 2 )]
+margin_top = 72.0
+margin_bottom = 104.0
+label = "Brush Rotation"
+max_value = 1.0
+step = 0.1
+
+[node name="AddRemoveMasks" type="HBoxContainer" parent="BrushesBox"]
+margin_top = 240.0
+margin_right = 1024.0
+margin_bottom = 260.0
+
+[node name="AddBrushMask" type="Button" parent="BrushesBox/AddRemoveMasks"]
 margin_right = 680.0
 margin_bottom = 20.0
 size_flags_horizontal = 3
 text = "Add Brush Mask"
 
-[node name="RemBrushMask" type="Button" parent="VBoxContainer/AddRemoveMasks"]
+[node name="RemBrushMask" type="Button" parent="BrushesBox/AddRemoveMasks"]
 margin_left = 684.0
 margin_right = 1024.0
 margin_bottom = 20.0
@@ -108,14 +121,14 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="BrushMasks" type="Panel" parent="VBoxContainer"]
-margin_top = 208.0
+[node name="BrushMasksPanel" type="Panel" parent="BrushesBox"]
+margin_top = 264.0
 margin_right = 1024.0
 margin_bottom = 600.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer/BrushMasks"]
+[node name="BrushMasksScroller" type="ScrollContainer" parent="BrushesBox/BrushMasksPanel"]
 anchor_right = 1.0
 anchor_bottom = 1.0
 size_flags_horizontal = 3
@@ -124,12 +137,13 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="BrushMaskList" type="ItemList" parent="VBoxContainer/BrushMasks/ScrollContainer"]
+[node name="BrushMasks" type="ItemList" parent="BrushesBox/BrushMasksPanel/BrushMasksScroller"]
 margin_right = 1024.0
-margin_bottom = 392.0
+margin_bottom = 336.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
-fixed_icon_size = Vector2( 32, 32 )
+custom_constants/icon_margin = 8
+fixed_icon_size = Vector2( 48, 48 )
 [connection signal="files_selected" from="AddMaskFileDialog" to="." method="_on_add_mask_file_dialog_files_selected"]
-[connection signal="pressed" from="VBoxContainer/AddRemoveMasks/AddBrushMask" to="." method="_on_add_brush_mask_pressed"]
-[connection signal="pressed" from="VBoxContainer/AddRemoveMasks/RemBrushMask" to="." method="_on_rem_brush_mask_pressed"]
+[connection signal="pressed" from="BrushesBox/AddRemoveMasks/AddBrushMask" to="." method="_on_add_brush_mask_pressed"]
+[connection signal="pressed" from="BrushesBox/AddRemoveMasks/RemBrushMask" to="." method="_on_rem_brush_mask_pressed"]

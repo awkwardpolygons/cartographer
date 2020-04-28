@@ -2,11 +2,10 @@ tool
 extends Control
 
 func _ready():
-	print("brushes_panel")
+	pass
 
 func _on_add_brush_mask_pressed():
 	var bml = $VBoxContainer/BrushMasks/ScrollContainer/BrushMaskList
-	print("_on_add_brush_mask_pressed")
 	$AddMaskFileDialog.popup_centered_ratio(0.67)
 
 func _on_rem_brush_mask_pressed():
@@ -20,7 +19,7 @@ func _on_add_mask_file_dialog_files_selected(paths):
 
 func add_brush_from_path(path: String):
 	var bml = $VBoxContainer/BrushMasks/ScrollContainer/BrushMaskList
-	bml.add_item(path, load(path), true)
+	bml.add_item(path.replace("res://", "").split("/")[-1], load(path), true)
 
 func rem_brush():
 	pass
