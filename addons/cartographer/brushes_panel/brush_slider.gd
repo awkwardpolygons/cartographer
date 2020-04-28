@@ -1,0 +1,58 @@
+tool
+extends Control
+
+signal changed
+signal value_changed
+
+export(String) var label: String setget _set_label, _get_label
+export(float) var min_value: float = 0 setget _set_min_value, _get_min_value
+export(float) var max_value: float = 100 setget _set_max_value, _get_max_value
+export(float) var step: float = 1 setget _set_step, _get_step
+export(float) var value: float setget _set_value, _get_value
+var ratio: float setget , _get_ratio
+
+func _on_changed():
+	emit_signal("changed")
+
+func _on_value_changed(value):
+	emit_signal("value_changed", value)
+
+func _ready():
+	$BrushSliderContainer/VBoxContainer/ValueSlider.share($BrushSliderContainer/MarginContainer/ValueEdit)
+
+func _set_label(text: String):
+	$BrushSliderContainer/VBoxContainer/Label.text = text
+
+func _get_label():
+	return $BrushSliderContainer/VBoxContainer/Label.text
+
+func _set_min_value(min_value: float):
+	$BrushSliderContainer/VBoxContainer/ValueSlider.min_value = min_value
+	$BrushSliderContainer/MarginContainer/ValueEdit.min_value = min_value
+
+func _get_min_value():
+	return $BrushSliderContainer/VBoxContainer/ValueSlider.min_value
+
+func _set_max_value(max_value: float):
+	$BrushSliderContainer/VBoxContainer/ValueSlider.max_value = max_value
+	$BrushSliderContainer/MarginContainer/ValueEdit.max_value = max_value
+
+func _get_max_value():
+	return $BrushSliderContainer/VBoxContainer/ValueSlider.max_value
+
+func _set_step(step: float):
+	$BrushSliderContainer/VBoxContainer/ValueSlider.step = step
+	$BrushSliderContainer/MarginContainer/ValueEdit.step = step
+
+func _get_step():
+	return $BrushSliderContainer/VBoxContainer/ValueSlider.step
+
+func _set_value(value: float):
+	$BrushSliderContainer/VBoxContainer/ValueSlider.value = value
+	$BrushSliderContainer/MarginContainer/ValueEdit.value = value
+
+func _get_value():
+	return $BrushSliderContainer/VBoxContainer/ValueSlider.value
+
+func _get_ratio():
+	return $BrushSliderContainer/VBoxContainer/ValueSlider.ratio
