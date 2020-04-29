@@ -29,6 +29,13 @@ func _on_add_mask_file_dialog_files_selected(paths):
 	for path in paths:
 		add_brush_from_path(path)
 
+func _on_mask_selected(index):
+	ChannelPicker.disabled = false
+	ModePicker.disabled = false
+	BrushStrength.disabled = false
+	BrushScale.disabled = false
+	BrushRotation.disabled = false
+
 func add_brush_from_path(path: String):
 	BrushMasks.add_item(path.replace("res://", "").split("/")[-1], load(path), true)
 

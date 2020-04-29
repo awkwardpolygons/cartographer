@@ -80,7 +80,10 @@ margin_left = 514.0
 margin_right = 1024.0
 margin_bottom = 20.0
 size_flags_horizontal = 3
-text = "Mask Channel"
+disabled = true
+text = "RED"
+items = [ "RED", null, false, 0, null, "GREEN", null, false, 1, null, "BLUE", null, false, 2, null, "ALPHA", null, false, 3, null, "RED", null, false, 0, null, "GREEN", null, false, 1, null, "BLUE", null, false, 2, null, "ALPHA", null, false, 3, null ]
+selected = 0
 
 [node name="ModePickerBox" type="HBoxContainer" parent="BrushesBox"]
 margin_top = 107.0
@@ -104,7 +107,10 @@ margin_left = 514.0
 margin_right = 1024.0
 margin_bottom = 20.0
 size_flags_horizontal = 3
-text = "Brush Mode"
+disabled = true
+text = "ADD"
+items = [ "ADD", null, false, 0, null, "SUB", null, false, 1, null, "SET", null, false, 2, null, "SMOOTH", null, false, 3, null, "ADD", null, false, 0, null, "SUB", null, false, 1, null, "SET", null, false, 2, null, "SMOOTH", null, false, 3, null ]
+selected = 0
 
 [node name="BrushPropsMargin" type="MarginContainer" parent="BrushesBox"]
 margin_top = 131.0
@@ -129,6 +135,7 @@ label = "Brush Strength"
 max_value = 1.0
 step = 0.1
 value = 0.5
+disabled = true
 
 [node name="BrushScale" parent="BrushesBox/BrushPropsMargin/BrushPropsBox" groups=[
 "BrushProps",
@@ -139,6 +146,7 @@ label = "Brush Scale"
 max_value = 2.0
 step = 0.1
 value = 1.0
+disabled = true
 
 [node name="BrushRotation" parent="BrushesBox/BrushPropsMargin/BrushPropsBox" groups=[
 "BrushProps",
@@ -148,6 +156,7 @@ margin_bottom = 104.0
 label = "Brush Rotation"
 max_value = 1.0
 step = 0.1
+disabled = true
 
 [node name="AddRemoveMasks" type="HBoxContainer" parent="BrushesBox"]
 margin_top = 259.0
@@ -197,3 +206,4 @@ fixed_icon_size = Vector2( 48, 48 )
 [connection signal="files_selected" from="AddMaskFileDialog" to="." method="_on_add_mask_file_dialog_files_selected"]
 [connection signal="pressed" from="BrushesBox/AddRemoveMasks/AddBrushMask" to="." method="_on_add_brush_mask_pressed"]
 [connection signal="pressed" from="BrushesBox/AddRemoveMasks/RemBrushMask" to="." method="_on_rem_brush_mask_pressed"]
+[connection signal="item_selected" from="BrushesBox/BrushMasksPanel/BrushMasksScroller/BrushMasks" to="." method="_on_mask_selected"]
