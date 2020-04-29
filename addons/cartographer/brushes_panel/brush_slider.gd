@@ -9,6 +9,7 @@ export(float) var min_value: float = 0 setget _set_min_value, _get_min_value
 export(float) var max_value: float = 100 setget _set_max_value, _get_max_value
 export(float) var step: float = 1 setget _set_step, _get_step
 export(float) var value: float setget _set_value, _get_value
+export(bool) var disabled: bool setget _set_disabled, _get_disabled
 var ratio: float setget , _get_ratio
 
 func _on_changed():
@@ -56,3 +57,10 @@ func _get_value():
 
 func _get_ratio():
 	return $BrushSliderContainer/VBoxContainer/ValueSlider.ratio
+
+func _set_disabled(b: bool):
+	$BrushSliderContainer/VBoxContainer/ValueSlider.editable = not b
+	$BrushSliderContainer/MarginContainer/ValueEdit.editable = not b
+
+func _get_disabled():
+	return not $BrushSliderContainer/VBoxContainer/ValueSlider.editable
