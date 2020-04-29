@@ -47,7 +47,9 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="BrushPreview" type="TextureRect" parent="BrushesBox/BrushPreviewPanel/BrushPreviewMargins"]
+[node name="BrushPreview" type="TextureRect" parent="BrushesBox/BrushPreviewPanel/BrushPreviewMargins" groups=[
+"BrushProps",
+]]
 margin_left = 8.0
 margin_top = 8.0
 margin_right = 1016.0
@@ -71,7 +73,9 @@ margin_bottom = 17.0
 size_flags_horizontal = 3
 text = "Mask Channel"
 
-[node name="ChannelPicker" type="OptionButton" parent="BrushesBox/ChannelPickerBox"]
+[node name="ChannelPicker" type="OptionButton" parent="BrushesBox/ChannelPickerBox" groups=[
+"BrushProps",
+]]
 margin_left = 514.0
 margin_right = 1024.0
 margin_bottom = 20.0
@@ -93,7 +97,9 @@ margin_bottom = 17.0
 size_flags_horizontal = 3
 text = "Brush Mode"
 
-[node name="ModePicker" type="OptionButton" parent="BrushesBox/ModePickerBox"]
+[node name="ModePicker" type="OptionButton" parent="BrushesBox/ModePickerBox" groups=[
+"BrushProps",
+]]
 margin_left = 514.0
 margin_right = 1024.0
 margin_bottom = 20.0
@@ -115,14 +121,18 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="BrushStrength" parent="BrushesBox/BrushPropsMargin/BrushPropsBox" instance=ExtResource( 2 )]
+[node name="BrushStrength" parent="BrushesBox/BrushPropsMargin/BrushPropsBox" groups=[
+"BrushProps",
+] instance=ExtResource( 2 )]
 margin_bottom = 32.0
 label = "Brush Strength"
 max_value = 1.0
 step = 0.1
 value = 0.5
 
-[node name="BrushScale" parent="BrushesBox/BrushPropsMargin/BrushPropsBox" instance=ExtResource( 2 )]
+[node name="BrushScale" parent="BrushesBox/BrushPropsMargin/BrushPropsBox" groups=[
+"BrushProps",
+] instance=ExtResource( 2 )]
 margin_top = 36.0
 margin_bottom = 68.0
 label = "Brush Scale"
@@ -130,7 +140,9 @@ max_value = 2.0
 step = 0.1
 value = 1.0
 
-[node name="BrushRotation" parent="BrushesBox/BrushPropsMargin/BrushPropsBox" instance=ExtResource( 2 )]
+[node name="BrushRotation" parent="BrushesBox/BrushPropsMargin/BrushPropsBox" groups=[
+"BrushProps",
+] instance=ExtResource( 2 )]
 margin_top = 72.0
 margin_bottom = 104.0
 label = "Brush Rotation"

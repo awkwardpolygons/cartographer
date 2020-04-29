@@ -1,29 +1,36 @@
 tool
 extends Control
 
+onready var AddMaskFileDialog = find_node("AddMaskFileDialog")
+onready var BrushPreview = find_node("BrushPreview")
+onready var ChannelPicker = find_node("ChannelPicker")
+onready var ModePicker = find_node("ModePicker")
+onready var BrushStrength = find_node("BrushStrength")
+onready var BrushScale = find_node("BrushScale")
+onready var BrushRotation = find_node("BrushRotation")
+onready var BrushMasks = find_node("BrushMasks")
+
 func _ready():
 	for ch in PaintBrush.MaskChannel:
-		$BrushesBox/ChannelPickerBox/ChannelPicker.add_item(ch, PaintBrush.MaskChannel[ch])
+		
+		ChannelPicker.add_item(ch, PaintBrush.MaskChannel[ch])
 	
 	for md in PaintBrush.Mode:
-		$BrushesBox/ModePickerBox/ModePicker.add_item(md, PaintBrush.Mode[md])
+		ModePicker.add_item(md, PaintBrush.Mode[md])
 
 func _on_add_brush_mask_pressed():
-	var bml = $VBoxContainer/BrushMasks/ScrollContainer/BrushMaskList
-	$AddMaskFileDialog.popup_centered_ratio(0.67)
+	AddMaskFileDialog.popup_centered_ratio(0.67)
 
 func _on_rem_brush_mask_pressed():
-	var bml = $VBoxContainer/BrushMasks/ScrollContainer/BrushMaskList
-	for item in bml.get_selected_items():
-		bml.remove_item(item)
+	for item in BrushMasks.get_selected_items():
+		BrushMasks.remove_item(item)
 
 func _on_add_mask_file_dialog_files_selected(paths):
 	for path in paths:
 		add_brush_from_path(path)
 
 func add_brush_from_path(path: String):
-	var bml = $VBoxContainer/BrushMasks/ScrollContainer/BrushMaskList
-	bml.add_item(path.replace("res://", "").split("/")[-1], load(path), true)
+	BrushMasks.add_item(path.replace("res://", "").split("/")[-1], load(path), true)
 
 func rem_brush():
 	pass
