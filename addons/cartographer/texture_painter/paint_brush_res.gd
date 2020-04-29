@@ -41,3 +41,7 @@ func set_brush_spacing(s: float):
 
 func set_brush_spacing_jitter(j: float):
 	brush_spacing_jitter = clamp(j, 0, 1)
+
+func _init(mask = null):
+	if mask is Texture:
+		brush_mask = mask
