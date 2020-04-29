@@ -2,7 +2,11 @@ tool
 extends Control
 
 func _ready():
-	pass
+	for ch in PaintBrush.MaskChannel:
+		$BrushesBox/ChannelPickerBox/ChannelPicker.add_item(ch, PaintBrush.MaskChannel[ch])
+	
+	for md in PaintBrush.Mode:
+		$BrushesBox/ModePickerBox/ModePicker.add_item(md, PaintBrush.Mode[md])
 
 func _on_add_brush_mask_pressed():
 	var bml = $VBoxContainer/BrushMasks/ScrollContainer/BrushMaskList

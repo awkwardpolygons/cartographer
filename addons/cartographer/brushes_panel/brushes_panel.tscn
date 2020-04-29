@@ -32,7 +32,7 @@ __meta__ = {
 
 [node name="BrushPreviewPanel" type="Panel" parent="BrushesBox"]
 margin_right = 1024.0
-margin_bottom = 84.0
+margin_bottom = 79.0
 size_flags_vertical = 3
 size_flags_stretch_ratio = 0.25
 
@@ -51,21 +51,59 @@ __meta__ = {
 margin_left = 8.0
 margin_top = 8.0
 margin_right = 1016.0
-margin_bottom = 76.0
+margin_bottom = 71.0
 texture = ExtResource( 1 )
 expand = true
 stretch_mode = 6
 
-[node name="ChannelPicker" type="OptionButton" parent="BrushesBox"]
-margin_top = 88.0
+[node name="ChannelPickerBox" type="HBoxContainer" parent="BrushesBox"]
+margin_top = 83.0
 margin_right = 1024.0
-margin_bottom = 108.0
+margin_bottom = 103.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Label" type="Label" parent="BrushesBox/ChannelPickerBox"]
+margin_top = 3.0
+margin_right = 510.0
+margin_bottom = 17.0
+size_flags_horizontal = 3
 text = "Mask Channel"
 
-[node name="BrushPropsMargin" type="MarginContainer" parent="BrushesBox"]
-margin_top = 112.0
+[node name="ChannelPicker" type="OptionButton" parent="BrushesBox/ChannelPickerBox"]
+margin_left = 514.0
 margin_right = 1024.0
-margin_bottom = 236.0
+margin_bottom = 20.0
+size_flags_horizontal = 3
+text = "Mask Channel"
+
+[node name="ModePickerBox" type="HBoxContainer" parent="BrushesBox"]
+margin_top = 107.0
+margin_right = 1024.0
+margin_bottom = 127.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Label" type="Label" parent="BrushesBox/ModePickerBox"]
+margin_top = 3.0
+margin_right = 510.0
+margin_bottom = 17.0
+size_flags_horizontal = 3
+text = "Brush Mode"
+
+[node name="ModePicker" type="OptionButton" parent="BrushesBox/ModePickerBox"]
+margin_left = 514.0
+margin_right = 1024.0
+margin_bottom = 20.0
+size_flags_horizontal = 3
+text = "Brush Mode"
+
+[node name="BrushPropsMargin" type="MarginContainer" parent="BrushesBox"]
+margin_top = 131.0
+margin_right = 1024.0
+margin_bottom = 255.0
 custom_constants/margin_top = 8
 custom_constants/margin_bottom = 12
 
@@ -100,9 +138,9 @@ max_value = 1.0
 step = 0.1
 
 [node name="AddRemoveMasks" type="HBoxContainer" parent="BrushesBox"]
-margin_top = 240.0
+margin_top = 259.0
 margin_right = 1024.0
-margin_bottom = 260.0
+margin_bottom = 279.0
 
 [node name="AddBrushMask" type="Button" parent="BrushesBox/AddRemoveMasks"]
 margin_right = 680.0
@@ -122,7 +160,7 @@ __meta__ = {
 }
 
 [node name="BrushMasksPanel" type="Panel" parent="BrushesBox"]
-margin_top = 264.0
+margin_top = 283.0
 margin_right = 1024.0
 margin_bottom = 600.0
 size_flags_horizontal = 3
@@ -139,7 +177,7 @@ __meta__ = {
 
 [node name="BrushMasks" type="ItemList" parent="BrushesBox/BrushMasksPanel/BrushMasksScroller"]
 margin_right = 1024.0
-margin_bottom = 336.0
+margin_bottom = 317.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 custom_constants/icon_margin = 8
