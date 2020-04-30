@@ -82,7 +82,7 @@ margin_bottom = 20.0
 size_flags_horizontal = 3
 disabled = true
 text = "RED"
-items = [ "RED", null, false, 0, null, "GREEN", null, false, 1, null, "BLUE", null, false, 2, null, "ALPHA", null, false, 3, null, "RED", null, false, 0, null, "GREEN", null, false, 1, null, "BLUE", null, false, 2, null, "ALPHA", null, false, 3, null ]
+items = [ "RED", null, false, 0, null, "GREEN", null, false, 1, null, "BLUE", null, false, 2, null, "ALPHA", null, false, 3, null, "RED", null, false, 0, null, "GREEN", null, false, 1, null, "BLUE", null, false, 2, null, "ALPHA", null, false, 3, null, "RED", null, false, 0, null, "GREEN", null, false, 1, null, "BLUE", null, false, 2, null, "ALPHA", null, false, 3, null, "RED", null, false, 0, null, "GREEN", null, false, 1, null, "BLUE", null, false, 2, null, "ALPHA", null, false, 3, null, "RED", null, false, 0, null, "GREEN", null, false, 1, null, "BLUE", null, false, 2, null, "ALPHA", null, false, 3, null, "RED", null, false, 0, null, "GREEN", null, false, 1, null, "BLUE", null, false, 2, null, "ALPHA", null, false, 3, null, "RED", null, false, 0, null, "GREEN", null, false, 1, null, "BLUE", null, false, 2, null, "ALPHA", null, false, 3, null, "RED", null, false, 0, null, "GREEN", null, false, 1, null, "BLUE", null, false, 2, null, "ALPHA", null, false, 3, null ]
 selected = 0
 
 [node name="ModePickerBox" type="HBoxContainer" parent="BrushesBox"]
@@ -109,7 +109,7 @@ margin_bottom = 20.0
 size_flags_horizontal = 3
 disabled = true
 text = "ADD"
-items = [ "ADD", null, false, 0, null, "SUB", null, false, 1, null, "SET", null, false, 2, null, "SMOOTH", null, false, 3, null, "ADD", null, false, 0, null, "SUB", null, false, 1, null, "SET", null, false, 2, null, "SMOOTH", null, false, 3, null ]
+items = [ "ADD", null, false, 0, null, "SUB", null, false, 1, null, "SET", null, false, 2, null, "SMOOTH", null, false, 3, null, "ADD", null, false, 0, null, "SUB", null, false, 1, null, "SET", null, false, 2, null, "SMOOTH", null, false, 3, null, "ADD", null, false, 0, null, "SUB", null, false, 1, null, "SET", null, false, 2, null, "SMOOTH", null, false, 3, null, "ADD", null, false, 0, null, "SUB", null, false, 1, null, "SET", null, false, 2, null, "SMOOTH", null, false, 3, null, "ADD", null, false, 0, null, "SUB", null, false, 1, null, "SET", null, false, 2, null, "SMOOTH", null, false, 3, null, "ADD", null, false, 0, null, "SUB", null, false, 1, null, "SET", null, false, 2, null, "SMOOTH", null, false, 3, null, "ADD", null, false, 0, null, "SUB", null, false, 1, null, "SET", null, false, 2, null, "SMOOTH", null, false, 3, null, "ADD", null, false, 0, null, "SUB", null, false, 1, null, "SET", null, false, 2, null, "SMOOTH", null, false, 3, null ]
 selected = 0
 
 [node name="BrushPropsMargin" type="MarginContainer" parent="BrushesBox"]
