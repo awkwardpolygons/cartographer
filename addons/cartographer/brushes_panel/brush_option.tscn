@@ -1,0 +1,27 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://addons/cartographer/brushes_panel/brush_option.gd" type="Script" id=1]
+
+[node name="BrushOption" type="HBoxContainer"]
+margin_right = 40.0
+margin_bottom = 40.0
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+selected = -1
+
+[node name="Label" type="Label" parent="."]
+margin_top = 13.0
+margin_right = 7.0
+margin_bottom = 27.0
+size_flags_horizontal = 3
+
+[node name="Option" type="OptionButton" parent="." groups=[
+"BrushProps",
+]]
+margin_left = 11.0
+margin_right = 40.0
+margin_bottom = 40.0
+size_flags_horizontal = 3
+[connection signal="item_selected" from="Option" to="." method="_on_selected"]
