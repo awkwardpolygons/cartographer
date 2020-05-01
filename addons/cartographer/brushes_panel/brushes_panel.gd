@@ -18,7 +18,7 @@ func _ready():
 		var br = Cartographer.brushes.get(k)
 		_add_brush_item(k, br.brush_mask)
 	
-	_bind(PaintBrush.new())
+	_bind(PaintBrush.new(), true)
 
 func _bind(brush, disabled=false):
 	_bind_clear()
