@@ -55,7 +55,7 @@ func get_item_metadata(idx: int):
 	return $Option.get_item_metadata(idx)
 
 func set_items(items: Dictionary, sel=-1):
-	print("set_items sel: ", sel)
+
 	for k in items:
 		var v = items[k]
 		add_item(k, v)
