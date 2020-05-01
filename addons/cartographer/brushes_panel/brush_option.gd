@@ -21,7 +21,7 @@ func _get_label():
 	return $Label.text
 
 func _set_selected(s: int):
-	if $Option:
+	if has_node("Option"):
 		$Option.selected = s
 
 func _get_selected():
@@ -53,3 +53,11 @@ func get_item_text(idx: int):
 
 func get_item_metadata(idx: int):
 	return $Option.get_item_metadata(idx)
+
+func set_items(items: Dictionary, sel=-1):
+	print("set_items sel: ", sel)
+	for k in items:
+		var v = items[k]
+		add_item(k, v)
+		if v == sel:
+			self.selected = v

@@ -11,6 +11,8 @@ export(float) var step: float = 1 setget _set_step, _get_step
 export(float) var value: float setget _set_value, _get_value
 export(bool) var disabled: bool setget _set_disabled, _get_disabled
 var ratio: float setget , _get_ratio
+var _brush
+var _prop
 
 func _on_changed():
 	emit_signal("changed")
@@ -64,3 +66,17 @@ func _set_disabled(b: bool):
 
 func _get_disabled():
 	return not $BrushSliderContainer/VBoxContainer/ValueSlider.editable
+
+func bind(brush: PaintBrush, prop: String):
+	_brush = brush
+	_prop = prop
+
+func unbind():
+	_brush = null
+	_prop = null
+
+func set_range(rng: Array, val=null):
+	self.min_value = float(rng[0]) if len(rng) > 0 else self.min_value
+	self.max_value = float(rng[1]) if len(rng) > 1 else self.max_value
+	self.step = float(rng[2]) if len(rng) > 2 else self.step
+	self.value = val if val else self.value
