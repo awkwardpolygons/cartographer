@@ -1,6 +1,5 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=5 format=2]
 
-[ext_resource path="res://addons/cartographer/brushes_panel/brush_slider.tscn" type="PackedScene" id=2]
 [ext_resource path="res://addons/cartographer/brushes_panel/brushes_panel.gd" type="Script" id=3]
 [ext_resource path="res://addons/cartographer/brush_masks/bristles.png" type="Texture" id=4]
 [ext_resource path="res://addons/cartographer/brush_masks/diagonal2.png" type="Texture" id=5]
@@ -79,106 +78,6 @@ size_flags_horizontal = 3
 __meta__ = {
 "_edit_use_anchors_": false
 }
-
-[node name="ChannelPickerBox" type="HBoxContainer" parent="BrushesBox"]
-visible = false
-margin_right = 1024.0
-margin_bottom = 20.0
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="Label" type="Label" parent="BrushesBox/ChannelPickerBox"]
-margin_top = 3.0
-margin_right = 510.0
-margin_bottom = 17.0
-size_flags_horizontal = 3
-text = "Mask Channel"
-
-[node name="ChannelPicker" type="OptionButton" parent="BrushesBox/ChannelPickerBox" groups=[
-"BrushProps",
-]]
-margin_left = 514.0
-margin_right = 1024.0
-margin_bottom = 20.0
-size_flags_horizontal = 3
-disabled = true
-text = "RED"
-items = [ "RED", null, false, 0, null, "GREEN", null, false, 1, null, "BLUE", null, false, 2, null, "ALPHA", null, false, 3, null, "RED", null, false, 0, null, "GREEN", null, false, 1, null, "BLUE", null, false, 2, null, "ALPHA", null, false, 3, null, "RED", null, false, 0, null, "GREEN", null, false, 1, null, "BLUE", null, false, 2, null, "ALPHA", null, false, 3, null, "RED", null, false, 0, null, "GREEN", null, false, 1, null, "BLUE", null, false, 2, null, "ALPHA", null, false, 3, null, "RED", null, false, 0, null, "GREEN", null, false, 1, null, "BLUE", null, false, 2, null, "ALPHA", null, false, 3, null, "RED", null, false, 0, null, "GREEN", null, false, 1, null, "BLUE", null, false, 2, null, "ALPHA", null, false, 3, null, "RED", null, false, 0, null, "GREEN", null, false, 1, null, "BLUE", null, false, 2, null, "ALPHA", null, false, 3, null, "RED", null, false, 0, null, "GREEN", null, false, 1, null, "BLUE", null, false, 2, null, "ALPHA", null, false, 3, null, "RED", null, false, 0, null, "GREEN", null, false, 1, null, "BLUE", null, false, 2, null, "ALPHA", null, false, 3, null, "RED", null, false, 0, null, "GREEN", null, false, 1, null, "BLUE", null, false, 2, null, "ALPHA", null, false, 3, null, "RED", null, false, 0, null, "GREEN", null, false, 1, null, "BLUE", null, false, 2, null, "ALPHA", null, false, 3, null, "RED", null, false, 0, null, "GREEN", null, false, 1, null, "BLUE", null, false, 2, null, "ALPHA", null, false, 3, null, "RED", null, false, 0, null, "GREEN", null, false, 1, null, "BLUE", null, false, 2, null, "ALPHA", null, false, 3, null, "RED", null, false, 0, null, "GREEN", null, false, 1, null, "BLUE", null, false, 2, null, "ALPHA", null, false, 3, null ]
-selected = 0
-
-[node name="ModePickerBox" type="HBoxContainer" parent="BrushesBox"]
-visible = false
-margin_right = 1024.0
-margin_bottom = 20.0
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="Label" type="Label" parent="BrushesBox/ModePickerBox"]
-margin_top = 3.0
-margin_right = 510.0
-margin_bottom = 17.0
-size_flags_horizontal = 3
-text = "Brush Mode"
-
-[node name="ModePicker" type="OptionButton" parent="BrushesBox/ModePickerBox" groups=[
-"BrushProps",
-]]
-margin_left = 514.0
-margin_right = 1024.0
-margin_bottom = 20.0
-size_flags_horizontal = 3
-disabled = true
-text = "ADD"
-items = [ "ADD", null, false, 0, null, "SUB", null, false, 1, null, "SET", null, false, 2, null, "SMOOTH", null, false, 3, null, "ADD", null, false, 0, null, "SUB", null, false, 1, null, "SET", null, false, 2, null, "SMOOTH", null, false, 3, null, "ADD", null, false, 0, null, "SUB", null, false, 1, null, "SET", null, false, 2, null, "SMOOTH", null, false, 3, null, "ADD", null, false, 0, null, "SUB", null, false, 1, null, "SET", null, false, 2, null, "SMOOTH", null, false, 3, null, "ADD", null, false, 0, null, "SUB", null, false, 1, null, "SET", null, false, 2, null, "SMOOTH", null, false, 3, null, "ADD", null, false, 0, null, "SUB", null, false, 1, null, "SET", null, false, 2, null, "SMOOTH", null, false, 3, null, "ADD", null, false, 0, null, "SUB", null, false, 1, null, "SET", null, false, 2, null, "SMOOTH", null, false, 3, null, "ADD", null, false, 0, null, "SUB", null, false, 1, null, "SET", null, false, 2, null, "SMOOTH", null, false, 3, null, "ADD", null, false, 0, null, "SUB", null, false, 1, null, "SET", null, false, 2, null, "SMOOTH", null, false, 3, null, "ADD", null, false, 0, null, "SUB", null, false, 1, null, "SET", null, false, 2, null, "SMOOTH", null, false, 3, null, "ADD", null, false, 0, null, "SUB", null, false, 1, null, "SET", null, false, 2, null, "SMOOTH", null, false, 3, null, "ADD", null, false, 0, null, "SUB", null, false, 1, null, "SET", null, false, 2, null, "SMOOTH", null, false, 3, null, "ADD", null, false, 0, null, "SUB", null, false, 1, null, "SET", null, false, 2, null, "SMOOTH", null, false, 3, null, "ADD", null, false, 0, null, "SUB", null, false, 1, null, "SET", null, false, 2, null, "SMOOTH", null, false, 3, null ]
-selected = 0
-
-[node name="BrushPropsMargin" type="MarginContainer" parent="BrushesBox"]
-visible = false
-margin_right = 1024.0
-margin_bottom = 124.0
-custom_constants/margin_top = 8
-custom_constants/margin_bottom = 12
-
-[node name="BrushPropsBox" type="VBoxContainer" parent="BrushesBox/BrushPropsMargin"]
-margin_top = 8.0
-margin_right = 1024.0
-margin_bottom = 112.0
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="BrushStrength" parent="BrushesBox/BrushPropsMargin/BrushPropsBox" groups=[
-"BrushProps",
-] instance=ExtResource( 2 )]
-margin_bottom = 32.0
-label = "Brush Strength"
-max_value = 1.0
-step = 0.1
-value = 0.5
-disabled = true
-
-[node name="BrushScale" parent="BrushesBox/BrushPropsMargin/BrushPropsBox" groups=[
-"BrushProps",
-] instance=ExtResource( 2 )]
-margin_top = 36.0
-margin_bottom = 68.0
-label = "Brush Scale"
-max_value = 2.0
-step = 0.1
-value = 1.0
-disabled = true
-
-[node name="BrushRotation" parent="BrushesBox/BrushPropsMargin/BrushPropsBox" groups=[
-"BrushProps",
-] instance=ExtResource( 2 )]
-margin_top = 72.0
-margin_bottom = 104.0
-label = "Brush Rotation"
-max_value = 1.0
-step = 0.1
-disabled = true
 
 [node name="Section3" type="VBoxContainer" parent="BrushesBox"]
 margin_top = 404.0
