@@ -1,8 +1,10 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=6 format=2]
 
-[ext_resource path="res://addons/cartographer/brush_masks/dots.png" type="Texture" id=1]
 [ext_resource path="res://addons/cartographer/brushes_panel/brush_slider.tscn" type="PackedScene" id=2]
 [ext_resource path="res://addons/cartographer/brushes_panel/brushes_panel.gd" type="Script" id=3]
+[ext_resource path="res://addons/cartographer/brush_masks/bristles.png" type="Texture" id=4]
+[ext_resource path="res://addons/cartographer/brush_masks/diagonal2.png" type="Texture" id=5]
+[ext_resource path="res://addons/cartographer/brush_masks/diagonal1.png" type="Texture" id=6]
 
 [node name="Brushes" type="Control"]
 anchor_right = 1.0
@@ -26,15 +28,19 @@ __meta__ = {
 [node name="BrushesBox" type="VBoxContainer" parent="."]
 anchor_right = 1.0
 anchor_bottom = 1.0
+custom_constants/separation = 8
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="BrushPreviewPanel" type="Panel" parent="BrushesBox"]
 margin_right = 1024.0
-margin_bottom = 79.0
+margin_bottom = 48.0
 size_flags_vertical = 3
 size_flags_stretch_ratio = 0.25
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
 [node name="BrushPreviewMargins" type="MarginContainer" parent="BrushesBox/BrushPreviewPanel"]
 anchor_right = 1.0
@@ -53,15 +59,31 @@ __meta__ = {
 margin_left = 8.0
 margin_top = 8.0
 margin_right = 1016.0
-margin_bottom = 71.0
-texture = ExtResource( 1 )
+margin_bottom = 40.0
 expand = true
 stretch_mode = 6
 
-[node name="ChannelPickerBox" type="HBoxContainer" parent="BrushesBox"]
-margin_top = 83.0
+[node name="Section1" type="VBoxContainer" parent="BrushesBox"]
+margin_top = 56.0
 margin_right = 1024.0
-margin_bottom = 103.0
+margin_bottom = 104.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.25
+
+[node name="Section2" type="VBoxContainer" parent="BrushesBox"]
+margin_top = 112.0
+margin_right = 1024.0
+margin_bottom = 396.0
+size_flags_horizontal = 3
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ChannelPickerBox" type="HBoxContainer" parent="BrushesBox"]
+visible = false
+margin_right = 1024.0
+margin_bottom = 20.0
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -82,13 +104,13 @@ margin_bottom = 20.0
 size_flags_horizontal = 3
 disabled = true
 text = "RED"
-items = [ "RED", null, false, 0, null, "GREEN", null, false, 1, null, "BLUE", null, false, 2, null, "ALPHA", null, false, 3, null, "RED", null, false, 0, null, "GREEN", null, false, 1, null, "BLUE", null, false, 2, null, "ALPHA", null, false, 3, null, "RED", null, false, 0, null, "GREEN", null, false, 1, null, "BLUE", null, false, 2, null, "ALPHA", null, false, 3, null, "RED", null, false, 0, null, "GREEN", null, false, 1, null, "BLUE", null, false, 2, null, "ALPHA", null, false, 3, null, "RED", null, false, 0, null, "GREEN", null, false, 1, null, "BLUE", null, false, 2, null, "ALPHA", null, false, 3, null, "RED", null, false, 0, null, "GREEN", null, false, 1, null, "BLUE", null, false, 2, null, "ALPHA", null, false, 3, null, "RED", null, false, 0, null, "GREEN", null, false, 1, null, "BLUE", null, false, 2, null, "ALPHA", null, false, 3, null, "RED", null, false, 0, null, "GREEN", null, false, 1, null, "BLUE", null, false, 2, null, "ALPHA", null, false, 3, null ]
+items = [ "RED", null, false, 0, null, "GREEN", null, false, 1, null, "BLUE", null, false, 2, null, "ALPHA", null, false, 3, null, "RED", null, false, 0, null, "GREEN", null, false, 1, null, "BLUE", null, false, 2, null, "ALPHA", null, false, 3, null, "RED", null, false, 0, null, "GREEN", null, false, 1, null, "BLUE", null, false, 2, null, "ALPHA", null, false, 3, null, "RED", null, false, 0, null, "GREEN", null, false, 1, null, "BLUE", null, false, 2, null, "ALPHA", null, false, 3, null, "RED", null, false, 0, null, "GREEN", null, false, 1, null, "BLUE", null, false, 2, null, "ALPHA", null, false, 3, null, "RED", null, false, 0, null, "GREEN", null, false, 1, null, "BLUE", null, false, 2, null, "ALPHA", null, false, 3, null, "RED", null, false, 0, null, "GREEN", null, false, 1, null, "BLUE", null, false, 2, null, "ALPHA", null, false, 3, null, "RED", null, false, 0, null, "GREEN", null, false, 1, null, "BLUE", null, false, 2, null, "ALPHA", null, false, 3, null, "RED", null, false, 0, null, "GREEN", null, false, 1, null, "BLUE", null, false, 2, null, "ALPHA", null, false, 3, null, "RED", null, false, 0, null, "GREEN", null, false, 1, null, "BLUE", null, false, 2, null, "ALPHA", null, false, 3, null, "RED", null, false, 0, null, "GREEN", null, false, 1, null, "BLUE", null, false, 2, null, "ALPHA", null, false, 3, null, "RED", null, false, 0, null, "GREEN", null, false, 1, null, "BLUE", null, false, 2, null, "ALPHA", null, false, 3, null, "RED", null, false, 0, null, "GREEN", null, false, 1, null, "BLUE", null, false, 2, null, "ALPHA", null, false, 3, null, "RED", null, false, 0, null, "GREEN", null, false, 1, null, "BLUE", null, false, 2, null, "ALPHA", null, false, 3, null ]
 selected = 0
 
 [node name="ModePickerBox" type="HBoxContainer" parent="BrushesBox"]
-margin_top = 107.0
+visible = false
 margin_right = 1024.0
-margin_bottom = 127.0
+margin_bottom = 20.0
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -109,13 +131,13 @@ margin_bottom = 20.0
 size_flags_horizontal = 3
 disabled = true
 text = "ADD"
-items = [ "ADD", null, false, 0, null, "SUB", null, false, 1, null, "SET", null, false, 2, null, "SMOOTH", null, false, 3, null, "ADD", null, false, 0, null, "SUB", null, false, 1, null, "SET", null, false, 2, null, "SMOOTH", null, false, 3, null, "ADD", null, false, 0, null, "SUB", null, false, 1, null, "SET", null, false, 2, null, "SMOOTH", null, false, 3, null, "ADD", null, false, 0, null, "SUB", null, false, 1, null, "SET", null, false, 2, null, "SMOOTH", null, false, 3, null, "ADD", null, false, 0, null, "SUB", null, false, 1, null, "SET", null, false, 2, null, "SMOOTH", null, false, 3, null, "ADD", null, false, 0, null, "SUB", null, false, 1, null, "SET", null, false, 2, null, "SMOOTH", null, false, 3, null, "ADD", null, false, 0, null, "SUB", null, false, 1, null, "SET", null, false, 2, null, "SMOOTH", null, false, 3, null, "ADD", null, false, 0, null, "SUB", null, false, 1, null, "SET", null, false, 2, null, "SMOOTH", null, false, 3, null ]
+items = [ "ADD", null, false, 0, null, "SUB", null, false, 1, null, "SET", null, false, 2, null, "SMOOTH", null, false, 3, null, "ADD", null, false, 0, null, "SUB", null, false, 1, null, "SET", null, false, 2, null, "SMOOTH", null, false, 3, null, "ADD", null, false, 0, null, "SUB", null, false, 1, null, "SET", null, false, 2, null, "SMOOTH", null, false, 3, null, "ADD", null, false, 0, null, "SUB", null, false, 1, null, "SET", null, false, 2, null, "SMOOTH", null, false, 3, null, "ADD", null, false, 0, null, "SUB", null, false, 1, null, "SET", null, false, 2, null, "SMOOTH", null, false, 3, null, "ADD", null, false, 0, null, "SUB", null, false, 1, null, "SET", null, false, 2, null, "SMOOTH", null, false, 3, null, "ADD", null, false, 0, null, "SUB", null, false, 1, null, "SET", null, false, 2, null, "SMOOTH", null, false, 3, null, "ADD", null, false, 0, null, "SUB", null, false, 1, null, "SET", null, false, 2, null, "SMOOTH", null, false, 3, null, "ADD", null, false, 0, null, "SUB", null, false, 1, null, "SET", null, false, 2, null, "SMOOTH", null, false, 3, null, "ADD", null, false, 0, null, "SUB", null, false, 1, null, "SET", null, false, 2, null, "SMOOTH", null, false, 3, null, "ADD", null, false, 0, null, "SUB", null, false, 1, null, "SET", null, false, 2, null, "SMOOTH", null, false, 3, null, "ADD", null, false, 0, null, "SUB", null, false, 1, null, "SET", null, false, 2, null, "SMOOTH", null, false, 3, null, "ADD", null, false, 0, null, "SUB", null, false, 1, null, "SET", null, false, 2, null, "SMOOTH", null, false, 3, null, "ADD", null, false, 0, null, "SUB", null, false, 1, null, "SET", null, false, 2, null, "SMOOTH", null, false, 3, null ]
 selected = 0
 
 [node name="BrushPropsMargin" type="MarginContainer" parent="BrushesBox"]
-margin_top = 131.0
+visible = false
 margin_right = 1024.0
-margin_bottom = 255.0
+margin_bottom = 124.0
 custom_constants/margin_top = 8
 custom_constants/margin_bottom = 12
 
@@ -158,18 +180,24 @@ max_value = 1.0
 step = 0.1
 disabled = true
 
-[node name="AddRemoveMasks" type="HBoxContainer" parent="BrushesBox"]
-margin_top = 259.0
+[node name="Section3" type="VBoxContainer" parent="BrushesBox"]
+margin_top = 404.0
 margin_right = 1024.0
-margin_bottom = 279.0
+margin_bottom = 600.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
 
-[node name="AddBrushMask" type="Button" parent="BrushesBox/AddRemoveMasks"]
+[node name="AddRemoveMasks" type="HBoxContainer" parent="BrushesBox/Section3"]
+margin_right = 1024.0
+margin_bottom = 20.0
+
+[node name="AddBrushMask" type="Button" parent="BrushesBox/Section3/AddRemoveMasks"]
 margin_right = 680.0
 margin_bottom = 20.0
 size_flags_horizontal = 3
 text = "Add Brush Mask"
 
-[node name="RemBrushMask" type="Button" parent="BrushesBox/AddRemoveMasks"]
+[node name="RemBrushMask" type="Button" parent="BrushesBox/Section3/AddRemoveMasks"]
 margin_left = 684.0
 margin_right = 1024.0
 margin_bottom = 20.0
@@ -180,30 +208,16 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="BrushMasksPanel" type="Panel" parent="BrushesBox"]
-margin_top = 283.0
+[node name="BrushMasks" type="ItemList" parent="BrushesBox/Section3"]
+margin_top = 24.0
 margin_right = 1024.0
-margin_bottom = 600.0
-size_flags_horizontal = 3
-size_flags_vertical = 3
-
-[node name="BrushMasksScroller" type="ScrollContainer" parent="BrushesBox/BrushMasksPanel"]
-anchor_right = 1.0
-anchor_bottom = 1.0
-size_flags_horizontal = 3
-size_flags_vertical = 3
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="BrushMasks" type="ItemList" parent="BrushesBox/BrushMasksPanel/BrushMasksScroller"]
-margin_right = 1024.0
-margin_bottom = 317.0
+margin_bottom = 196.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 custom_constants/icon_margin = 8
+items = [ "bristles.png", ExtResource( 4 ), false, "diagonal1.png", ExtResource( 6 ), false, "diagonal2.png", ExtResource( 5 ), false, "bristles.png", ExtResource( 4 ), false, "diagonal1.png", ExtResource( 6 ), false, "diagonal2.png", ExtResource( 5 ), false, "bristles.png", ExtResource( 4 ), false, "diagonal1.png", ExtResource( 6 ), false, "diagonal2.png", ExtResource( 5 ), false, "bristles.png", ExtResource( 4 ), false, "diagonal1.png", ExtResource( 6 ), false, "diagonal2.png", ExtResource( 5 ), false, "bristles.png", ExtResource( 4 ), false, "diagonal1.png", ExtResource( 6 ), false, "diagonal2.png", ExtResource( 5 ), false, "bristles.png", ExtResource( 4 ), false, "diagonal1.png", ExtResource( 6 ), false, "diagonal2.png", ExtResource( 5 ), false ]
 fixed_icon_size = Vector2( 48, 48 )
 [connection signal="files_selected" from="AddMaskFileDialog" to="." method="_on_add_mask_file_dialog_files_selected"]
-[connection signal="pressed" from="BrushesBox/AddRemoveMasks/AddBrushMask" to="." method="_on_add_brush_mask_pressed"]
-[connection signal="pressed" from="BrushesBox/AddRemoveMasks/RemBrushMask" to="." method="_on_rem_brush_mask_pressed"]
-[connection signal="item_selected" from="BrushesBox/BrushMasksPanel/BrushMasksScroller/BrushMasks" to="." method="_on_mask_selected"]
+[connection signal="pressed" from="BrushesBox/Section3/AddRemoveMasks/AddBrushMask" to="." method="_on_add_brush_mask_pressed"]
+[connection signal="pressed" from="BrushesBox/Section3/AddRemoveMasks/RemBrushMask" to="." method="_on_rem_brush_mask_pressed"]
+[connection signal="item_selected" from="BrushesBox/Section3/BrushMasks" to="." method="_on_mask_selected"]
