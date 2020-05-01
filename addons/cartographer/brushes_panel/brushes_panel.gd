@@ -7,31 +7,18 @@ var active_brush: PaintBrush setget _set_active_brush, _get_active_brush
 
 onready var AddMaskFileDialog = find_node("AddMaskFileDialog")
 onready var BrushPreview = find_node("BrushPreview")
-onready var ChannelPicker = find_node("ChannelPicker")
-onready var ModePicker = find_node("ModePicker")
-onready var BrushStrength = find_node("BrushStrength")
-onready var BrushScale = find_node("BrushScale")
-onready var BrushRotation = find_node("BrushRotation")
 onready var BrushMasks = find_node("BrushMasks")
-
 onready var Section1 = find_node("Section1")
 onready var Section2 = find_node("Section2")
 onready var Section3 = find_node("Section3")
 
 func _ready():
-	Cartographer.brushes.connect("updated", self, "_brushes_updated")
-	for ch in PaintBrush.MaskChannel:
-		ChannelPicker.add_item(ch, PaintBrush.MaskChannel[ch])
-	
-	for md in PaintBrush.Mode:
-		ModePicker.add_item(md, PaintBrush.Mode[md])
-	
 	BrushMasks.clear()
 	for k in Cartographer.brushes.data:
 		var br = Cartographer.brushes.get(k)
 		_add_brush_item(k, br.brush_mask)
 	
-	_bind(PaintBrush.new(), true)
+	_bind(PaintBrush.new())
 
 func _bind(brush, disabled=false):
 	_bind_clear()
