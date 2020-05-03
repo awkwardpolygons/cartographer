@@ -25,7 +25,7 @@ func _on_selection_changed(brushes_panel):
 		handles(null)
 
 func _exit_tree():
-	print(brushes_panel)
+#	print(brushes_panel)
 	remove_control_from_docks(brushes_panel)
 	if brushes_panel:
 		brushes_panel.free()
@@ -104,7 +104,7 @@ func try_paint(camera, action):
 		var tex_pos = (size/2 + pos) / size
 		var uv = Vector2(clamp(tex_pos.x, 0, 1), clamp(tex_pos.z, 0, 1))
 		if action == Action.PAINT:
-			terrain.painter.paint(uv, Color(1, 0, 0, 1))
+			terrain.painter.paint(uv, Cartographer.active_brush)
 		elif action == Action.ERASE:
 			terrain.painter.erase(uv)
 		return true
