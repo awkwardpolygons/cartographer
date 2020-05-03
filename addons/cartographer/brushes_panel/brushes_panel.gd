@@ -11,6 +11,7 @@ onready var BrushMasks = find_node("BrushMasks")
 onready var Section1 = find_node("Section1")
 onready var Section2 = find_node("Section2")
 onready var Section3 = find_node("Section3")
+onready var Section4 = find_node("Section4")
 
 func _ready():
 	BrushMasks.clear()
@@ -43,7 +44,10 @@ func _bind(brush, disabled=false):
 				var name = snake_to_title(prop.name)
 				slider.label = name
 				slider.set_range(rng, brush.get(prop.name))
-				Section2.add_child(slider)
+				if prop.name.find("jitter") > -1:
+					Section3.add_child(slider)
+				else:
+					Section2.add_child(slider)
 				slider.connect("value_changed", self, "_on_prop_changed", [prop.name])
 
 # TODO: Add a node cache instead of creating and destroying everytime.
@@ -53,6 +57,9 @@ func _bind_clear():
 		child.queue_free()
 	for child in Section2.get_children():
 		Section2.remove_child(child)
+		child.queue_free()
+	for child in Section3.get_children():
+		Section3.remove_child(child)
 		child.queue_free()
 
 func _on_prop_changed(value, prop_name):

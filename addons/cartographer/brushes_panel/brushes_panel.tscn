@@ -1,5 +1,6 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=6 format=2]
 
+[ext_resource path="res://addons/cartographer/brushes_panel/draw_box.tscn" type="PackedScene" id=1]
 [ext_resource path="res://addons/cartographer/brushes_panel/brushes_panel.gd" type="Script" id=3]
 [ext_resource path="res://addons/cartographer/brush_masks/bristles.png" type="Texture" id=4]
 [ext_resource path="res://addons/cartographer/brush_masks/diagonal2.png" type="Texture" id=5]
@@ -27,14 +28,14 @@ __meta__ = {
 [node name="BrushesBox" type="VBoxContainer" parent="."]
 anchor_right = 1.0
 anchor_bottom = 1.0
-custom_constants/separation = 8
+custom_constants/separation = 12
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="BrushPreviewPanel" type="Panel" parent="BrushesBox"]
 margin_right = 1024.0
-margin_bottom = 48.0
+margin_bottom = 64.0
 size_flags_vertical = 3
 size_flags_stretch_ratio = 0.25
 __meta__ = {
@@ -58,45 +59,54 @@ __meta__ = {
 margin_left = 8.0
 margin_top = 8.0
 margin_right = 1016.0
-margin_bottom = 40.0
+margin_bottom = 56.0
 expand = true
 stretch_mode = 6
 
 [node name="Section1" type="VBoxContainer" parent="BrushesBox"]
-margin_top = 56.0
+margin_top = 76.0
 margin_right = 1024.0
-margin_bottom = 104.0
+margin_bottom = 120.0
 size_flags_horizontal = 3
-size_flags_vertical = 3
 size_flags_stretch_ratio = 0.25
 
-[node name="Section2" type="VBoxContainer" parent="BrushesBox"]
-margin_top = 112.0
+[node name="Section2" parent="BrushesBox" instance=ExtResource( 1 )]
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_top = 132.0
 margin_right = 1024.0
-margin_bottom = 396.0
-size_flags_horizontal = 3
-__meta__ = {
-"_edit_use_anchors_": false
-}
+margin_bottom = 298.0
+text = "Properties"
+alt_text = "Properties"
+pressed = true
 
-[node name="Section3" type="VBoxContainer" parent="BrushesBox"]
-margin_top = 404.0
+[node name="Section3" parent="BrushesBox" instance=ExtResource( 1 )]
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_top = 310.0
+margin_right = 1024.0
+margin_bottom = 332.0
+text = "Jitter"
+alt_text = "Jitter"
+
+[node name="Section4" type="VBoxContainer" parent="BrushesBox"]
+margin_top = 344.0
 margin_right = 1024.0
 margin_bottom = 600.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="AddRemoveMasks" type="HBoxContainer" parent="BrushesBox/Section3"]
+[node name="AddRemoveMasks" type="HBoxContainer" parent="BrushesBox/Section4"]
 margin_right = 1024.0
 margin_bottom = 20.0
 
-[node name="AddBrushMask" type="Button" parent="BrushesBox/Section3/AddRemoveMasks"]
+[node name="AddBrushMask" type="Button" parent="BrushesBox/Section4/AddRemoveMasks"]
 margin_right = 680.0
 margin_bottom = 20.0
 size_flags_horizontal = 3
 text = "Add Brush Mask"
 
-[node name="RemBrushMask" type="Button" parent="BrushesBox/Section3/AddRemoveMasks"]
+[node name="RemBrushMask" type="Button" parent="BrushesBox/Section4/AddRemoveMasks"]
 margin_left = 684.0
 margin_right = 1024.0
 margin_bottom = 20.0
@@ -107,16 +117,16 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="BrushMasks" type="ItemList" parent="BrushesBox/Section3"]
+[node name="BrushMasks" type="ItemList" parent="BrushesBox/Section4"]
 margin_top = 24.0
 margin_right = 1024.0
-margin_bottom = 196.0
+margin_bottom = 256.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 custom_constants/icon_margin = 8
-items = [ "bristles.png", ExtResource( 4 ), false, "diagonal1.png", ExtResource( 6 ), false, "diagonal2.png", ExtResource( 5 ), false, "bristles.png", ExtResource( 4 ), false, "diagonal1.png", ExtResource( 6 ), false, "diagonal2.png", ExtResource( 5 ), false, "bristles.png", ExtResource( 4 ), false, "diagonal1.png", ExtResource( 6 ), false, "diagonal2.png", ExtResource( 5 ), false, "bristles.png", ExtResource( 4 ), false, "diagonal1.png", ExtResource( 6 ), false, "diagonal2.png", ExtResource( 5 ), false, "bristles.png", ExtResource( 4 ), false, "diagonal1.png", ExtResource( 6 ), false, "diagonal2.png", ExtResource( 5 ), false, "bristles.png", ExtResource( 4 ), false, "diagonal1.png", ExtResource( 6 ), false, "diagonal2.png", ExtResource( 5 ), false ]
+items = [ "bristles.png", ExtResource( 4 ), false, "diagonal1.png", ExtResource( 6 ), false, "diagonal2.png", ExtResource( 5 ), false ]
 fixed_icon_size = Vector2( 48, 48 )
 [connection signal="files_selected" from="AddMaskFileDialog" to="." method="_on_add_mask_file_dialog_files_selected"]
-[connection signal="pressed" from="BrushesBox/Section3/AddRemoveMasks/AddBrushMask" to="." method="_on_add_brush_mask_pressed"]
-[connection signal="pressed" from="BrushesBox/Section3/AddRemoveMasks/RemBrushMask" to="." method="_on_rem_brush_mask_pressed"]
-[connection signal="item_selected" from="BrushesBox/Section3/BrushMasks" to="." method="_on_mask_selected"]
+[connection signal="pressed" from="BrushesBox/Section4/AddRemoveMasks/AddBrushMask" to="." method="_on_add_brush_mask_pressed"]
+[connection signal="pressed" from="BrushesBox/Section4/AddRemoveMasks/RemBrushMask" to="." method="_on_rem_brush_mask_pressed"]
+[connection signal="item_selected" from="BrushesBox/Section4/BrushMasks" to="." method="_on_mask_selected"]
