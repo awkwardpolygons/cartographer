@@ -84,6 +84,7 @@ func snake_to_title(text: String):
 func _set_active_brush(br: PaintBrush):
 	active_brush = br
 	_bind(br)
+	Cartographer.active_brush = br
 
 func _get_active_brush():
 	return active_brush
