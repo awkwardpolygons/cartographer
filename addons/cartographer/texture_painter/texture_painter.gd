@@ -6,6 +6,7 @@ enum Action {NONE, PAINT, ERASE, CLEAR}
 
 export(Texture) var src: Texture setget load
 export(Material) var material: Material setget _set_material, _get_material
+var brush: PaintBrush setget _set_brush, _get_brush
 
 var _vp: Viewport
 var _cvi: TextureRect
@@ -36,6 +37,22 @@ func _init():
 	_cvi.texture = load("res://largetex.tres")
 #	_cvi.material.set_shader_param("texture", load("res://addons/cartographer/rect_green.png"))
 
+func _set_material(m: Material):
+	_cvi.material = m
+
+func _get_material():
+	return _cvi.material
+
+func _set_brush(br: PaintBrush):
+	brush = br
+	_cvi.material.set_shader_param("brush_mask", brush.brush_mask)
+	_cvi.material.set_shader_param("brush_strength", brush.brush_strength)
+	_cvi.material.set_shader_param("brush_scale", brush.brush_scale)
+	_cvi.material.set_shader_param("brush_rotation", brush.brush_rotation)
+
+func _get_brush():
+	return brush
+
 func load(t: Texture):
 	src = t
 	#_cvi.texture = load("res://addons/cartographer/rect_green.png")
@@ -44,22 +61,15 @@ func load(t: Texture):
 func save(i: Image):
 	i.copy_from(_vp.get_texture().get_data())
 
-func _set_material(m: Material):
-	print(_cvi.get_size())
-	_cvi.material = m
-
-func _get_material():
-	return _cvi.material
-
 func clear():
 	print("CLEAR")
-	# Temporary for shader updates during dev:
+	# TODO: Temporary for shader updates during dev:
 	_cvi.material.shader = load("res://addons/cartographer/texture_painter/texture_painter.shader")
 	_cvi.material.set_shader_param("action", Action.CLEAR)
 
-func paint(pos: Vector2, color: Color):
+func paint(pos: Vector2, brush: PaintBrush):
+	self.brush = brush
 	_cvi.material.set_shader_param("action", Action.PAINT)
-	_cvi.material.set_shader_param("brush_mask", load("res://addons/cartographer/brush_masks/vm_fine_dirt01.jpg"))
 	_cvi.material.set_shader_param("brush_pos", pos)
 
 func stop():

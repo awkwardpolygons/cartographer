@@ -4,8 +4,8 @@ uniform sampler2D brush_mask;
 uniform int action = 0;
 uniform vec2 brush_pos;
 uniform vec4 brush_color;
-uniform float brush_strength = 1.0;
-uniform float brush_scale = 1.0;
+uniform float brush_strength = 0.25;
+uniform float brush_scale = 0.25;
 uniform float brush_rotation = 0.0;
 uniform float brush_strength_jitter = 0.0;
 uniform float brush_scale_jitter = 0.0;
@@ -78,7 +78,7 @@ void fragment() {
 //	bt = vec4(1, 0, 0, a);
 //	bt = vec4(a, a, a, 1);
 	bt = brush_tex(brush_rel_uv, brush_ratio * brush_scale) * brush_strength * brush_strength;
-	bt = vec4(1, 1, 1, bt.r);
+//	bt = vec4(1, 1, 1, bt.r);
 	
 	if (action == NONE) {
 		COLOR = st;
@@ -88,7 +88,8 @@ void fragment() {
 	}
 	else if (action == PAINT) {
 //		COLOR.rgb = mix(st.rgb, bt.rgb, bt.a);
-		COLOR = blend_alpha(st, bt);
+//		COLOR = blend_alpha(st, bt);
+		COLOR = blend_add(st, bt);
 //		COLOR = alpha_blend(st, bt);
 //		COLOR = st + bt;
 	}
