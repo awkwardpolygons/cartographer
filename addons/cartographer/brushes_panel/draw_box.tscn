@@ -1,0 +1,55 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://addons/cartographer/brushes_panel/draw_box.gd" type="Script" id=1]
+[ext_resource path="res://addons/cartographer/brushes_panel/icon_draw_closed.svg" type="Texture" id=2]
+
+[sub_resource type="StyleBoxEmpty" id=1]
+
+[node name="DrawBox" type="VBoxContainer"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Handle" type="HBoxContainer" parent="."]
+margin_right = 1024.0
+margin_bottom = 22.0
+size_flags_horizontal = 3
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="HSeparator2" type="HSeparator" parent="Handle"]
+visible = false
+margin_right = 338.0
+margin_bottom = 22.0
+size_flags_horizontal = 3
+
+[node name="Button" type="Button" parent="Handle"]
+margin_right = 1024.0
+margin_bottom = 22.0
+size_flags_horizontal = 3
+custom_styles/focus = SubResource( 1 )
+toggle_mode = true
+icon = ExtResource( 2 )
+flat = true
+
+[node name="HSeparator" type="HSeparator" parent="Handle"]
+visible = false
+margin_left = 514.0
+margin_right = 1024.0
+margin_bottom = 22.0
+size_flags_horizontal = 3
+
+[node name="Draw" type="VBoxContainer" parent="."]
+visible = false
+margin_top = 24.0
+margin_right = 1024.0
+margin_bottom = 24.0
+size_flags_horizontal = 3
+__meta__ = {
+"_edit_use_anchors_": false
+}
+[connection signal="toggled" from="Handle/Button" to="." method="_on_toggled"]
