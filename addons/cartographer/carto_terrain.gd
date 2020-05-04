@@ -69,12 +69,19 @@ func init_painter():
 
 func intersect_ray(from: Vector3, dir: Vector3):
 	var pts = _bbox_intersect_ray(from, dir)
-	if len(pts) < 2:
+	
+	# If we're inside the bbox there will be only one intersection.
+	if len(pts) == 1:
+		pts = [from, pts[0]]
+	# If we're outside the bbox, there will be two intersections, 
+	# sort them closest to farthest.
+	elif len(pts) == 2:
+		var a = pts[0]
+		var b = pts[1]
+		pts = [a, b] if (from - a).length_squared() < (from - b).length_squared() else [b, a]
+	else:
 		return null
 	
-	var a = pts[0]
-	var b = pts[1]
-	pts = [a, b] if (from - a).length_squared() < (from - b).length_squared() else [b, a]
 	return _hmap_intersect_ray(pts[0], pts[1], dir)
 
 func _bbox_intersect_ray(from: Vector3, dir: Vector3):
