@@ -89,7 +89,7 @@ func _bbox_intersect_ray(from: Vector3, dir: Vector3):
 	var pts = []
 	for plane in self.bbox:
 		var pt = plane.intersects_ray(from, dir)
-		if pt == null or abs(pt.x) > 10 or abs(pt.y) > 10 or abs(pt.z) > 10:
+		if pt == null or abs(pt.x) > size.x/2 or abs(pt.y) > size.y/2 or abs(pt.z) > size.z/2:
 			continue
 		pts.append(pt)
 	return pts
@@ -100,8 +100,9 @@ func _hmap_intersect_ray(from: Vector3, to: Vector3, dir: Vector3):
 	for i in range(ceil((to - from).length())):
 		pos += dir
 		hm.lock()
-		var loc = (Vector2(pos.x + 10, pos.z + 10) / 20) * 512
-		var pix = hm.get_pixel(loc.x, loc.y)
+		var x = (pos.x + size.x/2) / size.x * 512
+		var y = (pos.z + size.z/2) / size.z * 512
+		var pix = hm.get_pixel(x, y)
 		hm.unlock()
 		if pos.y <= pix.r * 8:
 #			pos -= dir
