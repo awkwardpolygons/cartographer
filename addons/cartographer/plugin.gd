@@ -58,7 +58,7 @@ func get_brush_from(obj: Object):
 	return null
 
 func edit(obj: Object):
-	print("EDIT", obj)
+#	print("EDIT", obj)
 	terrain = get_terrain_from(obj)
 	brush = get_brush_from(obj)
 
@@ -95,7 +95,7 @@ func try_paint(camera, action):
 	var viewport_container = viewport.get_parent()
 	var screen_pos = viewport.get_mouse_position() * viewport.size / viewport_container.rect_size
 	
-	var size = Vector3(terrain.size.x, 0, terrain.size.y)
+	var size = Vector3(terrain.size.x, 0, terrain.size.z)
 	var org = camera.project_ray_origin(screen_pos)
 	var dir = camera.project_ray_normal(screen_pos)
 	var pos = raycast(org, dir)
@@ -105,6 +105,21 @@ func try_paint(camera, action):
 		var uv = Vector2(clamp(tex_pos.x, 0, 1), clamp(tex_pos.z, 0, 1))
 		if action == Action.PAINT:
 			terrain.painter.paint(uv, Cartographer.active_brush)
+#			var hm = terrain.painter.get_texture().get_data()
+#			hm.resize(40, 40)
+#			hm.convert(Image.FORMAT_RF)
+#			var cs = terrain.get_node("StaticBody/CollisionShape")
+#			var map_data = cs.shape.map_data
+#			var i = 0
+#			hm.lock()
+#			for y in hm.get_height():
+#				for x in hm.get_width():
+#					if hm.get_pixel(x, y).r > 0:
+#						print(hm.get_pixel(x, y) * 8)
+#					map_data.set(i, float(hm.get_pixel(x, y).r) * 8)
+#					i += 1
+#			hm.unlock()
+#			cs.shape.map_data = map_data
 		elif action == Action.ERASE:
 			terrain.painter.erase(uv)
 		return true
@@ -113,4 +128,25 @@ func try_paint(camera, action):
 func raycast(origin: Vector3, direction: Vector3):
 	var space_state = terrain.get_world().direct_space_state
 	var result = space_state.intersect_ray(origin, direction * 800)
-	return result.get("position")
+	var pos = result.get("position")
+	if pos != null:
+		return raycast2(pos, direction)
+	return pos
+
+func raycast2(origin: Vector3, direction: Vector3):
+	var plane = Plane(Vector3(-10, 0, -10), Vector3(10, 0, -10), Vector3(10, 0, 10))
+	var p = plane.intersects_ray(origin, direction)
+	if p == null:
+		return p
+	var hm = terrain.painter.get_texture().get_data()
+	var pos = origin
+	var l = (origin - p).length()
+	for i in range(l):
+		pos += direction
+		hm.lock()
+		var loc = (Vector2(pos.x + 10, pos.z + 10) / 20) * 512
+		var pix = hm.get_pixel(loc.x, loc.y)
+		hm.unlock()
+		if pos.y <= pix.r * 8:
+			break
+	return pos
