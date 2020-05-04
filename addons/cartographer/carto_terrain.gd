@@ -33,7 +33,8 @@ func _get_painter():
 	return painter
 
 func _init():
-	print("Terrain _init", get_children())
+#	print("Terrain _init", get_children())
+	pass
 
 func _enter_tree():
 	init_mesh()
@@ -57,7 +58,7 @@ func init_material():
 		csg.material = SpatialMaterial.new()
 
 func init_painter():
-	print("TERRAIN CHILD COUNT: ", get_child_count())
+#	print("TERRAIN CHILD COUNT: ", get_child_count())
 	if not painter:
 		print("TexturePainter.new()")
 		painter = TexturePainter.new()
@@ -104,7 +105,6 @@ func _hmap_intersect_ray(from: Vector3, to: Vector3, dir: Vector3):
 		hm.unlock()
 		if pos.y <= pix.r * 8:
 #			pos -= dir
-			print("POS: ", pos)
 			return pos
 	return null
 
