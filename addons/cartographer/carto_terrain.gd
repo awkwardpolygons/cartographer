@@ -15,9 +15,12 @@ var painter: TexturePainter setget , _get_painter
 
 func _set_size(s: Vector3):
 	size = s
-	bbox = Geometry.build_box_planes(size/2)
+	# Update the bbox with new size
+	self.bbox
 	if csg.mesh:
 		csg.mesh.size = Vector2(s.x, s.z)
+	if csg.material:
+		csg.material.set_shader_param("terrain_size", s)
 
 func _get_bbox():
 	if len(bbox) == 0:
@@ -50,12 +53,12 @@ func init_mesh():
 	if csg.mesh == null:
 		print("PlaneMesh.new()")
 		csg.mesh = PlaneMesh.new()
-		csg.mesh.size = size
+		csg.mesh.size = Vector2(size.x, size.z)
 
 func init_material():
 	if csg.material == null:
-		print("SpatialMaterial.new()")
-		csg.material = SpatialMaterial.new()
+		print("ShaderMaterial.new()")
+		csg.material = ShaderMaterial.new()
 
 func init_painter():
 #	print("TERRAIN CHILD COUNT: ", get_child_count())
@@ -66,6 +69,7 @@ func init_painter():
 		csg.add_child(painter)
 	if csg.material:
 #		csg.material.albedo_texture = painter.get_texture()
+		csg.material.set_shader_param("terrain_size", size)
 		csg.material.set_shader_param("texture", painter.get_texture())
 
 func intersect_ray(from: Vector3, dir: Vector3):
@@ -100,8 +104,8 @@ func _hmap_intersect_ray(from: Vector3, to: Vector3, dir: Vector3):
 	for i in range(ceil((to - from).length())):
 		pos += dir
 		hm.lock()
-		var x = (pos.x + size.x/2) / size.x * 512
-		var y = (pos.z + size.z/2) / size.z * 512
+		var x = (pos.x + size.x/2) / size.x * 511
+		var y = (pos.z + size.z/2) / size.z * 511
 		var pix = hm.get_pixel(x, y)
 		hm.unlock()
 		if pos.y <= pix.r * 8:
