@@ -24,7 +24,8 @@ func _set_size(s: Vector3):
 
 func _get_bbox():
 	if len(bbox) == 0:
-		bbox = Geometry.build_box_planes(size/2)
+		bbox = Geometry.build_box_planes(Vector3(size.x/2, size.y/2, size.z/2))
+		print(bbox)
 	return bbox
 
 func _set_height_map(t: Texture):
@@ -73,14 +74,17 @@ func init_painter():
 		csg.material.set_shader_param("texture", painter.get_texture())
 
 func intersect_ray(from: Vector3, dir: Vector3):
+	# Recenter the `from` vector based on the inverse of the terrains
+	# transform, because intersections are based around the origin.
+	from = self.transform.xform_inv(from)
 	var pts = _bbox_intersect_ray(from, dir)
 	
 	# If we're inside the bbox there will be only one intersection.
-	if len(pts) == 1:
-		pts = [from, pts[0]]
+#	if len(pts) == 1:
+#		pts = [from, pts[0]]
 	# If we're outside the bbox, there will be two intersections, 
 	# sort them closest to farthest.
-	elif len(pts) == 2:
+	if len(pts) == 2:
 		var a = pts[0]
 		var b = pts[1]
 		pts = [a, b] if (from - a).length_squared() < (from - b).length_squared() else [b, a]
@@ -90,12 +94,19 @@ func intersect_ray(from: Vector3, dir: Vector3):
 	return _hmap_intersect_ray(pts[0], pts[1], dir)
 
 func _bbox_intersect_ray(from: Vector3, dir: Vector3):
+	from.y -= 10
 	var pts = []
 	for plane in self.bbox:
 		var pt = plane.intersects_ray(from, dir)
+#		var tmp = pt
+#		if tmp:
+#			tmp.y += 10
+#		print(plane, " - ", tmp, pt)
 		if pt == null or abs(pt.x) > size.x/2 or abs(pt.y) > size.y/2 or abs(pt.z) > size.z/2:
 			continue
+		pt.y +=  10
 		pts.append(pt)
+	print("PTS: ", pts)
 	return pts
 
 func _hmap_intersect_ray(from: Vector3, to: Vector3, dir: Vector3):
@@ -104,11 +115,15 @@ func _hmap_intersect_ray(from: Vector3, to: Vector3, dir: Vector3):
 	for i in range(ceil((to - from).length())):
 		pos += dir
 		hm.lock()
+		print("POS: ", pos)
 		var x = (pos.x + size.x/2) / size.x * 511
+		x = clamp(x, 0, 511)
 		var y = (pos.z + size.z/2) / size.z * 511
+		y = clamp(y, 0, 511)
+		print("X, Y: ", x, " ", y)
 		var pix = hm.get_pixel(x, y)
 		hm.unlock()
-		if pos.y <= pix.r * 8:
+		if pos.y <= pix.r * size.y:
 #			pos -= dir
 			return pos
 	return null
