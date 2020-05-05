@@ -6,6 +6,7 @@ export(Vector3) var size: Vector3 = Vector3(20, 20, 20) setget _set_size
 export(Texture) var height_map: Texture setget _set_height_map
 export(Texture) var flow_map: Texture
 
+var aabb: AABB
 var bbox: Array setget , _get_bbox
 var height_img: Image
 var csg: CSGMesh = self
@@ -17,6 +18,8 @@ func _set_size(s: Vector3):
 	size = s
 	# Update the bbox with new size
 	self.bbox
+	# Update the custom aabb when the size changes
+	_update_custom_aabb()
 	if csg.mesh:
 		csg.mesh.size = Vector2(s.x, s.z)
 	if csg.material:
@@ -49,6 +52,12 @@ func _enter_tree():
 #func _exit_tree():
 #	if painter:
 #		painter.queue_free()
+
+# A custom AABB is needed because vertices are offset by the GPU, so we set
+# the custom AABB to `size`
+func _update_custom_aabb():
+	aabb = AABB(csg.transform.origin - Vector3(size.x/2, 0, size.z/2), size)
+	csg.set_custom_aabb(aabb)
 
 func init_mesh():
 	if csg.mesh == null:
