@@ -28,7 +28,6 @@ func _set_size(s: Vector3):
 func _get_bbox():
 	if len(bbox) == 0:
 		bbox = Geometry.build_box_planes(Vector3(size.x/2, size.y/2, size.z/2))
-		print(bbox)
 	return bbox
 
 func _set_height_map(t: Texture):
@@ -107,15 +106,10 @@ func _bbox_intersect_ray(from: Vector3, dir: Vector3):
 	var pts = []
 	for plane in self.bbox:
 		var pt = plane.intersects_ray(from, dir)
-#		var tmp = pt
-#		if tmp:
-#			tmp.y += 10
-#		print(plane, " - ", tmp, pt)
 		if pt == null or abs(pt.x) > size.x/2 or abs(pt.y) > size.y/2 or abs(pt.z) > size.z/2:
 			continue
 		pt.y +=  10
 		pts.append(pt)
-	print("PTS: ", pts)
 	return pts
 
 func _hmap_intersect_ray(from: Vector3, to: Vector3, dir: Vector3):
@@ -124,12 +118,10 @@ func _hmap_intersect_ray(from: Vector3, to: Vector3, dir: Vector3):
 	for i in range(ceil((to - from).length())):
 		pos += dir
 		hm.lock()
-		print("POS: ", pos)
 		var x = (pos.x + size.x/2) / size.x * 511
 		x = clamp(x, 0, 511)
 		var y = (pos.z + size.z/2) / size.z * 511
 		y = clamp(y, 0, 511)
-		print("X, Y: ", x, " ", y)
 		var pix = hm.get_pixel(x, y)
 		hm.unlock()
 		if pos.y <= pix.r * size.y:
