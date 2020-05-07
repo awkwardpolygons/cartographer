@@ -94,7 +94,6 @@ func intersect_ray(from: Vector3, dir: Vector3):
 	elif len(pts) == 1 and aabb.has_point(from):
 		pts = [from, pts[0]]
 	else:
-		print("NULL: ", pts, aabb.has_point(from))
 		return null
 	
 	return _hmap_intersect_ray(pts[0], pts[-1], dir)
