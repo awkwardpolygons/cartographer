@@ -2,7 +2,7 @@ extends Resource
 class_name PaintBrush
 
 enum MaskChannel {RED, GREEN, BLUE, ALPHA}
-enum Mode {ADD, SUB, SET, SMOOTH}
+enum Mode {ADD, SUBTRACT, SET, REMOVE, SMOOTH, SHARPEN, FLOW, FLOW_SPEED}
 export(Texture) var brush_mask: Texture setget set_brush_mask
 export(MaskChannel) var mask_channel;
 export(Mode) var mode;
