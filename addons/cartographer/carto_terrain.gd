@@ -96,16 +96,17 @@ func intersect_ray(from: Vector3, dir: Vector3):
 	elif len(pts) == 1 and aabb.has_point(from):
 		pts = [from, pts[0]]
 	else:
+		print("NULL: ", pts, aabb.has_point(from))
 		return null
 	
 	return _hmap_intersect_ray(pts[0], pts[1], dir)
 
-func _bbox_intersect_ray(from: Vector3, dir: Vector3):
+func _bbox_intersect_ray(from: Vector3, dir: Vector3, margin: float=0.04):
 	from.y -= 10
 	var pts = []
 	for plane in self.bbox:
 		var pt = plane.intersects_ray(from, dir)
-		if pt == null or abs(pt.x) > size.x/2 or abs(pt.y) > size.y/2 or abs(pt.z) > size.z/2:
+		if pt == null or abs(pt.x) > size.x/2 + margin or abs(pt.y) > size.y/2 + margin or abs(pt.z) > size.z/2 + margin:
 			continue
 		pt.y +=  10
 		pts.append(pt)
