@@ -103,13 +103,13 @@ func _sort_intersect_points(a, b):
 	return a.length_squared() > b.length_squared()
 
 func _bbox_intersect_ray(from: Vector3, dir: Vector3, margin: float=0.04):
-	from.y -= 10
+	from.y -= size.y
 	var pts = []
 	for plane in self.bbox:
 		var pt = plane.intersects_ray(from, dir)
 		if pt == null or abs(pt.x) > size.x/2 + margin or abs(pt.y) > size.y/2 + margin or abs(pt.z) > size.z/2 + margin:
 			continue
-		pt.y +=  10
+		pt.y +=  size.y
 		pts.append(pt)
 	return pts
 
