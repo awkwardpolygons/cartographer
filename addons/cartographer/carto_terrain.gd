@@ -87,10 +87,8 @@ func intersect_ray(from: Vector3, dir: Vector3):
 	from = self.transform.xform_inv(from)
 	var pts = _bbox_intersect_ray(from, dir)
 	
-	if len(pts) == 2:
-		var a = pts[0]
-		var b = pts[1]
-		pts = [a, b] if (from - a).length_squared() < (from - b).length_squared() else [b, a]
+	if len(pts) >= 2:
+		pts.sort_custom(self, "_sort_intersect_points")
 	# If the camera (from vector) is inside the the bounding box then
 	# we won't get two intersections, and must add `from` as the first point
 	elif len(pts) == 1 and aabb.has_point(from):
@@ -99,7 +97,10 @@ func intersect_ray(from: Vector3, dir: Vector3):
 		print("NULL: ", pts, aabb.has_point(from))
 		return null
 	
-	return _hmap_intersect_ray(pts[0], pts[1], dir)
+	return _hmap_intersect_ray(pts[0], pts[-1], dir)
+
+func _sort_intersect_points(a, b):
+	return a.length_squared() > b.length_squared()
 
 func _bbox_intersect_ray(from: Vector3, dir: Vector3, margin: float=0.04):
 	from.y -= 10
