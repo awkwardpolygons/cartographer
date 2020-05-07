@@ -17,7 +17,7 @@ var painter: TexturePainter setget , _get_painter
 func _set_size(s: Vector3):
 	size = s
 	# Update the bbox with new size
-	self.bbox
+	bbox = Geometry.build_box_planes(Vector3(size.x/2, size.y/2, size.z/2))
 	# Update the custom aabb when the size changes
 	_update_custom_aabb()
 	if csg.mesh:
