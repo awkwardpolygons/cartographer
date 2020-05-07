@@ -17,7 +17,7 @@ var painter: TexturePainter setget , _get_painter
 func _set_size(s: Vector3):
 	size = s
 	# Update the bbox with new size
-	bbox = Geometry.build_box_planes(Vector3(size.x/2, size.y/2, size.z/2))
+	bbox = Geometry.build_box_planes(size/2)
 	# Update the custom aabb when the size changes
 	_update_custom_aabb()
 	if csg.mesh:
@@ -27,7 +27,7 @@ func _set_size(s: Vector3):
 
 func _get_bbox():
 	if len(bbox) == 0:
-		bbox = Geometry.build_box_planes(Vector3(size.x/2, size.y/2, size.z/2))
+		bbox = Geometry.build_box_planes(size/2)
 	return bbox
 
 func _set_height_map(t: Texture):
@@ -102,13 +102,13 @@ func _sort_intersect_points(a, b):
 	return a.length_squared() > b.length_squared()
 
 func _bbox_intersect_ray(from: Vector3, dir: Vector3, margin: float=0.04):
-	from.y -= size.y
+	from.y -= size.y/2
 	var pts = []
 	for plane in self.bbox:
 		var pt = plane.intersects_ray(from, dir)
 		if pt == null or abs(pt.x) > size.x/2 + margin or abs(pt.y) > size.y/2 + margin or abs(pt.z) > size.z/2 + margin:
 			continue
-		pt.y +=  size.y
+		pt.y +=  size.y/2
 		pts.append(pt)
 	return pts
 
