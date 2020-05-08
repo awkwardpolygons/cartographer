@@ -5,15 +5,13 @@ class_name TexturePainter
 
 enum Action {NONE, PAINT, ERASE, CLEAR}
 
-export(Texture) var src: Texture setget load
+export(Texture) var texture: Texture setget _set_texture
 export(Material) var material: Material setget _set_material, _get_material
 var brush: PaintBrush setget _set_brush, _get_brush
 
 var _vp: Viewport
 var _cvi: TextureRect
-#var _shader = preload("res://addons/cartographer/texture_painter/terrain_painter_shader.tres")
 var _shader = preload("res://addons/cartographer/texture_painter/texture_painter.shader")
-
 
 func _init():
 	#_vp = Viewport.new()
@@ -54,12 +52,10 @@ func _set_brush(br: PaintBrush):
 func _get_brush():
 	return brush
 
-func load(t: Texture):
-	src = t
-	#_cvi.texture = load("res://addons/cartographer/rect_green.png")
-	#_cvi.material.set_shader_param("base_tex")
+func _set_texture(t: Texture):
+	texture = t
 
-func save(i: Image):
+func save_to_image(i: Image):
 	i.copy_from(_vp.get_texture().get_data())
 
 func clear():
