@@ -1,5 +1,6 @@
 tool
 extends Viewport
+# TODO: Replace this with a VisualServer implementation at some point
 class_name TexturePainter
 
 enum Action {NONE, PAINT, ERASE, CLEAR}
