@@ -114,14 +114,15 @@ func _bbox_intersect_ray(from: Vector3, dir: Vector3, margin: float=0.04):
 
 func _hmap_intersect_ray(from: Vector3, to: Vector3, dir: Vector3):
 	var hm = painter.get_texture().get_data()
+	var hm_size = hm.get_size()
 	var pos = from
 	for i in range(ceil((to - from).length())):
 		pos += dir
 		hm.lock()
-		var x = (pos.x + size.x/2) / size.x * 511
-		x = clamp(x, 0, 511)
-		var y = (pos.z + size.z/2) / size.z * 511
-		y = clamp(y, 0, 511)
+		var x = (pos.x + size.x/2) / size.x * (hm_size.x - 1)
+		x = clamp(x, 0, (hm_size.x - 1))
+		var y = (pos.z + size.z/2) / size.z * (hm_size.y - 1)
+		y = clamp(y, 0, (hm_size.y - 1))
 		var pix = hm.get_pixel(x, y)
 		hm.unlock()
 		if pos.y <= pix.r * size.y:
