@@ -10,8 +10,17 @@ uniform float brush_rotation = 0.0;
 uniform float brush_strength_jitter = 0.0;
 uniform float brush_scale_jitter = 0.0;
 uniform float brush_rotation_jitter = 0.0;
-// TODO: uniform vec4 segment = vec4(0, 0, 512, 512);
 const int NONE = 0, PAINT = 1, ERASE = 2, CLEAR = 3;
+
+
+// TODO:
+const vec4 region1 = vec4(0, 0, 0.5, 0.5);
+const vec4 region2 = vec4(0.5, 0, 0.5, 0.5);
+const vec4 region3 = vec4(0, 0.5, 0.5, 0.5);
+const vec4 region4 = vec4(0.5, 0.5, 0.5, 0.5);
+const vec2 region_grid = vec2(2.0, 2.0);
+uniform int region = 0;
+uniform vec4 channel = vec4(1, -1, -1, -1);
 
 
 vec4 brush_tex(vec2 uv, vec2 scale) {
@@ -62,14 +71,34 @@ vec4 blend_add(vec4 dst, vec4 src) {
 	return src + dst;
 }
 
+vec4 paint_region(vec2 uv) {
+	vec4 regions[4] = { region1, region2, region3, region4 };
+	vec4 clr = vec4(0);
+	vec2 uv2 = uv - brush_pos/region_grid;
+	
+	for (int i = 0; i < regions.length(); i++) {
+		vec4 reg = regions[i];
+		vec2 pos = uv2 - reg.xy - 0.05;
+		if (pos.x < 0.0 && pos.y < 0.0) {
+//			clr = brush_tex(pos, vec2(0.125)) * brush_strength * brush_strength;
+			float c = sdf_circle(pos + 0.05, 0.1);
+			clr = vec4(0, clamp(c * -1.0, 0, 1), 0, 1);
+			clr += vec4(0, 0, 1, 1);
+			break;
+		}
+	}
+	
+	return clr;
+}
+
 void fragment() {
 	vec2 brush_ratio = SCREEN_PIXEL_SIZE * vec2(textureSize(brush_mask, 0));
-	vec2 brush_rel_uv = SCREEN_UV - brush_pos;
+	vec2 brush_rel_uv = SCREEN_UV - brush_pos/region_grid;
 	vec4 st = texture(SCREEN_TEXTURE, SCREEN_UV);
 	vec4 tt = texture(TEXTURE, SCREEN_UV);
-	vec4 bt;
+	vec4 bt = vec4(0);
 	
-//	vec4 bt = brush(SCREEN_UV, vec4(0.01, 0, 0, 1));
+//	bt = brush(brush_rel_uv, vec4(0.2, 0, 0, 0));
 //	float a = step(0.0, -1.0 * squircle(brush_pos - SCREEN_UV, 0.25, 4));
 //	float a = smoothstep(0.0, 0.3, sdf_rbox(brush_pos - SCREEN_UV, vec2(0.5), 0.5));
 //	float a = -1.0 * sdf_rbox(brush_pos - SCREEN_UV, vec2(0.25), 0.15);
@@ -77,8 +106,33 @@ void fragment() {
 //	float a = rectangle(brush_pos - SCREEN_UV, vec2(0.15, 0.15)) - 0.2;
 //	bt = vec4(1, 0, 0, a);
 //	bt = vec4(a, a, a, 1);
-	bt = brush_tex(brush_rel_uv, brush_ratio * brush_scale) * brush_strength * brush_strength;
+//	bt = brush_tex(brush_rel_uv - region1.xy, brush_ratio * brush_scale) * brush_strength * brush_strength;
+//	bt = paint_region(brush_rel_uv, vec4(0))
 //	bt = vec4(1, 1, 1, bt.r);
+//	bt = vec4(clamp(sdf_circle(brush_rel_uv - region1.xy, 0.1) * -1.0, 0, 1), 0, 0, 1);
+//	float c = sdf_circle(brush_rel_uv - region1.xy, 0.1);
+//	if (c < 0.0) {
+//		bt = vec4(clamp(c * -1.0, 0, 1), 0, 0, 1);
+//	}
+//	c = sdf_circle(brush_rel_uv - region2.xy, 0.1);
+//	if (c < 0.0) {
+//		bt = vec4(clamp(c * -1.0, 0, 1), 0, 0, 1);
+//	}
+//	c = sdf_circle(brush_rel_uv - region3.xy, 0.1);
+//	if (c < 0.0) {
+//		bt = vec4(clamp(c * -1.0, 0, 1), 0, 0, 1);
+//	}
+//	c = sdf_circle(brush_rel_uv - region4.xy, 0.1);
+//	if (c < 0.0) {
+//		bt = vec4(clamp(c * -1.0, 0, 1), 0, 0, 1);
+//	}
+	
+	bt = paint_region(SCREEN_UV);
+	
+//	vec2 uv = SCREEN_UV;
+//	if (uv.x > 0.5 || uv.y > 0.5) {
+//		bt = vec4(0, 0, 0, 0);
+//	}
 	
 	if (action == NONE) {
 		COLOR = st;
