@@ -22,6 +22,12 @@ const vec2 region_grid = vec2(2.0, 2.0);
 uniform int region = 0;
 uniform vec4 channel = vec4(1, -1, -1, -1);
 
+bool within(vec2 uv, vec4 reg) {
+	if (all(greaterThan(uv, reg.xy)) && all(lessThan(uv, reg.xy + reg.zw))) {
+		return true;
+	}
+	return false;
+}
 
 vec4 brush_tex(vec2 uv, vec2 scale) {
 	uv = uv + ((vec2(0.5) * scale));
@@ -71,22 +77,35 @@ vec4 blend_add(vec4 dst, vec4 src) {
 	return src + dst;
 }
 
+// IDEAS: Slide the clip margin on the brush as it gets closer to the edge of a region.
+
 vec4 paint_region(vec2 uv) {
 	vec4 regions[4] = { region1, region2, region3, region4 };
 	vec4 clr = vec4(0);
 	vec2 uv2 = uv - brush_pos/region_grid;
 	
-	for (int i = 0; i < regions.length(); i++) {
-		vec4 reg = regions[i];
-		vec2 pos = uv2 - reg.xy - 0.05;
-		if (pos.x < 0.0 && pos.y < 0.0) {
-//			clr = brush_tex(pos, vec2(0.125)) * brush_strength * brush_strength;
-			float c = sdf_circle(pos + 0.05, 0.1);
-			clr = vec4(0, clamp(c * -1.0, 0, 1), 0, 1);
-			clr += vec4(0, 0, 1, 1);
-			break;
+	vec2 p = brush_pos/region_grid;
+	vec2 pts[] = { p + region1.xy, p + region2.xy, p + region3.xy, p + region4.xy };
+	
+	for (int i = 0; i < pts.length(); i++) {
+		vec2 pt = uv - pts[i];
+		float c = sdf_circle(pt, 0.1);
+		if (c < 0.0) {
+			if ((pt.x + pts[i].x) < (0.5 + regions[i].x) && (pt.y + pts[i].y) < (0.5 + regions[i].y) && (pt.x + pts[i].x) > (regions[i].x) && (pt.y + pts[i].y) > (regions[i].y)) {
+				clr = vec4(0, clamp(c * -1.0, 0, 1), 0, 1);
+			}
 		}
 	}
+	
+//	for (int i = 0; i < regions.length(); i++) {
+//		vec4 reg = regions[i];
+//		vec2 pos = uv2;
+//		float c = sdf_circle(pos, 0.1) * -1.0;
+////		clr = vec4(0, clamp(c, 0, 1), 0, 1);
+//		if (within(pos + reg.xy, reg)) {
+//			clr = vec4(0, clamp(c, 0, 1), 0, 1);
+//		}
+//	}
 	
 	return clr;
 }
@@ -130,8 +149,8 @@ void fragment() {
 	bt = paint_region(SCREEN_UV);
 	
 //	vec2 uv = SCREEN_UV;
-//	if (uv.x > 0.5 || uv.y > 0.5) {
-//		bt = vec4(0, 0, 0, 0);
+//	if (!within(uv, region1)) {
+//		bt = bt * vec4(0, 1, 1, 1);
 //	}
 	
 	if (action == NONE) {
