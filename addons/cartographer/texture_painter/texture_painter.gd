@@ -64,6 +64,16 @@ func clear():
 	_cvi.material.shader = load("res://addons/cartographer/texture_painter/texture_painter.shader")
 	_cvi.material.set_shader_param("action", Action.CLEAR)
 
+func paint_mask(action: int, pos: Vector2, layer: int):
+	layer = clamp(layer, 0, 15)
+	var region = int(layer / 4)
+	var channel = Color(-1, -1, -1, -1)
+	channel[int(layer % 4)] = 1
+	_cvi.material.set_shader_param("action", action)
+	_cvi.material.set_shader_param("brush_pos", pos)
+	_cvi.material.set_shader_param("channel", channel)
+	_cvi.material.set_shader_param("region", region)
+
 func paint(pos: Vector2, brush: PaintBrush):
 	self.brush = brush
 	_cvi.material.set_shader_param("action", Action.PAINT)
