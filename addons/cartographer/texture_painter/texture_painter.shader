@@ -53,13 +53,6 @@ float sdf_squircle(vec2 p, float s, float n) {
 	return pow(abs(p.x), n) + pow(abs(p.y), n) - pow(s/2.0, n);
 }
 
-vec4 brush(vec2 uv, vec4 color) {
-//	return smoothstep(0.2, 0.1, length(uv - brush_pos)) * color;
-	color.a = smoothstep(0.1, 0.025, length(uv - brush_pos));
-	return color;
-//	return rectangle(uv, brush_pos, 0.25) * color;
-}
-
 float rectangle(vec2 samplePosition, vec2 halfSize){
     vec2 componentWiseEdgeDistance = abs(samplePosition) - halfSize;
     float outsideDistance = length(max(componentWiseEdgeDistance, 0));
@@ -109,41 +102,7 @@ void fragment() {
 	vec4 tt = texture(TEXTURE, SCREEN_UV);
 	vec4 bt = vec4(0);
 	
-//	bt = brush(brush_rel_uv, vec4(0.2, 0, 0, 0));
-//	float a = step(0.0, -1.0 * squircle(brush_pos - SCREEN_UV, 0.25, 4));
-//	float a = smoothstep(0.0, 0.3, sdf_rbox(brush_pos - SCREEN_UV, vec2(0.5), 0.5));
-//	float a = -1.0 * sdf_rbox(brush_pos - SCREEN_UV, vec2(0.25), 0.15);
-//	float a = -1.0 * sdf_rbox(brush_pos - SCREEN_UV, vec2(0.5), 0.5);
-//	float a = rectangle(brush_pos - SCREEN_UV, vec2(0.15, 0.15)) - 0.2;
-//	bt = vec4(1, 0, 0, a);
-//	bt = vec4(a, a, a, 1);
-//	bt = brush_tex(brush_rel_uv - region1.xy, brush_ratio * brush_scale) * brush_strength * brush_strength;
-//	bt = paint_region(brush_rel_uv, vec4(0))
-//	bt = vec4(1, 1, 1, bt.r);
-//	bt = vec4(clamp(sdf_circle(brush_rel_uv - region1.xy, 0.1) * -1.0, 0, 1), 0, 0, 1);
-//	float c = sdf_circle(brush_rel_uv - region1.xy, 0.1);
-//	if (c < 0.0) {
-//		bt = vec4(clamp(c * -1.0, 0, 1), 0, 0, 1);
-//	}
-//	c = sdf_circle(brush_rel_uv - region2.xy, 0.1);
-//	if (c < 0.0) {
-//		bt = vec4(clamp(c * -1.0, 0, 1), 0, 0, 1);
-//	}
-//	c = sdf_circle(brush_rel_uv - region3.xy, 0.1);
-//	if (c < 0.0) {
-//		bt = vec4(clamp(c * -1.0, 0, 1), 0, 0, 1);
-//	}
-//	c = sdf_circle(brush_rel_uv - region4.xy, 0.1);
-//	if (c < 0.0) {
-//		bt = vec4(clamp(c * -1.0, 0, 1), 0, 0, 1);
-//	}
-	
 	bt = paint_region(SCREEN_UV);
-	
-//	vec2 uv = SCREEN_UV;
-//	if (!within(uv, region1)) {
-//		bt = bt * vec4(0, 1, 1, 1);
-//	}
 	
 	if (action == NONE) {
 		COLOR = st;
@@ -159,6 +118,6 @@ void fragment() {
 //		COLOR = st + bt;
 	}
 	else if (action == ERASE) {
-		COLOR = brush(SCREEN_UV, vec4(0, 0, 0, 0));
+		COLOR = paint_region(SCREEN_UV) * vec4(0, 0, 0, 1);
 	}
 }
