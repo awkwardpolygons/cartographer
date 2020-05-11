@@ -3,14 +3,16 @@ extends CSGMesh
 class_name CartoTerrain, "res://addons/cartographer/terrain_icon.svg"
 
 export(Vector3) var size: Vector3 = Vector3(20, 20, 20) setget _set_size
-export(Texture) var height_map: Texture setget _set_height_map
-export(Texture) var flow_map: Texture
+export(Array, Texture) var textures = [] setget _set_textures
 
+var masks: Array = []
 var aabb: AABB
 var bbox: Array setget , _get_bbox
 var height_img: Image
 var csg: CSGMesh = self
 var texarr: TextureArray
+var msktex: ImageTexture
+var region = Vector2(0, 0)
 var painter: TexturePainter setget , _get_painter
 
 
@@ -30,17 +32,21 @@ func _get_bbox():
 		bbox = Geometry.build_box_planes(size/2)
 	return bbox
 
-func _set_height_map(t: Texture):
-	height_map = t
-
 func _get_painter():
 	if not painter:
 		painter = get_node("TexturePainter")
 	return painter
 
+func _set_textures(ta):
+	print(ta)
+	textures = ta
+
+#func _get_texture():
+#	pass
+
 func _init():
-#	print("Terrain _init", get_children())
-	pass
+	msktex = ImageTexture.new()
+	msktex.create(2048, 2048, false, Image.FORMAT_RGBA8)
 
 func _enter_tree():
 	init_mesh()
@@ -80,6 +86,11 @@ func init_painter():
 #		csg.material.albedo_texture = painter.get_texture()
 		csg.material.set_shader_param("terrain_size", size)
 		csg.material.set_shader_param("texture", painter.get_texture())
+
+func paint(action: int, pos: Vector2):
+	if not painter:
+		return
+	painter.paint(action, pos)
 
 func intersect_ray(from: Vector3, dir: Vector3):
 	# Recenter the `from` vector based on the inverse of the terrains
