@@ -111,11 +111,8 @@ void fragment() {
 		COLOR = vec4(0, 0, 0, 1);
 	}
 	else if (action == PAINT) {
-//		COLOR.rgb = mix(st.rgb, bt.rgb, bt.a);
 //		COLOR = blend_alpha(st, bt);
 		COLOR = blend_add(st, bt);
-//		COLOR = alpha_blend(st, bt);
-//		COLOR = st + bt;
 	}
 	else if (action == ERASE) {
 		COLOR = paint_region(SCREEN_UV) * vec4(0, 0, 0, 1);
