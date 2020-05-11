@@ -60,12 +60,6 @@ vec4 brush(vec2 uv, vec4 color) {
 //	return rectangle(uv, brush_pos, 0.25) * color;
 }
 
-vec4 blend_alpha(vec4 dst, vec4 src) {
-	float a = src.a + dst.a * (1.0 - src.a);
-	vec3 rgb = (src.rgb * src.a + dst.rgb * dst.a * (1.0 - src.a)) / a;
-	return vec4(rgb, a);
-}
-
 float rectangle(vec2 samplePosition, vec2 halfSize){
     vec2 componentWiseEdgeDistance = abs(samplePosition) - halfSize;
     float outsideDistance = length(max(componentWiseEdgeDistance, 0));
@@ -73,39 +67,37 @@ float rectangle(vec2 samplePosition, vec2 halfSize){
     return outsideDistance + insideDistance;
 }
 
+vec4 blend_alpha(vec4 dst, vec4 src) {
+	float a = src.a + dst.a * (1.0 - src.a);
+	vec3 rgb = (src.rgb * src.a + dst.rgb * dst.a * (1.0 - src.a)) / a;
+	return vec4(rgb, a);
+}
+
 vec4 blend_add(vec4 dst, vec4 src) {
 	return src + dst;
 }
 
-// IDEAS: Slide the clip margin on the brush as it gets closer to the edge of a region.
-
 vec4 paint_region(vec2 uv) {
 	vec4 regions[4] = { region1, region2, region3, region4 };
 	vec4 clr = vec4(0);
-	vec2 uv2 = uv - brush_pos/region_grid;
 	
-	vec2 p = brush_pos/region_grid;
-	vec2 pts[] = { p + region1.xy, p + region2.xy, p + region3.xy, p + region4.xy };
+	vec2 pos = brush_pos/region_grid;
+	vec2 pts[] = { pos + region1.xy, pos + region2.xy, pos + region3.xy, pos + region4.xy };
 	
 	for (int i = 0; i < pts.length(); i++) {
 		vec2 pt = uv - pts[i];
-		float c = sdf_circle(pt, 0.1);
+//		float c = sdf_circle(pt, 0.1);
+		float c = sdf_rbox(pt, vec2(0.1), 0.0);
 		if (c < 0.0) {
-			if ((pt.x + pts[i].x) < (0.5 + regions[i].x) && (pt.y + pts[i].y) < (0.5 + regions[i].y) && (pt.x + pts[i].x) > (regions[i].x) && (pt.y + pts[i].y) > (regions[i].y)) {
-				clr = vec4(0, clamp(c * -1.0, 0, 1), 0, 1);
+			if (within(pt + pts[i], regions[i])) {
+//				clr = vec4(0, clamp(c * -1.0, 0, 1), 0, 1);
+				clr = brush_tex(pt, vec2(0.1)) * brush_strength * brush_strength;
+//				if (i != region) {
+//					clr *= vec4(-1, -1, -1, 1);
+//				}
 			}
 		}
 	}
-	
-//	for (int i = 0; i < regions.length(); i++) {
-//		vec4 reg = regions[i];
-//		vec2 pos = uv2;
-//		float c = sdf_circle(pos, 0.1) * -1.0;
-////		clr = vec4(0, clamp(c, 0, 1), 0, 1);
-//		if (within(pos + reg.xy, reg)) {
-//			clr = vec4(0, clamp(c, 0, 1), 0, 1);
-//		}
-//	}
 	
 	return clr;
 }
