@@ -11,8 +11,8 @@ var painter: TexturePainter setget , _get_painter
 var aabb: AABB
 var bbox: Array setget , _get_bbox
 
-var texarr: TextureArray
-var msktex: ImageTexture
+var terrain_layers: TextureArray
+var terrain_masks: ImageTexture
 
 
 func _set_size(s: Vector3):
@@ -47,8 +47,9 @@ func _update_custom_aabb():
 	csg.set_custom_aabb(aabb)
 
 func _init():
-	msktex = ImageTexture.new()
-	msktex.create(2048, 2048, false, Image.FORMAT_RGBA8)
+	terrain_masks = ImageTexture.new()
+	terrain_masks.create(2048, 2048, false, Image.FORMAT_RGBA8)
+	terrain_layers = TextureArray.new()
 
 func _enter_tree():
 	init_mesh()
