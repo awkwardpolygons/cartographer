@@ -97,7 +97,6 @@ vec4 paint_regions(vec2 uv) {
 
 void fragment() {
 	vec2 brush_ratio = SCREEN_PIXEL_SIZE * vec2(textureSize(brush_mask, 0));
-	vec2 brush_rel_uv = SCREEN_UV - brush_pos/region_grid;
 	vec4 st = texture(SCREEN_TEXTURE, SCREEN_UV);
 	vec4 tt = texture(TEXTURE, SCREEN_UV);
 	vec4 bt = vec4(0);
@@ -115,6 +114,6 @@ void fragment() {
 		COLOR = blend_add(st, bt);
 	}
 	else if (action == ERASE) {
-		COLOR = paint_region(SCREEN_UV) * vec4(0, 0, 0, 1);
+		COLOR = bt * vec4(0, 0, 0, 1);
 	}
 }
