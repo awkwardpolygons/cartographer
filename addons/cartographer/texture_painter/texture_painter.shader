@@ -70,7 +70,7 @@ vec4 blend_add(vec4 dst, vec4 src) {
 	return src + dst;
 }
 
-vec4 paint_region(vec2 uv) {
+vec4 paint_regions(vec2 uv) {
 	vec4 regions[4] = { region1, region2, region3, region4 };
 	vec4 clr = vec4(0);
 	
@@ -102,7 +102,7 @@ void fragment() {
 	vec4 tt = texture(TEXTURE, SCREEN_UV);
 	vec4 bt = vec4(0);
 	
-	bt = paint_region(SCREEN_UV);
+	bt = paint_regions(SCREEN_UV);
 	
 	if (action == NONE) {
 		COLOR = st;
