@@ -5,15 +5,14 @@ class_name CartoTerrain, "res://addons/cartographer/terrain_icon.svg"
 export(Vector3) var size: Vector3 = Vector3(20, 20, 20) setget _set_size
 export(Array, Texture) var textures = [] setget _set_textures
 
-var masks: Array = []
+var csg: CSGMesh = self
+var painter: TexturePainter setget , _get_painter
+
 var aabb: AABB
 var bbox: Array setget , _get_bbox
-var height_img: Image
-var csg: CSGMesh = self
+
 var texarr: TextureArray
 var msktex: ImageTexture
-var region = Vector2(0, 0)
-var painter: TexturePainter setget , _get_painter
 
 
 func _set_size(s: Vector3):
@@ -41,8 +40,11 @@ func _set_textures(ta):
 	print(ta)
 	textures = ta
 
-#func _get_texture():
-#	pass
+# A custom AABB is needed because vertices are offset by the GPU, so we set
+# the custom AABB to `size`
+func _update_custom_aabb():
+	aabb = AABB(csg.transform.origin - Vector3(size.x/2, 0, size.z/2), size)
+	csg.set_custom_aabb(aabb)
 
 func _init():
 	msktex = ImageTexture.new()
@@ -57,12 +59,6 @@ func _enter_tree():
 #func _exit_tree():
 #	if painter:
 #		painter.queue_free()
-
-# A custom AABB is needed because vertices are offset by the GPU, so we set
-# the custom AABB to `size`
-func _update_custom_aabb():
-	aabb = AABB(csg.transform.origin - Vector3(size.x/2, 0, size.z/2), size)
-	csg.set_custom_aabb(aabb)
 
 func init_mesh():
 	if csg.mesh == null:
