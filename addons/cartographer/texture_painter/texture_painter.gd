@@ -16,7 +16,7 @@ var _shader = preload("res://addons/cartographer/texture_painter/texture_painter
 func _init():
 	#_vp = Viewport.new()
 	_vp = self
-	_vp.size = Vector2(512, 512)
+	_vp.size = Vector2(2048, 2048)
 	_vp.hdr = false
 	_vp.disable_3d = true
 	_vp.usage = Viewport.USAGE_2D
@@ -31,9 +31,9 @@ func _init():
 	_cvi.stretch_mode = TextureRect.STRETCH_SCALE
 	_vp.add_child(_cvi)
 	
+	_cvi.texture = load("res://largetex.tres")
 	_cvi.material = ShaderMaterial.new()
 	_cvi.material.shader = _shader
-	_cvi.texture = load("res://largetex.tres")
 #	_cvi.material.set_shader_param("texture", load("res://addons/cartographer/rect_green.png"))
 
 func _set_material(m: Material):
@@ -74,14 +74,9 @@ func paint_mask(action: int, pos: Vector2, layer: int):
 	_cvi.material.set_shader_param("channel", channel)
 	_cvi.material.set_shader_param("region", region)
 
-func paint(pos: Vector2, brush: PaintBrush):
-	self.brush = brush
-	_cvi.material.set_shader_param("action", Action.PAINT)
+func paint(action: int, pos: Vector2):
+	_cvi.material.set_shader_param("action", action)
 	_cvi.material.set_shader_param("brush_pos", pos)
 
 func stop():
 	_cvi.material.set_shader_param("action", Action.NONE)
-
-func erase(pos: Vector2):
-	_cvi.material.set_shader_param("action", Action.ERASE)
-	_cvi.material.set_shader_param("brush_pos", pos)
