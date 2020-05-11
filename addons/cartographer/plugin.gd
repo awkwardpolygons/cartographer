@@ -38,7 +38,7 @@ func handles(obj: Object):
 #	print("handles ", obj)
 	if obj is CartoBrush or obj is CartoTerrain:
 		return true
-	edit(null)
+#	edit(null)
 	return false
 
 func get_terrain_from(obj: Object):
@@ -103,9 +103,7 @@ func try_paint(camera, action):
 	if pos:
 		var tex_pos = (size/2 + pos) / size
 		var uv = Vector2(clamp(tex_pos.x, 0, 1), clamp(tex_pos.z, 0, 1))
-		if action == Action.PAINT:
-			terrain.painter.paint(uv, Cartographer.active_brush)
-		elif action == Action.ERASE:
-			terrain.painter.erase(uv)
+		terrain.painter.brush = Cartographer.active_brush
+		terrain.paint(action, uv)
 		return true
 	return false
