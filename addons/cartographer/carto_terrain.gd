@@ -138,16 +138,42 @@ func _hmap_intersect_ray(from: Vector3, to: Vector3, dir: Vector3):
 			return pos
 	return null
 
-#func update_layer_data():
-#	var layers = get_children()
-#	if texarr == null:
-#		texarr = TextureArray.new()
-#	texarr.create(512, 512, get_child_count(), Image.FORMAT_DXT5)
-#
-#	for i in range(len(layers)):
-#		var tex = layers[i].material.get_texture(SpatialMaterial.TEXTURE_ALBEDO)
-#		var img = tex.get_data()
-#		print(img.get_format(), Image.FORMAT_DXT5)
-#		texarr.set_layer_data(img, i)
-#
-#	csg.material.set_shader_param("layers", texarr)
+func _update_texture_layers():
+	terrain_layers.create(layers_size.x, layers_size.y, len(textures), Image.FORMAT_RGBA8)
+	
+	for i in len(textures):
+		var tex = textures[i]
+		if tex == null:
+			continue
+		var img = tex.get_data()
+		img.convert(Image.FORMAT_RGBA8)
+		terrain_layers.set_layer_data(img, i)
+	
+#	save_texarr(terrain_layers)
+	csg.material.set_shader_param("terrain_layers", terrain_layers)
+
+func save_texarr(arr, path, compression=2):
+	var file = File.new()
+	if file.open(path, File.WRITE) != 0:
+		push_error("Error opening %s file" % path)
+		return
+	
+	file.store_8(ord('G'))
+	file.store_8(ord('D'))
+	file.store_8(ord('A')) # Godot ArrayTexture
+	file.store_8(ord('T')) # Godot streamable texture
+	
+	file.store_32(arr.get_width())
+	file.store_32(arr.get_height())
+	file.store_32(arr.get_depth())
+	file.store_32(arr.flags)
+	file.store_32(arr.get_format())
+	file.store_32(compression) # Compression: 0 - lossless (PNG), 1 - vram, 2 - uncompressed
+	
+	
+	for i in arr.get_depth():
+		var img = arr.get_layer_data(i)
+		img.clear_mipmaps()
+		file.store_buffer(img.get_data())
+	
+	file.close()
