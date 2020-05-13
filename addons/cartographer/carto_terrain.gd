@@ -57,10 +57,10 @@ func _enter_tree():
 	_init_dir()
 	_init_terrrain_masks()
 	_init_terrain_layers()
-	init_mesh()
-	init_material()
+	_init_mesh()
+	_init_material()
 	if Engine.is_editor_hint():
-		init_painter()
+		_init_painter()
 
 func _init_dir():
 	var id = get_meta("uid")
@@ -86,18 +86,18 @@ func _init_terrain_layers():
 	terrain_layers = ResourceLoader.load(path)
 	csg.material.set_shader_param("terrain_layers", terrain_layers)
 
-func init_mesh():
+func _init_mesh():
 	if csg.mesh == null:
 		print("PlaneMesh.new()")
 		csg.mesh = PlaneMesh.new()
 		csg.mesh.size = Vector2(size.x, size.z)
 
-func init_material():
+func _init_material():
 	if csg.material == null:
 		print("ShaderMaterial.new()")
 		csg.material = ShaderMaterial.new()
 
-func init_painter():
+func _init_painter():
 #	print("TERRAIN CHILD COUNT: ", get_child_count())
 	if not painter:
 		print("TexturePainter.new()")
