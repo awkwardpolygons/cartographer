@@ -5,7 +5,7 @@ class_name CartoTerrain, "res://addons/cartographer/terrain_icon.svg"
 export(Vector3) var size: Vector3 = Vector3(20, 20, 20) setget _set_size
 export(Array, Texture) var textures = [] setget _set_textures
 
-var csg: CSGMesh = self
+var terrain: CSGMesh = self
 var painter: TexturePainter setget , _get_painter
 
 var aabb: AABB
@@ -22,10 +22,10 @@ func _set_size(s: Vector3):
 	bbox = Geometry.build_box_planes(size/2)
 	# Update the custom aabb when the size changes
 	_update_custom_aabb()
-	if csg.mesh:
-		csg.mesh.size = Vector2(s.x, s.z)
-	if csg.material:
-		csg.material.set_shader_param("terrain_size", s)
+	if terrain.mesh:
+		terrain.mesh.size = Vector2(s.x, s.z)
+	if terrain.material:
+		terrain.material.set_shader_param("terrain_size", s)
 
 func _get_bbox():
 	if len(bbox) == 0:
@@ -34,7 +34,8 @@ func _get_bbox():
 
 func _get_painter():
 	if not painter:
-		painter = get_node("TexturePainter")
+		if has_node("TexturePainter"):
+			painter = get_node("TexturePainter")
 	return painter
 
 func _set_textures(ta):
@@ -43,8 +44,8 @@ func _set_textures(ta):
 # A custom AABB is needed because vertices are offset by the GPU, so we set
 # the custom AABB to `size`
 func _update_custom_aabb():
-	aabb = AABB(csg.transform.origin - Vector3(size.x/2, 0, size.z/2), size)
-	csg.set_custom_aabb(aabb)
+	aabb = AABB(terrain.transform.origin - Vector3(size.x/2, 0, size.z/2), size)
+	terrain.set_custom_aabb(aabb)
 
 func _init():
 	pass
@@ -56,7 +57,7 @@ func _enter_tree():
 	
 	_init_dir()
 	_init_terrrain_masks()
-	_init_terrain_layers()
+	#_init_terrain_layers()
 	_init_mesh()
 	_init_material()
 	if Engine.is_editor_hint():
@@ -84,18 +85,19 @@ func _init_terrain_layers():
 		ta.set_layer_data(img, 0)
 		save_texarr(ta, path)
 	terrain_layers = ResourceLoader.load(path)
-	csg.material.set_shader_param("terrain_layers", terrain_layers)
+	terrain.material.set_shader_param("terrain_layers", terrain_layers)
 
 func _init_mesh():
-	if csg.mesh == null:
+	if terrain.mesh == null:
 		print("PlaneMesh.new()")
-		csg.mesh = PlaneMesh.new()
-		csg.mesh.size = Vector2(size.x, size.z)
+		var mesh = PlaneMesh.new()
+		mesh.size = Vector2(size.x, size.z)
+		terrain.mesh = mesh
 
 func _init_material():
-	if csg.material == null:
+	if terrain.material == null:
 		print("ShaderMaterial.new()")
-		csg.material = ShaderMaterial.new()
+		terrain.material = ShaderMaterial.new()
 
 func _init_painter():
 #	print("TERRAIN CHILD COUNT: ", get_child_count())
@@ -103,11 +105,11 @@ func _init_painter():
 		print("TexturePainter.new()")
 		painter = TexturePainter.new()
 		painter.name = "TexturePainter"
-		csg.add_child(painter)
-	if csg.material:
-#		csg.material.albedo_texture = painter.get_texture()
-		csg.material.set_shader_param("terrain_size", size)
-		csg.material.set_shader_param("terrain_masks", painter.get_texture())
+		terrain.add_child(painter)
+	if terrain.material:
+#		terrain.material.albedo_texture = painter.get_texture()
+		terrain.material.set_shader_param("terrain_size", size)
+		terrain.material.set_shader_param("terrain_masks", painter.get_texture())
 
 func paint(action: int, pos: Vector2):
 	if not painter:
@@ -175,7 +177,7 @@ func _update_texture_layers():
 		terrain_layers.set_layer_data(img, i)
 	
 #	save_texarr(terrain_layers)
-	csg.material.set_shader_param("terrain_layers", terrain_layers)
+	terrain.material.set_shader_param("terrain_layers", terrain_layers)
 
 func save_texarr(arr, path, compression=2):
 	var file = File.new()
