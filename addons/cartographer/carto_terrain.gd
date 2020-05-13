@@ -58,7 +58,7 @@ func _enter_tree():
 	
 	_init_dir()
 	_init_terrrain_masks()
-	#_init_terrain_layers()
+	_init_terrain_layers()
 	_init_mesh()
 	_init_material()
 	if Engine.is_editor_hint():
@@ -71,7 +71,6 @@ func _init_dir():
 	var path = data_part + terrain_part
 	data_dir = Directory.new()
 	data_dir.open(data_part)
-	print(data_dir.dir_exists(terrain_part))
 	if not data_dir.dir_exists(terrain_part):
 		data_dir.make_dir(terrain_part)
 	data_dir.open(path)
@@ -81,17 +80,12 @@ func _init_terrrain_masks():
 	terrain_masks.create(masks_size.x * 2, masks_size.y * 2, false, Image.FORMAT_RGBA8)
 
 func _init_terrain_layers():
-	var id = get_meta("uid")
-	var path = "res://addons/cartographer/data/terrain_%s/terrain_layers.texarr" % id
-	if not ResourceLoader.exists(path):
-		var ta = TextureArray.new()
-		ta.create(layers_size.x, layers_size.y, len(textures), Image.FORMAT_RGBA8)
-		var img = Image.new()
-		img.create(layers_size.x, layers_size.y, false, Image.FORMAT_RGBA8)
-		ta.set_layer_data(img, 0)
-		save_texarr(ta, path)
-	terrain_layers = ResourceLoader.load(path)
-	terrain.material.set_shader_param("terrain_layers", terrain_layers)
+	var filename = "terrain_layers.texarr"
+	if data_dir.file_exists(filename):
+		terrain_layers = ResourceLoader.load(data_dir.get_current_dir().plus_file(filename))
+	else:
+		terrain_layers = TextureArray.new()
+		terrain_layers.create(layers_size.x, layers_size.y, len(textures), Image.FORMAT_RGBA8)
 
 func _init_mesh():
 	if terrain.mesh == null:
