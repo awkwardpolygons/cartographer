@@ -11,9 +11,10 @@ var painter: TexturePainter setget , _get_painter
 var aabb: AABB
 var bbox: Array setget , _get_bbox
 
-var terrain_layers: TextureArray
-var terrain_masks: ImageTexture
-
+var layers_size: Vector2 = Vector2(1024, 1024)
+var masks_size: Vector2 = Vector2(1024, 1024)
+var terrain_layers: TextureArray = null
+var terrain_masks: ImageTexture = null
 
 func _set_size(s: Vector3):
 	size = s
@@ -37,9 +38,8 @@ func _get_painter():
 	return painter
 
 func _set_textures(ta):
-	print(ta)
 	textures = ta
-
+	
 # A custom AABB is needed because vertices are offset by the GPU, so we set
 # the custom AABB to `size`
 func _update_custom_aabb():
@@ -47,19 +47,44 @@ func _update_custom_aabb():
 	csg.set_custom_aabb(aabb)
 
 func _init():
-	terrain_masks = ImageTexture.new()
-	terrain_masks.create(2048, 2048, false, Image.FORMAT_RGBA8)
-	terrain_layers = TextureArray.new()
+	pass
 
 func _enter_tree():
+	if not has_meta("uid"):
+		# TODO: Improve this UID generator
+		set_meta("uid", hash([OS.get_unique_id(), OS.get_unix_time(), randi()]) % 999999)
+	
+	_init_dir()
+	_init_terrrain_masks()
+	_init_terrain_layers()
 	init_mesh()
 	init_material()
 	if Engine.is_editor_hint():
 		init_painter()
 
-#func _exit_tree():
-#	if painter:
-#		painter.queue_free()
+func _init_dir():
+	var id = get_meta("uid")
+	var path = "res://addons/cartographer/data/"
+	var dir = Directory.new()
+	dir.open(path)
+	dir.make_dir("terrain_%s/" % id)
+
+func _init_terrrain_masks():
+	terrain_masks = ImageTexture.new()
+	terrain_masks.create(masks_size.x * 2, masks_size.y * 2, false, Image.FORMAT_RGBA8)
+
+func _init_terrain_layers():
+	var id = get_meta("uid")
+	var path = "res://addons/cartographer/data/terrain_%s/terrain_layers.texarr" % id
+	if not ResourceLoader.exists(path):
+		var ta = TextureArray.new()
+		ta.create(layers_size.x, layers_size.y, len(textures), Image.FORMAT_RGBA8)
+		var img = Image.new()
+		img.create(layers_size.x, layers_size.y, false, Image.FORMAT_RGBA8)
+		ta.set_layer_data(img, 0)
+		save_texarr(ta, path)
+	terrain_layers = ResourceLoader.load(path)
+	csg.material.set_shader_param("terrain_layers", terrain_layers)
 
 func init_mesh():
 	if csg.mesh == null:
@@ -82,7 +107,7 @@ func init_painter():
 	if csg.material:
 #		csg.material.albedo_texture = painter.get_texture()
 		csg.material.set_shader_param("terrain_size", size)
-		csg.material.set_shader_param("texture", painter.get_texture())
+		csg.material.set_shader_param("terrain_masks", painter.get_texture())
 
 func paint(action: int, pos: Vector2):
 	if not painter:
