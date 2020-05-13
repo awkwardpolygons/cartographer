@@ -15,6 +15,7 @@ var layers_size: Vector2 = Vector2(1024, 1024)
 var masks_size: Vector2 = Vector2(1024, 1024)
 var terrain_layers: TextureArray = null
 var terrain_masks: ImageTexture = null
+var data_dir: Directory
 
 func _set_size(s: Vector3):
 	size = s
@@ -65,10 +66,15 @@ func _enter_tree():
 
 func _init_dir():
 	var id = get_meta("uid")
-	var path = "res://addons/cartographer/data/"
-	var dir = Directory.new()
-	dir.open(path)
-	dir.make_dir("terrain_%s/" % id)
+	var data_part = "res://addons/cartographer/data/"
+	var terrain_part = "terrain_%s/" % id
+	var path = data_part + terrain_part
+	data_dir = Directory.new()
+	data_dir.open(data_part)
+	print(data_dir.dir_exists(terrain_part))
+	if not data_dir.dir_exists(terrain_part):
+		data_dir.make_dir(terrain_part)
+	data_dir.open(path)
 
 func _init_terrrain_masks():
 	terrain_masks = ImageTexture.new()
