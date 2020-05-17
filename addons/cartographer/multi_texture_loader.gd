@@ -3,19 +3,15 @@ extends ResourceFormatLoader
 class_name MultiTextureLoader
 
 func get_recognized_extensions():
-	print("MultiTextureLoader.get_recognized_extensions: ")
 	return PoolStringArray(["mtex"])
 
 func get_resource_type(path):
-	print("MultiTextureLoader.get_resource_type: ", path)
 	return "TextureArray"
 
 func handles_type(typename):
-	print("MultiTextureLoader.handles_type: ", typename)
 	return typename == "TextureArray"
 
 func load(path, original_path):
-	print("MultiTextureLoader.load: ", path, ", ", original_path)
 	var mt
 	var f = File.new()
 	var err = f.open(path, File.READ)

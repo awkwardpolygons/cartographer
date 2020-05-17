@@ -3,17 +3,14 @@ extends ResourceFormatSaver
 class_name MultiTextureSaver
 
 func get_recognized_extensions(resource):
-#	print("MultiTextureSaver.get_recognized_extensions: ", resource)
 	if resource != null && resource is MultiTexture:
 		return PoolStringArray(["mtex"])
 	return PoolStringArray()
 
 func recognize(resource):
-	print("MultiTextureSaver.recognize: ", resource, resource is MultiTexture)
 	return resource != null && resource is MultiTexture
 
 func save(path, resource, flags):
-	print("MultiTextureSaver: ", path, resource, flags)
 	var d = {
 		"type": "MultiTexture",
 		"width": resource.get_width(),
