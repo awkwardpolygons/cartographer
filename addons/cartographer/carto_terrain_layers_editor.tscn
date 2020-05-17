@@ -1,0 +1,78 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://addons/cartographer/carto_terrain_layers_editor.gd" type="Script" id=1]
+[ext_resource path="res://addons/cartographer/icon_add.svg" type="Texture" id=2]
+[ext_resource path="res://addons/cartographer/icon_remove.svg" type="Texture" id=3]
+
+[node name="CartoTerrainLayersEditor" type="VBoxContainer"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="AddLayerFileDialog" type="FileDialog" parent="."]
+margin_right = 307.0
+margin_bottom = 130.0
+window_title = "Open File(s)"
+mode = 1
+filters = PoolStringArray( "*.png ; PNG Images", "*.jpg ; JPG Images" )
+
+[node name="TitleBox" type="HBoxContainer" parent="."]
+margin_right = 1024.0
+margin_bottom = 14.0
+
+[node name="HSeparator" type="HSeparator" parent="TitleBox"]
+margin_right = 338.0
+margin_bottom = 14.0
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="TitleBox"]
+margin_left = 342.0
+margin_right = 680.0
+margin_bottom = 14.0
+size_flags_horizontal = 3
+text = "Layers"
+align = 1
+
+[node name="HSeparator2" type="HSeparator" parent="TitleBox"]
+margin_left = 684.0
+margin_right = 1024.0
+margin_bottom = 14.0
+size_flags_horizontal = 3
+
+[node name="ButtonBox" type="HBoxContainer" parent="."]
+margin_top = 18.0
+margin_right = 1024.0
+margin_bottom = 40.0
+size_flags_horizontal = 3
+
+[node name="Add" type="Button" parent="ButtonBox"]
+margin_right = 510.0
+margin_bottom = 22.0
+size_flags_horizontal = 3
+text = "Add Layer"
+icon = ExtResource( 2 )
+
+[node name="Rem" type="Button" parent="ButtonBox"]
+margin_left = 514.0
+margin_right = 1024.0
+margin_bottom = 22.0
+size_flags_horizontal = 3
+text = "Remove"
+icon = ExtResource( 3 )
+
+[node name="Layers" type="ItemList" parent="."]
+margin_top = 44.0
+margin_right = 1024.0
+margin_bottom = 444.0
+rect_min_size = Vector2( 0, 400 )
+size_flags_horizontal = 3
+select_mode = 1
+fixed_icon_size = Vector2( 64, 64 )
+[connection signal="files_selected" from="AddLayerFileDialog" to="." method="_on_add_layer_files"]
+[connection signal="pressed" from="ButtonBox/Add" to="." method="_on_add_layer"]
+[connection signal="pressed" from="ButtonBox/Rem" to="." method="_on_rem_layer"]
