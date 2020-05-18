@@ -13,9 +13,9 @@ func _ready():
 	Layers.clear()
 	for tex in terrain_layers.textures.array:
 		if tex != null:
-			add_layer(tex)
+			Layers.add_item(tex.resource_path.replace("res://", "").split("/")[-1], tex, true)
 		else:
-			add_layer(null)
+			Layers.add_item("none", icon_checkerboard, true)
 	Layers.select(terrain_layers.selected)
 
 func _do(name: String, do_method: String, do_args: Array, undo_method: String, undo_args: Array):
@@ -40,10 +40,8 @@ func _on_add_layer_files(paths):
 			add_layer(tex)
 
 func add_layer(tex: Texture):
-	if tex != null:
+	if terrain_layers.textures.append(tex):
 		Layers.add_item(tex.resource_path.replace("res://", "").split("/")[-1], tex, true)
-	else:
-		Layers.add_item("none", icon_checkerboard, true)
 
 func _on_rem_layer():
 	while Layers.is_anything_selected():
