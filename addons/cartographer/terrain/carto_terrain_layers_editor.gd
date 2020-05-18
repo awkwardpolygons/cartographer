@@ -60,15 +60,18 @@ func _on_activate_layer(index):
 
 func _on_set_layer_file(path):
 	var tex = load(path)
-	set_layer(Layers.get_selected_items()[0], tex)
+	var idx = Layers.get_selected_items()[0]
+	var prev_tex = terrain_layers.textures.array[idx]
+	_do("Set Layer", "set_layer", [idx, tex], "set_layer", [idx, prev_tex])
 
 func set_layer(idx: int, tex: Texture):
 	if terrain_layers.textures.assign(idx, tex):
-		Layers.set_item_text(idx, tex.resource_path.replace("res://", "").split("/")[-1])
+		var txt = tex.resource_path.replace("res://", "").split("/")[-1] if tex else "none"
+		tex = tex if tex else icon_checkerboard
+		Layers.set_item_text(idx, txt)
 		Layers.set_item_icon(idx, tex)
 
 func _on_select_layer(idx):
-	prints("_on_select_layer:", idx)
 	set_selected(idx)
 
 func set_selected(idx: int):
