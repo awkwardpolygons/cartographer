@@ -40,10 +40,13 @@ func add_layer(tex: Texture):
 func _on_rem_layer():
 	while Layers.is_anything_selected():
 		var idx = Layers.get_selected_items()[0]
-		if terrain_layers.textures.remove(idx):
-			Layers.unselect(idx)
-			Layers.set_item_text(idx, "none")
-			Layers.set_item_icon(idx, icon_checkerboard)
+		rem_layer(idx)
+
+func rem_layer(idx: int):
+	if terrain_layers.textures.remove(idx):
+		Layers.unselect(idx)
+		Layers.set_item_text(idx, "none")
+		Layers.set_item_icon(idx, icon_checkerboard)
 
 func _on_activate_layer(index):
 	AddLayerFileDialog.mode = FileDialog.MODE_OPEN_FILE
