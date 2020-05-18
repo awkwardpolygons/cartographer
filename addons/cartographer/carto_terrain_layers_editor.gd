@@ -11,7 +11,7 @@ func _ready():
 	print("Editor._ready:", terrain_layers, len(terrain_layers.textures.array))
 	for tex in terrain_layers.textures.array:
 		if tex != null:
-			add_layer(tex.resource_path)
+			add_layer(tex)
 		else:
 			add_layer(null)
 	Layers.select(terrain_layers.selected)
