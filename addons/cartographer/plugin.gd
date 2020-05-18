@@ -10,9 +10,13 @@ var editor = get_editor_interface()
 var terrain: CartoTerrain
 var brush: CartoBrush
 var do_paint: bool = false
+var inspector_plugin: CartoTerrainInspector
 
 func _init():
 	add_autoload_singleton("Cartographer", "res://addons/cartographer/cartographer_singleton.gd")
+	Cartographer.undo_redo = get_undo_redo()
+	inspector_plugin = CartoTerrainInspector.new()
+	add_inspector_plugin(inspector_plugin)
 
 func _enter_tree():
 	add_control_to_dock(EditorPlugin.DOCK_SLOT_RIGHT_UL, brushes_panel)
