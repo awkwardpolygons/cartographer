@@ -14,6 +14,7 @@ func _ready():
 			add_layer(tex.resource_path)
 		else:
 			add_layer(null)
+	Layers.select(terrain_layers.selected)
 
 func _exit_tree():
 	terrain_layers = null
@@ -55,3 +56,6 @@ func set_layer(idx: int, tex: Texture):
 	if terrain_layers.textures.assign(idx, tex):
 		Layers.set_item_text(idx, tex.resource_path.replace("res://", "").split("/")[-1])
 		Layers.set_item_icon(idx, tex)
+
+func _on_select_layer(idx):
+	terrain_layers.selected = idx

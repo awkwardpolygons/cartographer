@@ -78,3 +78,4 @@ fixed_icon_size = Vector2( 64, 64 )
 [connection signal="pressed" from="ButtonBox/Add" to="." method="_on_add_layer"]
 [connection signal="pressed" from="ButtonBox/Rem" to="." method="_on_rem_layer"]
 [connection signal="item_activated" from="Layers" to="." method="_on_activate_layer"]
+[connection signal="item_selected" from="Layers" to="." method="_on_select_layer"]
