@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/icon_remove.svg-b9bd2956eb9d02eda3fd11a2e3f79772.stex"
+path="res://.import/icon_checkerboard.svg-f7291fd2a8449126a9cb7decbaae9608.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://addons/cartographer/icon_remove.svg"
-dest_files=[ "res://.import/icon_remove.svg-b9bd2956eb9d02eda3fd11a2e3f79772.stex" ]
+source_file="res://addons/cartographer/icons/icon_checkerboard.svg"
+dest_files=[ "res://.import/icon_checkerboard.svg-f7291fd2a8449126a9cb7decbaae9608.stex" ]
 
 [params]
 
