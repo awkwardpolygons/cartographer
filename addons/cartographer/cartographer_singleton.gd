@@ -3,6 +3,7 @@ extends Node
 
 var brushes: PaintBrushes
 var active_brush: PaintBrush setget _set_active_brush, _get_active_brush
+var undo_redo: UndoRedo
 
 signal active_brush_changed
 

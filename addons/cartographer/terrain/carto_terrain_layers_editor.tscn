@@ -71,7 +71,6 @@ margin_right = 1024.0
 margin_bottom = 444.0
 rect_min_size = Vector2( 0, 400 )
 size_flags_horizontal = 3
-select_mode = 1
 fixed_icon_size = Vector2( 64, 64 )
 [connection signal="file_selected" from="AddLayerFileDialog" to="." method="_on_set_layer_file"]
 [connection signal="files_selected" from="AddLayerFileDialog" to="." method="_on_add_layer_files"]
