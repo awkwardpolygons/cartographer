@@ -62,4 +62,8 @@ func set_layer(idx: int, tex: Texture):
 		Layers.set_item_icon(idx, tex)
 
 func _on_select_layer(idx):
+	set_selected(idx)
+
+func set_selected(idx: int):
 	terrain_layers.selected = idx
+	Layers.select(idx)
