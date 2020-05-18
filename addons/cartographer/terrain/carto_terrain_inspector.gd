@@ -1,7 +1,7 @@
 extends EditorInspectorPlugin
 class_name CartoTerrainInspector
 
-var Editor = preload("res://addons/cartographer/carto_terrain_layers_editor.tscn")
+var Editor = preload("res://addons/cartographer/terrain/carto_terrain_layers_editor.tscn")
 
 func can_handle(object):
 	return object is CartoTerrain

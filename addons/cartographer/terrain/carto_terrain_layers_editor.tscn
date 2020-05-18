@@ -1,8 +1,8 @@
 [gd_scene load_steps=4 format=2]
 
-[ext_resource path="res://addons/cartographer/carto_terrain_layers_editor.gd" type="Script" id=1]
-[ext_resource path="res://addons/cartographer/icon_add.svg" type="Texture" id=2]
-[ext_resource path="res://addons/cartographer/icon_remove.svg" type="Texture" id=3]
+[ext_resource path="res://addons/cartographer/terrain/carto_terrain_layers_editor.gd" type="Script" id=1]
+[ext_resource path="res://addons/cartographer/icons/icon_remove.svg" type="Texture" id=2]
+[ext_resource path="res://addons/cartographer/icons/icon_add.svg" type="Texture" id=3]
 
 [node name="CartoTerrainLayersEditor" type="VBoxContainer"]
 anchor_right = 1.0
@@ -55,7 +55,7 @@ margin_right = 510.0
 margin_bottom = 22.0
 size_flags_horizontal = 3
 text = "Add Layer"
-icon = ExtResource( 2 )
+icon = ExtResource( 3 )
 
 [node name="Rem" type="Button" parent="ButtonBox"]
 margin_left = 514.0
@@ -63,7 +63,7 @@ margin_right = 1024.0
 margin_bottom = 22.0
 size_flags_horizontal = 3
 text = "Remove"
-icon = ExtResource( 3 )
+icon = ExtResource( 2 )
 
 [node name="Layers" type="ItemList" parent="."]
 margin_top = 44.0

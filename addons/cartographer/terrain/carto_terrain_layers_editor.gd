@@ -2,6 +2,7 @@ tool
 extends Control
 
 var terrain_layers: CartoTerrainLayers
+var icon_checkerboard = preload("res://addons/cartographer/icons/icon_checkerboard.svg")
 
 onready var AddLayerFileDialog = find_node("AddLayerFileDialog")
 onready var Layers = find_node("Layers")
@@ -34,7 +35,7 @@ func add_layer(tex: Texture):
 	if tex != null:
 		Layers.add_item(tex.resource_path.replace("res://", "").split("/")[-1], tex, true)
 	else:
-		Layers.add_item("none", load("res://addons/cartographer/icon_checkerboard.svg"), true)
+		Layers.add_item("none", icon_checkerboard, true)
 
 func _on_rem_layer():
 	while Layers.is_anything_selected():
@@ -42,7 +43,7 @@ func _on_rem_layer():
 		if terrain_layers.textures.remove(idx):
 			Layers.unselect(idx)
 			Layers.set_item_text(idx, "none")
-			Layers.set_item_icon(idx, load("res://addons/cartographer/icon_checkerboard.svg"))
+			Layers.set_item_icon(idx, icon_checkerboard)
 
 func _on_activate_layer(index):
 	AddLayerFileDialog.mode = FileDialog.MODE_OPEN_FILE

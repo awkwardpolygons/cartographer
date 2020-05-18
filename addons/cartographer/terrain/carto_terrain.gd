@@ -13,9 +13,11 @@ var bbox: Array setget , _get_bbox
 
 var layers_size: Vector2 = Vector2(1024, 1024)
 var masks_size: Vector2 = Vector2(1024, 1024)
-var terrain_layers: TextureArray = null
+export var terrain_layers: TextureArray = null
 var terrain_masks: ImageTexture = null
 var data_dir: Directory
+const terrain_layers_filename = "terrain_layers.texarr"
+export(Resource) var terrain_layers2
 
 func _set_size(s: Vector3):
 	size = s
@@ -41,6 +43,8 @@ func _get_painter():
 
 func _set_textures(ta):
 	textures = ta
+	if len(ta) > 0 && ta[-1] != null:
+		_update_texture_layers()
 	
 # A custom AABB is needed because vertices are offset by the GPU, so we set
 # the custom AABB to `size`
@@ -48,8 +52,13 @@ func _update_custom_aabb():
 	aabb = AABB(terrain.transform.origin - Vector3(size.x/2, 0, size.z/2), size)
 	terrain.set_custom_aabb(aabb)
 
-func _init():
-	pass
+#func _init():
+#	print('_init')
+
+#func _notification(what):
+#	print('_notification: ', what)
+#	if what == 18:
+#		terrain.material.set_shader_param("terrain_layers2", terrain_layers)
 
 func _enter_tree():
 	if not has_meta("uid"):
@@ -57,12 +66,13 @@ func _enter_tree():
 		set_meta("uid", hash([OS.get_unique_id(), OS.get_unix_time(), randi()]) % 999999)
 	
 	_init_dir()
-	_init_terrrain_masks()
-	_init_terrain_layers()
-	_init_mesh()
-	_init_material()
-	if Engine.is_editor_hint():
-		_init_painter()
+	terrain_layers2 = CartoTerrainLayers.new(data_dir.get_current_dir())
+#	_init_terrrain_masks()
+#	_init_terrain_layers()
+#	_init_mesh()
+#	_init_material()
+#	if Engine.is_editor_hint():
+#		_init_painter()
 
 func _init_dir():
 	var id = get_meta("uid")
@@ -80,12 +90,13 @@ func _init_terrrain_masks():
 	terrain_masks.create(masks_size.x * 2, masks_size.y * 2, false, Image.FORMAT_RGBA8)
 
 func _init_terrain_layers():
-	var filename = "terrain_layers.texarr"
-	if data_dir.file_exists(filename):
-		terrain_layers = ResourceLoader.load(data_dir.get_current_dir().plus_file(filename))
+	var path = data_dir.get_current_dir().plus_file(terrain_layers_filename)
+	if data_dir.file_exists(terrain_layers_filename):
+		terrain_layers = ResourceLoader.load(path)
 	else:
 		terrain_layers = TextureArray.new()
 		terrain_layers.create(layers_size.x, layers_size.y, len(textures), Image.FORMAT_RGBA8)
+	terrain_layers.take_over_path(path)
 
 func _init_mesh():
 	if terrain.mesh == null:
@@ -98,6 +109,7 @@ func _init_material():
 	if terrain.material == null:
 		print("ShaderMaterial.new()")
 		terrain.material = ShaderMaterial.new()
+		terrain.material.shader = load("res://addons/cartographer/terrain.shader")
 
 func _init_painter():
 #	print("TERRAIN CHILD COUNT: ", get_child_count())
@@ -166,6 +178,8 @@ func _hmap_intersect_ray(from: Vector3, to: Vector3, dir: Vector3):
 	return null
 
 func _update_texture_layers():
+#	terrain_layers = TextureArray.new()
+	print("_update_texture_layers: ", terrain_layers)
 	terrain_layers.create(layers_size.x, layers_size.y, len(textures), Image.FORMAT_RGBA8)
 	
 	for i in len(textures):
@@ -176,8 +190,15 @@ func _update_texture_layers():
 		img.convert(Image.FORMAT_RGBA8)
 		terrain_layers.set_layer_data(img, i)
 	
-#	save_texarr(terrain_layers)
+	print("terrain_layers: ", terrain_layers, terrain_layers.get_depth())
 	terrain.material.set_shader_param("terrain_layers", terrain_layers)
+	
+	if data_dir == null:
+		print("data_dir: ", data_dir)
+		# data_dir not yet initialized, skipping
+		return
+	var path = data_dir.get_current_dir().plus_file(terrain_layers_filename)
+	save_texarr(terrain_layers, path)
 
 func save_texarr(arr, path, compression=2):
 	var file = File.new()
@@ -197,9 +218,10 @@ func save_texarr(arr, path, compression=2):
 	file.store_32(arr.get_format())
 	file.store_32(compression) # Compression: 0 - lossless (PNG), 1 - vram, 2 - uncompressed
 	
-	
+	print("save_texarr: ", terrain_layers, terrain_layers.get_depth(), terrain_layers.data)
 	for i in arr.get_depth():
 		var img = arr.get_layer_data(i)
+		print("save_texarr: ", img)
 		img.clear_mipmaps()
 		file.store_buffer(img.get_data())
 	
