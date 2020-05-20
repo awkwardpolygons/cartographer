@@ -17,7 +17,9 @@ func _init():
 	#_vp = Viewport.new()
 	_vp = self
 	_vp.size = Vector2(2048, 2048)
+	_vp.transparent_bg = true
 	_vp.hdr = false
+	_vp.keep_3d_linear = true
 	_vp.disable_3d = true
 	_vp.usage = Viewport.USAGE_2D
 	_vp.render_target_v_flip = true
