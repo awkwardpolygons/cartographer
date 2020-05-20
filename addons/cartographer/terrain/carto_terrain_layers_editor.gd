@@ -37,8 +37,10 @@ func _on_add_layer():
 func _on_add_layer_files(paths):
 	for path in paths:
 		var tex = load(path)
-		if terrain_layers.textures.append(tex):
-			add_layer(tex)
+#		if terrain_layers.textures.append(tex):
+#			add_layer(tex)
+		var idx = len(terrain_layers.textures.array)
+		_do("Add Layer", "add_layer", [tex], "rem_layer", [idx])
 
 func add_layer(tex: Texture):
 	if terrain_layers.textures.append(tex):
