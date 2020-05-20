@@ -1,4 +1,5 @@
 shader_type canvas_item;
+render_mode blend_disabled, unshaded;
 
 uniform sampler2D brush_mask;
 uniform int action = 0;
