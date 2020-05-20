@@ -36,13 +36,7 @@ func encloses_point(point: Vector3):
 	return _aabb.has_point(point)
 
 func intersect_ray(from: Vector3, dir: Vector3, hmap: Texture = null):
-	# Recenter the `from` vector based on the inverse of the terrains
-	# transform, because intersections are based around the origin.
-#	from = self.transform.xform_inv(from)
-#	from = from - position
-	prints(from, dir)
 	var pts = _bbox_intersect_ray(from, dir)
-	prints(pts)
 	
 	if len(pts) >= 2:
 		pts.sort_custom(self, "_sort_intersect_points")
@@ -64,7 +58,6 @@ func _bbox_intersect_ray(from: Vector3, dir: Vector3, margin: float=0.04):
 	var pts = []
 	for plane in _bounds:
 		var pt = plane.intersects_ray(from, dir)
-		prints("Point: ", pt)
 		if pt == null or abs(pt.x) > size.x/2 + margin or abs(pt.y) > size.y/2 + margin or abs(pt.z) > size.z/2 + margin:
 			continue
 		pt.y +=  size.y/2
