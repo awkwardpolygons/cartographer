@@ -9,7 +9,6 @@ func _init():
 
 func create(width: int, height: int, depth: int, format: int, flags: int = 4):
 	.create(width, height, depth, format, flags)
-	array.resize(depth)
 
 func assign(idx: int, tex: Texture):
 	if idx < get_depth():
@@ -19,9 +18,11 @@ func assign(idx: int, tex: Texture):
 	return false
 
 func _assign(idx: int, tex: Texture):
-	var img = tex.get_data()
-	if img.get_format() != get_format():
-		img.convert(get_format())
+	var img = null
+	if tex != null:
+		img = tex.get_data()
+		if img.get_format() != get_format():
+			img.convert(get_format())
 	set_layer_data(img, idx)
 
 func append(tex: Texture):
