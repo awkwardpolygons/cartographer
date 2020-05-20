@@ -16,7 +16,8 @@ func _ready():
 			Layers.add_item(tex.resource_path.replace("res://", "").split("/")[-1], tex, true)
 		else:
 			Layers.add_item("none", icon_checkerboard, true)
-	Layers.select(terrain_layers.selected)
+	if Layers.get_item_count() > 0:
+		Layers.select(terrain_layers.selected)
 
 func _do(name: String, do_method: String, do_args: Array, undo_method: String, undo_args: Array):
 	prints(do_method, do_args, undo_method, undo_args)
