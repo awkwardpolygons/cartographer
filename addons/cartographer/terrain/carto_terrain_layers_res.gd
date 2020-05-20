@@ -6,7 +6,7 @@ export(String) var directory: String
 export(int) var resolution: int = 1024
 export(TextureArray) var textures
 export(Texture) var masks: Texture
-export(Vector3) var uv1_scale = Vector3(1, 1, 1)
+export(Vector2) var uv1_scale = Vector2(1.0, 1.0)
 export(int) var selected: int = 0
 const textures_filename = "terrain_textures.mtex"
 const masks_filename = "terrain_masks.tres"
