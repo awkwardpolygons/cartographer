@@ -6,10 +6,11 @@ export(String) var directory: String
 export(int) var resolution: int = 1024
 export(TextureArray) var textures
 export(Texture) var masks: Texture
+export(Vector3) var uv1_scale = Vector3(1, 1, 1)
 export(int) var selected: int = 0
 const textures_filename = "terrain_textures.mtex"
 const masks_filename = "terrain_masks.tres"
-const max_layers = 16
+const MAX_LAYERS = 16
 
 func _init(dir: String):
 	directory = dir
@@ -21,10 +22,9 @@ func _init_textures():
 	if ResourceLoader.exists(path):
 		textures = ResourceLoader.load(path)
 		print("CartoTerrainLayers._init_textures: load ", textures, ", ", textures.array)
-#		textures.set_script(load("res://addons/cartographer/multi_texture.gd"))
 	else:
 		textures = MultiTexture.new()
-		textures.create(resolution, resolution, max_layers, Image.FORMAT_RGBA8)
+		textures.create(resolution, resolution, MAX_LAYERS, Image.FORMAT_RGBA8, Texture.FLAG_REPEAT)
 		print("CartoTerrainLayers._init_textures: create ", textures, ", ", len(textures.array))
 	textures.take_over_path(path)
 	print("CartoTerrainLayers._init_textures: ", textures, ", ", len(textures.array))
