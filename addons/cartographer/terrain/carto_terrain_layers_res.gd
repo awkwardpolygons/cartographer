@@ -23,8 +23,8 @@ func _init_textures():
 		textures = ResourceLoader.load(path)
 		print("CartoTerrainLayers._init_textures: load ", textures, ", ", textures.array)
 	else:
-		textures = MultiTexture.new()
-		textures.create(resolution, resolution, MAX_LAYERS, Image.FORMAT_RGBA8, Texture.FLAG_REPEAT)
+		textures = MultiTexture.new(MAX_LAYERS)
+#		textures.create(resolution, resolution, MAX_LAYERS, Image.FORMAT_RGBA8, Texture.FLAG_REPEAT)
 		print("CartoTerrainLayers._init_textures: create ", textures, ", ", len(textures.array))
 	textures.take_over_path(path)
 	print("CartoTerrainLayers._init_textures: ", textures, ", ", len(textures.array))
