@@ -29,6 +29,6 @@ func load(path, original_path):
 	mt.create(d.width, d.height, d.depth, d.format, d.flags)
 	mt.array.resize(len(d.array))
 	for i in len(d.array):
-		mt.array[i] = load(d.array[i])
+		mt.assign(i, load(d.array[i]))
 	f.close()
 	return mt
