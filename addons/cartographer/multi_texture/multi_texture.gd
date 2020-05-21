@@ -3,8 +3,10 @@ extends TextureArray
 class_name MultiTexture
 
 export(Array, Texture) var array
+var _depth: int
 
-func _init():
+func _init(depth=16):
+	_depth = depth
 	array = []
 
 func assign(idx: int, tex: Texture):
