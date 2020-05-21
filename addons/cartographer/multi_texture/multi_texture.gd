@@ -7,9 +7,6 @@ export(Array, Texture) var array
 func _init():
 	array = []
 
-func create(width: int, height: int, depth: int, format: int, flags: int = 4):
-	.create(width, height, depth, format, flags)
-
 func assign(idx: int, tex: Texture):
 	if idx < get_depth():
 		array[idx] = tex
@@ -32,9 +29,20 @@ func append(tex: Texture):
 		return true
 	return false
 
-func remove(idx: int):
-	if idx < get_depth():
-		array[idx] = null
-		set_layer_data(null, idx)
+func insert(idx: int, tex: Texture):
+	if len(array) < get_depth():
+		array.insert(idx, tex)
+		_rebuild(idx)
 		return true
 	return false
+
+func remove(idx: int):
+	if idx < get_depth():
+		array.remove(idx)
+		_rebuild(idx)
+		return true
+	return false
+
+func _rebuild(from:int=0):
+	for idx in range(from, min(len(array), get_depth())):
+		_assign(idx, array[idx])
