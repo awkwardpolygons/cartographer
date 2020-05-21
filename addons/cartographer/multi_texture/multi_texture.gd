@@ -8,7 +8,7 @@ func _init():
 	array = []
 
 func assign(idx: int, tex: Texture):
-	if idx < get_depth():
+	if idx < min(len(array), get_depth()):
 		array[idx] = tex
 		_assign(idx, tex)
 		return true
@@ -37,7 +37,7 @@ func insert(idx: int, tex: Texture):
 	return false
 
 func remove(idx: int):
-	if idx < get_depth():
+	if idx < min(len(array), get_depth()):
 		array.remove(idx)
 		_rebuild(idx)
 		return true
