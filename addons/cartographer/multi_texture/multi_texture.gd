@@ -20,15 +20,21 @@ func _assign(idx: int, tex: Texture):
 	var img = null
 	if tex != null:
 		img = tex.get_data()
-		if img.get_format() != get_format():
-			img.convert(get_format())
+		if img and img.get_format() != get_format():
+			push_error("Error: MultiTexture: Format mismatch %s -> %s, all your textures must be the same format" % [img.get_format(), get_format()])
+			return ERR_INVALID_DATA
 	set_layer_data(img, idx)
+	return OK
 
 func append(tex: Texture):
+	prints("_depth:", _depth)
+	if get_depth() == 0:
+		create(tex.get_width(), tex.get_height(), _depth, tex.get_data().get_format(), tex.flags)
 	if len(array) < get_depth():
-		array.append(tex)
-		_assign(len(array) - 1, tex)
-		return true
+		var err = _assign(len(array), tex)
+		if err == OK:
+			array.append(tex)
+			return true
 	return false
 
 func insert(idx: int, tex: Texture):
