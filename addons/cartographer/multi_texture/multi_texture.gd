@@ -5,7 +5,7 @@ class_name MultiTexture
 export(Array, Texture) var array
 var _depth: int
 
-func _init(depth=16):
+func _init(depth:int=16):
 	_depth = depth
 	array = []
 
@@ -27,9 +27,10 @@ func _assign(idx: int, tex: Texture):
 	return OK
 
 func append(tex: Texture):
-	prints("_depth:", _depth)
 	if get_depth() == 0:
-		create(tex.get_width(), tex.get_height(), _depth, tex.get_data().get_format(), tex.flags)
+		# BUG: Calling create internally causes blank textures, an initial create
+		# externally is needed, even if it is just replaced here, see CartoTerrainLayers
+		create(tex.get_width(), tex.get_height(), _depth, tex.get_data().get_format(), Texture.FLAGS_DEFAULT)
 	if len(array) < get_depth():
 		var err = _assign(len(array), tex)
 		if err == OK:
