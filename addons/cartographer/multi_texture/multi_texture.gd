@@ -44,5 +44,7 @@ func remove(idx: int):
 	return false
 
 func _rebuild(from:int=0):
-	for idx in range(from, min(len(array), get_depth())):
-		_assign(idx, array[idx])
+	var arr_len = len(array)
+	for idx in range(from, get_depth()):
+		var tex = array[idx] if idx < arr_len else null
+		_assign(idx, tex)
