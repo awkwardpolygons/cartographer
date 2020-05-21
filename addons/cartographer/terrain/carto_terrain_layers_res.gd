@@ -24,7 +24,10 @@ func _init_textures():
 		print("CartoTerrainLayers._init_textures: load ", textures, ", ", textures.array)
 	else:
 		textures = MultiTexture.new(MAX_LAYERS)
-#		textures.create(resolution, resolution, MAX_LAYERS, Image.FORMAT_RGBA8, Texture.FLAG_REPEAT)
+		# BUG: Create the MultiTexture here with depth=0 even though we re-create
+		# it (internally) when we add the first texture, because creating it
+		# automatically, when adding, causes nothing to render, dunno why.
+		textures.create(resolution, resolution, 0, Image.FORMAT_RGBA8, Texture.FLAGS_DEFAULT)
 		print("CartoTerrainLayers._init_textures: create ", textures, ", ", len(textures.array))
 	textures.take_over_path(path)
 	print("CartoTerrainLayers._init_textures: ", textures, ", ", len(textures.array))
