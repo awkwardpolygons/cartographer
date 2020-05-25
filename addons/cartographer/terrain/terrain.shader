@@ -31,8 +31,13 @@ void vertex() {
 	VERTEX += off;
 	// If the vertex has moved beyond the bounds, set clipped as 1.0
 	clipped = abs(VERTEX.x) > terrain_size.x / 2.0 || abs(VERTEX.z) > terrain_size.z / 2.0 ? 1.0 : 0.0;
-//	VERTEX.y = texture(terrain_height, UV).r * terrain_size.y;
-//	UV = UV * uv1_scale;
+	
+	// If the vertex has moved beyond the bounds, discard it by setting it to
+	// Inf or NaN. Is this a stable alternative to `discard` in the fragment shader?
+	if (clipped > 0.0) {
+//		VERTEX = vec3(sqrt(-1.0)); // NaN
+		VERTEX = vec3(1.0/0.0); // Inf
+	}
 }
 
 float get_channel(vec4 val, int idx) {
@@ -51,9 +56,9 @@ float get_channel(vec4 val, int idx) {
 
 void fragment() {
 	// If the vertex has moved beyond the bounds, discard
-	if (clipped > 0.0) {
-		discard;
-	}
+//	if (clipped > 0.0) {
+//		discard;
+//	}
 	
 //	vec4 mask = texture(terrain_masks, UV / uv1_scale);
 //	vec4 color = texture(terrain_textures, vec3(UV.xy, 0));
