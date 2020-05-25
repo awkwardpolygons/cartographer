@@ -8,7 +8,6 @@ var _action = Action.NONE
 var brushes_panel = BrushesPanel.instance()
 var editor = get_editor_interface()
 var terrain: CartoTerrain
-var brush: CartoBrush
 var do_paint: bool = false
 var inspector_plugin: CartoTerrainInspector
 
@@ -40,7 +39,7 @@ func get_plugin_name():
 # TODO: Investigate MultiNodeEdit
 func handles(obj: Object):
 #	print("handles ", obj)
-	if obj is CartoBrush or obj is CartoTerrain:
+	if obj is CartoTerrain:
 		return true
 #	edit(null)
 	return false
@@ -48,23 +47,12 @@ func handles(obj: Object):
 func get_terrain_from(obj: Object):
 	if obj is EditorSelection:
 		obj = obj.get_selected_nodes()[0]
-	if obj is CartoBrush:
-		obj = obj.get_parent()
 	if obj is CartoTerrain:
 		return obj
 	return null
 
-func get_brush_from(obj: Object):
-	if obj is EditorSelection:
-		obj = obj.get_selected_nodes()[0]
-	if obj is CartoBrush:
-		return obj
-	return null
-
 func edit(obj: Object):
-#	print("EDIT", obj)
 	terrain = get_terrain_from(obj)
-	brush = get_brush_from(obj)
 
 func make_visible(visible):
 	pass
