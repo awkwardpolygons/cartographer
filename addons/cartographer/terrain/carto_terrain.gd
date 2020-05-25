@@ -2,7 +2,7 @@ tool
 extends MeshInstance
 class_name CartoTerrain, "res://addons/cartographer/terrain_icon.svg"
 
-export(Vector3) var size: Vector3 = Vector3(20, 20, 20) setget _set_size
+export(Vector3) var size: Vector3 = Vector3(256, 64, 256) setget _set_size
 export(Resource) var terrain_layers
 
 var terrain: MeshInstance = self
@@ -63,10 +63,7 @@ func _enter_tree():
 func _init_mesh():
 	if terrain.mesh == null:
 		print("PlaneMesh.new()")
-		var mesh = PlaneMesh.new()
-		mesh.size = Vector2(size.x, size.z)
-		mesh.subdivide_width = 32
-		mesh.subdivide_depth = 32
+		var mesh = load("res://addons/cartographer/meshes/clipmap_256.obj")
 		terrain.mesh = mesh
 
 func _init_material():
