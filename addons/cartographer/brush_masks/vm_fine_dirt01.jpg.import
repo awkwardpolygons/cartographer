@@ -1,0 +1,34 @@
+[remap]
+
+importer="texture"
+type="StreamTexture"
+path="res://.import/vm_fine_dirt01.jpg-2e65d3d40a967af3e0f7acb47b122e5a.stex"
+metadata={
+"vram_texture": false
+}
+
+[deps]
+
+source_file="res://addons/cartographer/brush_masks/vm_fine_dirt01.jpg"
+dest_files=[ "res://.import/vm_fine_dirt01.jpg-2e65d3d40a967af3e0f7acb47b122e5a.stex" ]
+
+[params]
+
+compress/mode=0
+compress/lossy_quality=0.7
+compress/hdr_mode=0
+compress/bptc_ldr=0
+compress/normal_map=0
+flags/repeat=0
+flags/filter=true
+flags/mipmaps=false
+flags/anisotropic=false
+flags/srgb=2
+process/fix_alpha_border=true
+process/premult_alpha=false
+process/HDR_as_SRGB=false
+process/invert_color=false
+stream=false
+size_limit=0
+detect_3d=true
+svg/scale=1.0
