@@ -34,11 +34,13 @@ void clipmap(vec3 cam, inout vec3 vtx, inout vec2 uv, inout float clp) {
 void vertex() {
 	clipmap(CAMERA_MATRIX[3].xyz, VERTEX, UV, clipped);
 	
+	UV *= uv1_scale;
+	
 	// If the vertex has moved beyond the bounds, discard it by setting it to
 	// Inf or NaN. Is this a stable alternative to `discard` in the fragment shader?
 	if (clipped > 0.0) {
 //		VERTEX = vec3(sqrt(-1.0)); // NaN
-		VERTEX = vec3(1.0/0.0); // Inf
+		VERTEX = vec3(1.0 / 0.0); // Inf
 	}
 }
 
@@ -57,11 +59,6 @@ float get_channel(vec4 val, int idx) {
 }
 
 void fragment() {
-	// If the vertex has moved beyond the bounds, discard
-//	if (clipped > 0.0) {
-//		discard;
-//	}
-	
 //	vec4 mask = texture(terrain_masks, UV / uv1_scale);
 //	vec4 color = texture(terrain_textures, vec3(UV.xy, 0));
 //	ALBEDO = mask.rgb;
