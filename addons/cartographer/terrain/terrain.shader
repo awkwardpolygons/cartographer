@@ -4,33 +4,35 @@ uniform sampler2D terrain_height : hint_black;
 uniform sampler2D terrain_masks : hint_black;
 uniform sampler2DArray terrain_textures : hint_albedo;
 uniform vec3 terrain_size;
-uniform vec2 uv1_scale = vec2(8, 8);
+uniform vec2 uv1_scale = vec2(1, 1);
 const int NUM_LAYERS = 16;
 const float MASK_SCALE = 2.0;
 varying float clipped;
 
-void vertex() {
-	// Clipmap implementation:
-	// Get the camera's position
-	vec3 off = CAMERA_MATRIX[3].xyz;
-	// Limit it to within the bounds of the terrain size
-	off = clamp(off, terrain_size / 2.0 * -1.0, terrain_size / 2.0);
+void clipmap(vec3 cam, inout vec3 vtx, inout vec2 uv, inout float clp) {
+	// Divide terrain_size by 2 to get the bounds around center, in local space
+	vec3 size = terrain_size / 2.0;
+	// cam is the camera offset, limit it to within the bounds of the terrain size
+	vec3 off = clamp(cam, size * -1.0, size);
 	// Set the stride, or number of units it moves per step,
 	// which is the max quad size (16) so you don't get wavy terrain.
 	off = floor(off / 16.0) * 16.0;
 	// Double the size of the mesh so we have some overlap to clip as it moves
-	VERTEX *= 2.0;
+	vtx *= 2.0;
+	
 	// Calculate the terrain uv
-	vec2 uv = ((VERTEX.xz + off.xz) / terrain_size.xz) + 0.5;
+	uv = ((vtx.xz + off.xz) / terrain_size.xz) + 0.5;
 	// Get the height from the heightmap
 	off.y = texture(terrain_height, uv).r * terrain_size.y;
 	
-	// Share the uv calculation
-	UV = uv * uv1_scale;
 	// Offset the vertex
-	VERTEX += off;
+	vtx += off;
 	// If the vertex has moved beyond the bounds, set clipped as 1.0
-	clipped = abs(VERTEX.x) > terrain_size.x / 2.0 || abs(VERTEX.z) > terrain_size.z / 2.0 ? 1.0 : 0.0;
+	clp = abs(vtx.x) > size.x || abs(vtx.z) > size.z ? 1.0 : 0.0;
+}
+
+void vertex() {
+	clipmap(CAMERA_MATRIX[3].xyz, VERTEX, UV, clipped);
 	
 	// If the vertex has moved beyond the bounds, discard it by setting it to
 	// Inf or NaN. Is this a stable alternative to `discard` in the fragment shader?
@@ -78,5 +80,6 @@ void fragment() {
 		clr += tex * get_channel(msk, i);
 	}
 
-	ALBEDO = clr.rgb;
+//	ALBEDO = clr.rgb;
+	ALBEDO = texture(terrain_height, UV).rgb;
 }
