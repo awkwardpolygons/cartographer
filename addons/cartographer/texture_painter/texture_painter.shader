@@ -97,13 +97,22 @@ vec4 paint_masks(vec2 uv) {
 	return clr;
 }
 
+vec4 paint_height(vec2 uv) {
+	vec4 chn = vec4(1, 0, 0, 0);
+	vec2 pt = uv - brush_pos;
+//	return brush_tex(pt, vec2(0.1)).a * brush_strength * chn;
+	float h = brush_tex(pt, vec2(0.1)).a * brush_strength * brush_strength * 256.0 * 256.0;
+	return vec4(floor(h / 256.0) / 256.0, floor(mod(h, 256.0)) / 256.0, 0, 0);
+}
+
 void fragment() {
 	vec2 brush_ratio = SCREEN_PIXEL_SIZE * vec2(textureSize(brush_mask, 0));
 	vec4 st = texture(SCREEN_TEXTURE, SCREEN_UV);
 	vec4 tt = texture(TEXTURE, SCREEN_UV);
 	vec4 bt = vec4(0);
 	
-	bt = paint_masks(SCREEN_UV);
+//	bt = paint_masks(SCREEN_UV);
+	bt = paint_height(SCREEN_UV);
 	
 	if (action == NONE) {
 		COLOR = st;
