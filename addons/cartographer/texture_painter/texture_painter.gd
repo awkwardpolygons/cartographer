@@ -76,6 +76,12 @@ func paint_masks(action: int, pos: Vector2, layer: int):
 	_cvi.material.set_shader_param("add_channel", channel)
 	_cvi.material.set_shader_param("active_region", region)
 
+func paint_height(action: int, pos: Vector2):
+	var channel: Color = Color(1, 0, 0, 0)
+	_cvi.material.set_shader_param("action", action)
+	_cvi.material.set_shader_param("brush_pos", pos)
+	_cvi.material.set_shader_param("add_channel", channel)
+
 func paint(action: int, pos: Vector2):
 	_cvi.material.set_shader_param("action", action)
 	_cvi.material.set_shader_param("brush_pos", pos)
