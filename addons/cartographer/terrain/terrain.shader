@@ -9,6 +9,11 @@ const int NUM_LAYERS = 16;
 const float MASK_SCALE = 2.0;
 varying float clipped;
 
+float get_height(vec2 uv) {
+	vec2 h = texture(terrain_height, uv).rg;
+	return (h.r * 256.0 + h.g) / (256.0);
+}
+
 void clipmap(vec3 cam, inout vec3 vtx, inout vec2 uv, inout float clp) {
 	// Divide terrain_size by 2 to get the bounds around center, in local space
 	vec3 size = terrain_size / 2.0;
@@ -23,7 +28,10 @@ void clipmap(vec3 cam, inout vec3 vtx, inout vec2 uv, inout float clp) {
 	// Calculate the terrain uv
 	uv = ((vtx.xz + off.xz) / terrain_size.xz) + 0.5;
 	// Get the height from the heightmap
-	off.y = texture(terrain_height, uv).r * terrain_size.y;
+//	off.y = texture(terrain_height, uv).r * terrain_size.y;
+//	vec2 h = texture(terrain_height, uv).rg;
+//	off.y = (h.r * 256.0 + h.g) / (256.0) * terrain_size.y;
+	off.y = get_height(uv) * terrain_size.y;
 	
 	// Offset the vertex
 	vtx += off;
