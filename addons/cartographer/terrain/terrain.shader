@@ -66,7 +66,16 @@ float get_channel(vec4 val, int idx) {
 	}
 }
 
+void normalmap(inout vec3 nm, vec2 uv) {
+	vec3 e = vec3(1.0 / terrain_size.xz, 0.0);
+	float x = get_height(uv + e.xz) - get_height(uv - e.xz);
+	float y = get_height(uv + e.zy) - get_height(uv - e.zy);
+	nm = normalize(vec3(x, y, e.x));
+}
+
 void fragment() {
+	normalmap(NORMALMAP, UV);
+	
 //	vec4 mask = texture(terrain_masks, UV / uv1_scale);
 //	vec4 color = texture(terrain_textures, vec3(UV.xy, 0));
 //	ALBEDO = mask.rgb;
@@ -84,7 +93,8 @@ void fragment() {
 		tex = texture(terrain_textures, vec3(UV.xy, float(i)));
 		clr += tex * get_channel(msk, i);
 	}
-
+	
+//	ALBEDO = NORMAL;
 //	ALBEDO = clr.rgb;
-	ALBEDO = texture(terrain_height, UV).rgb;
+//	ALBEDO = texture(terrain_height, UV).rgb;
 }
