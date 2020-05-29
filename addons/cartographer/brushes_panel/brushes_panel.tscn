@@ -35,7 +35,7 @@ __meta__ = {
 
 [node name="BrushPreviewPanel" type="Panel" parent="BrushesBox"]
 margin_right = 1024.0
-margin_bottom = 64.0
+margin_bottom = 68.0
 size_flags_vertical = 3
 size_flags_stretch_ratio = 0.25
 __meta__ = {
@@ -59,23 +59,23 @@ __meta__ = {
 margin_left = 8.0
 margin_top = 8.0
 margin_right = 1016.0
-margin_bottom = 56.0
+margin_bottom = 60.0
 expand = true
 stretch_mode = 6
 
 [node name="Section1" type="VBoxContainer" parent="BrushesBox"]
-margin_top = 76.0
+margin_top = 80.0
 margin_right = 1024.0
-margin_bottom = 120.0
+margin_bottom = 100.0
 size_flags_horizontal = 3
 size_flags_stretch_ratio = 0.25
 
 [node name="Section2" parent="BrushesBox" instance=ExtResource( 1 )]
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_top = 132.0
+margin_top = 112.0
 margin_right = 1024.0
-margin_bottom = 298.0
+margin_bottom = 278.0
 text = "Properties"
 alt_text = "Properties"
 pressed = true
@@ -83,14 +83,14 @@ pressed = true
 [node name="Section3" parent="BrushesBox" instance=ExtResource( 1 )]
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_top = 310.0
+margin_top = 290.0
 margin_right = 1024.0
-margin_bottom = 332.0
+margin_bottom = 312.0
 text = "Jitter"
 alt_text = "Jitter"
 
 [node name="Section4" type="VBoxContainer" parent="BrushesBox"]
-margin_top = 344.0
+margin_top = 324.0
 margin_right = 1024.0
 margin_bottom = 600.0
 size_flags_horizontal = 3
@@ -120,7 +120,7 @@ __meta__ = {
 [node name="BrushMasks" type="ItemList" parent="BrushesBox/Section4"]
 margin_top = 24.0
 margin_right = 1024.0
-margin_bottom = 256.0
+margin_bottom = 276.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 custom_constants/icon_margin = 8
