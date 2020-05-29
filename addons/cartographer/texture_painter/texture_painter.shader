@@ -12,9 +12,9 @@ uniform float brush_strength_jitter = 0.0;
 uniform float brush_scale_jitter = 0.0;
 uniform float brush_rotation_jitter = 0.0;
 uniform int active_region = 0;
-uniform vec4 add_channel = vec4(1, -1, -1, -1);
+uniform vec4 active_channel = vec4(1, -1, -1, -1);
 const vec4 SUBTRACT_CHANNELS = vec4(-1);
-const int NONE = 0, PAINT = 1, ERASE = 2, CLEAR = 3;
+const int NONE = 0, JUST_CHANGED = 1, ON = 2, RAISE = 4, LOWER = 8, PAINT = 16, ERASE = 32, FILL = 64, CLEAR = 128;
 const vec4 region1 = vec4(0, 0, 0.5, 0.5);
 const vec4 region2 = vec4(0.5, 0, 0.5, 0.5);
 const vec4 region3 = vec4(0, 0.5, 0.5, 0.5);
@@ -69,27 +69,33 @@ vec4 blend_add(vec4 dst, vec4 src) {
 	return src + dst;
 }
 
-vec4 paint_masks(vec2 uv) {
+vec4 paint_masks(vec2 uv, int act) {
 	vec4 regions[4] = { region1, region2, region3, region4 };
 	vec4 clr = vec4(0);
 	
 	vec2 pos = brush_pos/region_grid;
 	vec2 pts[] = { pos + region1.xy, pos + region2.xy, pos + region3.xy, pos + region4.xy };
 	vec4 chn = vec4(-1, -1, -1, -1);
-		
-	for (int i = 0; i < pts.length(); i++) {
+	
+	for (int i = 0; i < regions.length(); i++) {
 		vec2 pt = uv - pts[i];
+		vec4 rg = regions[i];
 		
-		if (active_region == i) {
-			chn = add_channel;
+		if (active_region == i && act != ERASE) {
+			chn = active_channel;
 		} else {
 			chn = SUBTRACT_CHANNELS;
 		}
 		
-		float c = sdf_rbox(pt, vec2(0.1), 0.0);
-		if (c < 0.0) {
-			if (within(pt + pts[i], regions[i])) {
-				clr = brush_tex(pt, vec2(0.1)).a * brush_strength * brush_strength * chn;
+		if (act == FILL && within(uv, rg)) {
+			clr = chn;
+		}
+		else {
+			float c = sdf_rbox(pt, vec2(0.1), 0.0);
+			if (c < 0.0) {
+				if (within(pt + pts[i], regions[i])) {
+					clr = brush_tex(pt, vec2(0.1)).a * brush_strength * brush_strength * chn;
+				}
 			}
 		}
 	}
@@ -111,21 +117,31 @@ void fragment() {
 	vec4 tt = texture(TEXTURE, SCREEN_UV);
 	vec4 bt = vec4(0);
 	
-//	bt = paint_masks(SCREEN_UV);
-	bt = paint_height(SCREEN_UV);
+	bool on = (action & ON) > 0;
+	int act = action & (~ON);
 	
-	if (action == NONE) {
+//	if (act == NONE) {
+//		COLOR = tt;
+//	}
+	if (!on) {
 		COLOR = st;
 	}
-	else if (action == CLEAR) {
-		COLOR = vec4(0, 0, 0, 0);
-	}
-	else if (action == PAINT) {
-//		COLOR = blend_alpha(st, bt);
-//		COLOR = blend_add(st, bt);
+	else if (act == RAISE) {
+		bt = paint_height(SCREEN_UV);
 		COLOR = st + bt;
 	}
-	else if (action == ERASE) {
-		COLOR = bt * vec4(0, 0, 0, 0);
+	else if (act == LOWER) {
+		bt = paint_height(SCREEN_UV);
+		COLOR = st - bt;
+	}
+	else if ((act & (PAINT | ERASE)) > 0) {
+		bt = paint_masks(SCREEN_UV, act);
+		COLOR = st + bt;
+	}
+	else if (act == FILL) {
+		COLOR = paint_masks(SCREEN_UV, act);
+	}
+	else if (act == CLEAR) {
+		COLOR = vec4(0);
 	}
 }

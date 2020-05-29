@@ -11,6 +11,7 @@ var mask_painter: TexturePainter setget , _get_mask_painter
 var height_painter: TexturePainter setget , _get_height_painter
 var data_dir: Directory setget , _get_data_dir
 var _shader = preload("res://addons/cartographer/terrain/terrain.shader")
+var brush: PaintBrush
 
 func _set_size(s: Vector3):
 	size = s
@@ -103,15 +104,17 @@ func _init_height_painter():
 		height_painter.name = "HeightPainter"
 		terrain.add_child(height_painter)
 
-func paint_masks(action: int, pos: Vector2):
-	if not mask_painter:
-		return
-	mask_painter.paint_masks(action, pos, terrain_layers.selected)
-
-func paint_height(action: int, pos: Vector2):
-	if not height_painter:
-		return
-	height_painter.paint_height(action, pos)
+func paint(action: int, pos: Vector2):
+	prints("paint:", action, pos)
+	height_painter.brush = brush
+	mask_painter.brush = brush
+	var on = action & Cartographer.Action.ON
+	var act = action & (~Cartographer.Action.ON)
+	
+	if act & (Cartographer.Action.RAISE | Cartographer.Action.LOWER):
+		height_painter.paint_height(action, pos)
+	elif act & (Cartographer.Action.PAINT | Cartographer.Action.ERASE | Cartographer.Action.FILL):
+		mask_painter.paint_masks(action, pos, terrain_layers.selected)
 
 func intersect_ray(from: Vector3, dir: Vector3):
 #	var hmap = ImageTexture.new()

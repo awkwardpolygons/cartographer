@@ -60,31 +60,18 @@ func _set_texture(t: Texture):
 func save_to_image(i: Image):
 	i.copy_from(_vp.get_texture().get_data())
 
-func clear():
-	print("CLEAR")
-	# TODO: Temporary for shader updates during dev:
-	_cvi.material.shader = load("res://addons/cartographer/texture_painter/texture_painter.shader")
-	_cvi.material.set_shader_param("action", Action.CLEAR)
-
 func paint_masks(action: int, pos: Vector2, layer: int):
+	prints("paint_masks:", action, pos)
 	layer = clamp(layer, 0, 15)
 	var region = int(layer / 4)
 	var channel: Color = Color(-1, -1, -1, -1)
 	channel[layer % 4] = 1
 	_cvi.material.set_shader_param("action", action)
 	_cvi.material.set_shader_param("brush_pos", pos)
-	_cvi.material.set_shader_param("add_channel", channel)
+	_cvi.material.set_shader_param("active_channel", channel)
 	_cvi.material.set_shader_param("active_region", region)
 
 func paint_height(action: int, pos: Vector2):
-	var channel: Color = Color(1, 0, 0, 0)
+	prints("paint_height:", action, pos)
 	_cvi.material.set_shader_param("action", action)
 	_cvi.material.set_shader_param("brush_pos", pos)
-	_cvi.material.set_shader_param("add_channel", channel)
-
-func paint(action: int, pos: Vector2):
-	_cvi.material.set_shader_param("action", action)
-	_cvi.material.set_shader_param("brush_pos", pos)
-
-func stop():
-	_cvi.material.set_shader_param("action", Action.NONE)

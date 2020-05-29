@@ -1,11 +1,13 @@
 tool
 extends EditorPlugin
 
-const Action = TexturePainter.Action
+const Action = Cartographer.Action
 const BrushesPanel = preload("res://addons/cartographer/brushes_panel/brushes_panel.tscn")
+const Toolbar = preload("res://addons/cartographer/toolbar/cartographer_toolbar.tscn")
 
 var _action = Action.NONE
 var brushes_panel = BrushesPanel.instance()
+var toolbar = Toolbar.instance()
 var editor = get_editor_interface()
 var terrain: CartoTerrain
 var do_paint: bool = false
@@ -18,6 +20,8 @@ func _init():
 
 func _enter_tree():
 	add_control_to_dock(EditorPlugin.DOCK_SLOT_RIGHT_UL, brushes_panel)
+	add_control_to_container(EditorPlugin.CONTAINER_SPATIAL_EDITOR_MENU, toolbar)
+	toolbar.visible = false
 	Cartographer.undo_redo = get_undo_redo()
 	editor.get_selection().connect("selection_changed", self, "_on_selection_changed", [brushes_panel])
 
@@ -30,8 +34,11 @@ func _on_selection_changed(brushes_panel):
 func _exit_tree():
 #	print(brushes_panel)
 	remove_control_from_docks(brushes_panel)
+	remove_control_from_container(EditorPlugin.CONTAINER_SPATIAL_EDITOR_MENU, toolbar)
 	if brushes_panel:
 		brushes_panel.free()
+	if toolbar:
+		toolbar.free()
 
 func get_plugin_name():
 	return "Cartographer"
@@ -55,33 +62,29 @@ func edit(obj: Object):
 	terrain = get_terrain_from(obj)
 
 func make_visible(visible):
-	pass
+	toolbar.visible = visible
 
 func forward_spatial_gui_input(camera, event):
 	var action = get_action(event)
-#	print("--> ", action)
-	if action == Action.CLEAR:
-		terrain.painter.clear()
-		return false
+#	prints("-->", action, Cartographer.get_action())
+#	return true
 	return try_paint(camera, action)
 
 func get_action(event):
-	if event is InputEventMouseMotion and Input.is_mouse_button_pressed(BUTTON_LEFT):
-		_action = Action.PAINT
+	var action = Cartographer.get_action(event.alt)
+	if event is InputEventMouseMotion:
+		if Input.is_mouse_button_pressed(BUTTON_LEFT):
+			_action = action | Action.ON
 	elif event is InputEventMouseButton and event.button_index == BUTTON_LEFT:
-		_action = Action.PAINT if event.pressed else Action.NONE
+		_action = action | (Action.ON if event.pressed else 0)
 	elif event is InputEventKey and event.scancode == KEY_BACKSPACE:
-		_action = Action.CLEAR if event.is_pressed() else Action.NONE
-	if event.alt:
-		_action = Action.ERASE if _action == Action.PAINT else _action
-	else:
-		_action = Action.PAINT if _action == Action.ERASE else _action
+		_action = Action.CLEAR | (Action.ON if event.is_pressed() else 0)
 	return _action
 
 func try_paint(camera, action):
-	if action == Action.NONE:
-		if terrain.painter:
-			terrain.painter.stop()
+	terrain.brush = Cartographer.active_brush
+	if action & Action.ON == 0:
+		terrain.paint(action, Vector2(-1, -1))
 		return false
 	
 	var viewport = camera.get_viewport()
@@ -96,7 +99,6 @@ func try_paint(camera, action):
 	if pos:
 		var tex_pos = (size/2 + pos) / size
 		var uv = Vector2(clamp(tex_pos.x, 0, 1), clamp(tex_pos.z, 0, 1))
-		terrain.painter.brush = Cartographer.active_brush
 		terrain.paint(action, uv)
 		return true
 	return false
