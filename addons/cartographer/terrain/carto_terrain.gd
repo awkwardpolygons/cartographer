@@ -18,6 +18,7 @@ func _set_size(s: Vector3):
 	bounds.reset(transform.origin - Vector3(size.x/2, 0, size.z/2), size)
 	set_custom_aabb(bounds._aabb)
 #	if terrain.mesh:
+#		terrain.mesh.custom_aabb = bounds._aabb
 #		terrain.mesh.size = Vector2(s.x, s.z)
 #	if terrain.material_override:
 #		terrain.material_override.set_shader_param("terrain_size", s)
@@ -105,7 +106,6 @@ func _init_height_painter():
 		terrain.add_child(height_painter)
 
 func paint(action: int, pos: Vector2):
-	prints("paint:", action, pos)
 	height_painter.brush = brush
 	mask_painter.brush = brush
 	var on = action & Cartographer.Action.ON
