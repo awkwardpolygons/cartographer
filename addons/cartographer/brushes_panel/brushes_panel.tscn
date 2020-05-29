@@ -1,7 +1,6 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=6 format=2]
 
 [ext_resource path="res://addons/cartographer/brushes_panel/draw_box.tscn" type="PackedScene" id=1]
-[ext_resource path="res://addons/cartographer/brush_masks/dots.png" type="Texture" id=2]
 [ext_resource path="res://addons/cartographer/brushes_panel/brushes_panel.gd" type="Script" id=3]
 [ext_resource path="res://addons/cartographer/brush_masks/bristles.png" type="Texture" id=4]
 [ext_resource path="res://addons/cartographer/brush_masks/diagonal2.png" type="Texture" id=5]
@@ -89,7 +88,6 @@ margin_right = 1024.0
 margin_bottom = 332.0
 text = "Jitter"
 alt_text = "Jitter"
-pressed = false
 
 [node name="Section4" type="VBoxContainer" parent="BrushesBox"]
 margin_top = 344.0
@@ -126,7 +124,7 @@ margin_bottom = 256.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 custom_constants/icon_margin = 8
-items = [ "bristles.png", ExtResource( 4 ), false, "diagonal1.png", ExtResource( 6 ), false, "diagonal2.png", ExtResource( 5 ), false, "dots.png", ExtResource( 2 ), false ]
+items = [ "bristles.png", ExtResource( 4 ), false, "diagonal1.png", ExtResource( 6 ), false, "diagonal2.png", ExtResource( 5 ), false ]
 fixed_icon_size = Vector2( 48, 48 )
 [connection signal="files_selected" from="AddMaskFileDialog" to="." method="_on_add_mask_file_dialog_files_selected"]
 [connection signal="pressed" from="BrushesBox/Section4/AddRemoveMasks/AddBrushMask" to="." method="_on_add_brush_mask_pressed"]

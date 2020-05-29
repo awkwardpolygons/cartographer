@@ -4,8 +4,8 @@ extends VBoxContainer
 export(String) var text: String = ""
 export(String) var alt_text: String = ""
 export(bool) var pressed: bool = false setget _set_pressed, _get_pressed
-var icon_opened = preload("res://addons/cartographer/brushes_panel/icon_draw_opened.svg")
-var icon_closed = preload("res://addons/cartographer/brushes_panel/icon_draw_closed.svg")
+var icon_opened = preload("res://addons/cartographer/icons/icon_draw_opened.svg")
+var icon_closed = preload("res://addons/cartographer/icons/icon_draw_closed.svg")
 
 func _ready():
 	for child in get_children():
