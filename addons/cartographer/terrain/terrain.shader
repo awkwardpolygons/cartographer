@@ -48,12 +48,23 @@ void normal(inout vec3 nm, vec2 uv) {
 	nm = normalize(vec3(-x, e.x * 2.0, -y));
 }
 
+//vec3 calc_normal(vec2 uv, float h) {
+vec3 calc_normal(vec2 uv) {
+	vec3 e = vec3(1.0 / terrain_size.xz, 0.0);
+//	float x = h - get_height(uv + e.xz);
+//	float y = h - get_height(uv + e.zy);
+	float x = get_height(uv - e.xz) - get_height(uv + e.xz);
+	float y = get_height(uv - e.zy) - get_height(uv + e.zy);
+	return normalize(vec3(x, e.x * 2.0, y));
+}
+
 void vertex() {
 	clipmap(CAMERA_MATRIX[3].xyz, VERTEX, UV, clipped);
 	
 	UV2 = UV;
 	UV *= uv1_scale;
-	normal(NORMAL, UV2);
+//	normal(NORMAL, UV2);
+	NORMAL = calc_normal(UV2);
 	
 	// If the vertex has moved beyond the bounds, discard it by setting it to
 	// Inf or NaN. Is this a stable alternative to `discard` in the fragment shader?
@@ -120,47 +131,41 @@ vec4 texture_triplanar(sampler2DArray sampler, vec3 tex_pos, float layer, vec3 b
 	return (tx * blend.x + ty * blend.y + tz * blend.z);
 }
 
+float get_mask_for(int layer, vec2 msk_uv) {
+	int x = (layer / 4);
+	x = x % 2;
+	int y = layer / 8;
+	vec2 region = vec2(float(x), float(y)) / MASK_SCALE;
+	vec4 msk_clr = texture(terrain_masks, msk_uv + region);
+	return get_channel(msk_clr, layer);
+}
+
 void fragment() {
-	normalmap(NORMALMAP, UV2);
+//	normalmap(NORMALMAP, UV2);
+//	NORMALMAP = calc_normal(UV2).xzy * vec3(1, -1, 1);
+//	NORMAL = calc_normal(UV2) * mat3(CAMERA_MATRIX);
 //	normal(NORMAL, UV2);
-	
-//	vec3 p = vec3(UV.xy, get_height(UV2));
-//	vec3 p = VERTEX * mat3(INV_CAMERA_MATRIX) + CAMERA_MATRIX[3].xyz;
-	vec3 p = world_pos;
-	p = p / terrain_size.x * uv1_scale.xxx;
-//	p = p.xzy;
-//	vec3 b = abs(NORMALMAP);
-//	vec3 b = NORMALMAP * NORMALMAP;
-//	b = b.xzy;
-//	b = normalize(max(b, vec3(0.00001))) / (b.x + b.y + b.z);
-	vec3 b = world_norm;
-	b = normalize(vec3(b.x * b.x, b.y * b.y * 8.0, b.z * b.z));
-//	b *= b;
-//	vec3 b = triplanar_blend_1(world_norm);
-	
 	
 //	vec4 mask = texture(terrain_masks, UV / uv1_scale);
 //	vec4 color = texture(terrain_textures, vec3(UV.xy, 0));
 //	ALBEDO = mask.rgb;
 	
+	vec3 p = world_pos;
+	p = p / terrain_size.x * uv1_scale.xxx;
+	vec3 b = calc_normal(UV2);
+	b = normalize(vec3(b.x * b.x, b.y * b.y * 8.0, b.z * b.z));
+	
 	vec4 clr = vec4(0);
 	vec4 tex = vec4(0);
-	vec4 msk = vec4(0);
 	vec2 msk_uv = UV / uv1_scale / MASK_SCALE;
+	float msk;
 	for (int i = 0; i < NUM_LAYERS; i++) {
-		int x = (i / 4);
-		x = x % 2;
-		int y = i / 8;
-		vec2 region = vec2(float(x), float(y)) / MASK_SCALE;
-		msk = texture(terrain_masks, msk_uv + region);
-//		tex = texture(terrain_textures, vec3(UV.xy, float(i)));
-//		vec4 tx = texture(terrain_textures, vec3(p.yz, float(i)));
-//		vec4 ty = texture(terrain_textures, vec3(p.xz, float(i)));
-//		vec4 tz = texture(terrain_textures, vec3(p.xy, float(i)));
-//		tex = (tx * b.x + ty * b.y + tz * b.z);
-//		tex = ty;
-		tex = texture_triplanar(terrain_textures, p, float(i), b);
-		clr += tex * get_channel(msk, i);
+		msk = get_mask_for(i, msk_uv);
+		// If the msk is 0 skip texturing
+		if (msk > 0.0000001) {
+			tex = texture_triplanar(terrain_textures, p, float(i), b);
+			clr += tex * msk;
+		}
 	}
 	
 //	ALBEDO = NORMAL;
