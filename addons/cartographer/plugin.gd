@@ -40,6 +40,9 @@ func _exit_tree():
 	if toolbar:
 		toolbar.free()
 
+func save_external_data():
+	Cartographer.save()
+
 func get_plugin_name():
 	return "Cartographer"
 
