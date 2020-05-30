@@ -3,6 +3,7 @@ shader_type spatial;
 uniform sampler2D terrain_height : hint_black;
 uniform sampler2D terrain_masks : hint_black;
 uniform sampler2DArray terrain_textures : hint_albedo;
+uniform vec4 base_color = vec4(1);
 uniform vec3 terrain_size;
 uniform vec2 uv1_scale = vec2(4);
 const int NUM_LAYERS = 16;
@@ -156,6 +157,7 @@ void fragment() {
 	b = normalize(vec3(b.x * b.x, b.y * b.y * 8.0, b.z * b.z));
 	
 	vec4 clr = vec4(0);
+	float alpha = 0.0;
 	vec4 tex = vec4(0);
 	vec2 msk_uv = UV / uv1_scale / MASK_SCALE;
 	float msk;
@@ -165,10 +167,11 @@ void fragment() {
 		if (msk > 0.0000001) {
 			tex = texture_triplanar(terrain_textures, p, float(i), b);
 			clr += tex * msk;
+			alpha += msk;
 		}
 	}
 	
 //	ALBEDO = NORMAL;
-	ALBEDO = clr.rgb;
+	ALBEDO = clr.rgb + base_color.rgb * (1.0 - alpha);
 //	ALBEDO = texture(terrain_height, UV).rgb;
 }
