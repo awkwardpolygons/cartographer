@@ -94,7 +94,7 @@ vec4 paint_masks(vec2 uv, int act) {
 			float c = sdf_rbox(pt, vec2(0.1), 0.0);
 			if (c < 0.0) {
 				if (within(pt + pts[i], regions[i])) {
-					clr = brush_tex(pt, vec2(0.1)).a * brush_strength * brush_strength * chn;
+					clr = brush_tex(pt, vec2(0.1)).a * brush_strength * chn;
 				}
 			}
 		}
@@ -107,7 +107,7 @@ vec4 paint_height(vec2 uv) {
 	vec4 chn = vec4(1, 0, 0, 0);
 	vec2 pt = uv - brush_pos;
 //	return brush_tex(pt, vec2(0.1)).a * brush_strength * chn;
-	float h = brush_tex(pt, vec2(0.1)).a * brush_strength * brush_strength * 256.0 * 256.0;
+	float h = brush_tex(pt, vec2(0.1)).a * brush_strength * 256.0 * 256.0;
 	return vec4(floor(h / 256.0) / 256.0, floor(mod(h, 256.0)) / 256.0, 0, 0);
 }
 
