@@ -22,6 +22,7 @@ func _enter_tree():
 	add_control_to_dock(EditorPlugin.DOCK_SLOT_RIGHT_UL, brushes_panel)
 	add_control_to_container(EditorPlugin.CONTAINER_SPATIAL_EDITOR_MENU, toolbar)
 	toolbar.visible = false
+	Cartographer.editor = editor
 	Cartographer.undo_redo = get_undo_redo()
 	editor.get_selection().connect("selection_changed", self, "_on_selection_changed", [brushes_panel])
 
