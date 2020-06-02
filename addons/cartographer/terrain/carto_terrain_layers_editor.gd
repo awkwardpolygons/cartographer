@@ -28,7 +28,8 @@ func _do(name: String, do_method: String, do_args: Array, undo_method: String, u
 
 func _exit_tree():
 	terrain_layers = null
-	Layers.clear()
+	if Layers:
+		Layers.clear()
 
 func _on_add_layer():
 	AddLayerFileDialog.mode = FileDialog.MODE_OPEN_FILES
@@ -44,18 +45,27 @@ func _on_add_layer_files(paths):
 
 func add_layer(tex: Texture):
 	if terrain_layers.textures.append(tex):
-		Layers.add_item(tex.resource_path.replace("res://", "").split("/")[-1], tex, true)
+		var txt = tex.resource_path.replace("res://", "").split("/")[-1] if tex else "none"
+		tex = tex if tex else icon_checkerboard
+		Layers.add_item(txt, tex, true)
 
 func _on_rem_layer():
 	while Layers.is_anything_selected():
 		var idx = Layers.get_selected_items()[0]
-		rem_layer(idx)
+#		rem_layer(idx)
+		var tex = terrain_layers.textures.array[idx]
+		_do("Remove Layer", "rem_layer", [idx], "ins_layer", [idx, tex])
 
 func rem_layer(idx: int):
 	if terrain_layers.textures.remove(idx):
-		Layers.unselect(idx)
-		Layers.set_item_text(idx, "none")
-		Layers.set_item_icon(idx, icon_checkerboard)
+		Layers.remove_item(idx)
+
+func ins_layer(idx: int, tex: Texture):
+	if terrain_layers.textures.insert(idx, tex):
+		var txt = tex.resource_path.replace("res://", "").split("/")[-1] if tex else "none"
+		tex = tex if tex else icon_checkerboard
+		Layers.add_item(txt, tex, true)
+		Layers.move_item(Layers.get_item_count() - 1, idx)
 
 func _on_activate_layer(index):
 	AddLayerFileDialog.mode = FileDialog.MODE_OPEN_FILE
