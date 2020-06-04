@@ -63,11 +63,19 @@ func _enter_tree():
 		# TODO: Improve this UID generator
 		set_meta("uid", hash([OS.get_unique_id(), OS.get_unix_time(), randi()]) % 999999)
 	
-	terrain_layers = CartoTerrainLayers.new(self.data_dir.get_current_dir())
+#	terrain_layers = CartoTerrainLayers.new(self.data_dir.get_current_dir())
+	if terrain_layers == null:
+		terrain_layers = CartoTerrainLayers.new()
+	terrain_layers.connect("changed", self, "_apply_terrain_layers")
+	
 	_init_mesh()
 	_init_material()
 	if Engine.is_editor_hint():
 		_init_painters()
+
+func _apply_terrain_layers():
+	prints("_apply_terrain_layers")
+	terrain.material_override.set_shader_param("terrain_textures", terrain_layers.textures)
 
 func _init_mesh():
 	if terrain.mesh == null:
