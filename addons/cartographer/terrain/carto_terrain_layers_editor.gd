@@ -5,7 +5,10 @@ class_name CartoTerrainLayersEditor
 const MAX_LAYERS = 16
 var prop_box
 var file_dialog
+var uv_scaler_label
 var uv_scaler
+var u_scaler
+var v_scaler
 var layers_buttons
 var create_button
 var load_button
@@ -45,15 +48,27 @@ func _init():
 	anchor_right = 1
 	anchor_bottom = 1
 	prop_box = VBoxContainer.new()
-	prop_box.add_constant_override("separation", 8)
+	prop_box.add_constant_override("separation", 4)
 	file_dialog = EditorFileDialog.new()
 	file_dialog.mode = EditorFileDialog.MODE_OPEN_FILES
 	file_dialog.access = EditorFileDialog.ACCESS_RESOURCES
-	uv_scaler = EditorSpinSlider.new()
-	uv_scaler.label = "UV Scale"
-	uv_scaler.min_value = 1
-	uv_scaler.max_value = 100
-	uv_scaler.flat = true
+	uv_scaler_label = Label.new()
+	uv_scaler_label.text = "UV Scale"
+	uv_scaler = HBoxContainer.new()
+	u_scaler = EditorSpinSlider.new()
+	u_scaler.label = "u"
+	u_scaler.min_value = 1
+	u_scaler.max_value = 100
+	u_scaler.flat = true
+	u_scaler.size_flags_horizontal = SIZE_EXPAND_FILL
+	u_scaler.connect("value_changed", self, "_uv_scale_changed", ["x"])
+	v_scaler = EditorSpinSlider.new()
+	v_scaler.label = "v"
+	v_scaler.min_value = 1
+	v_scaler.max_value = 100
+	v_scaler.flat = true
+	v_scaler.size_flags_horizontal = SIZE_EXPAND_FILL
+	v_scaler.connect("value_changed", self, "_uv_scale_changed", ["y"])
 	layers_buttons = HBoxContainer.new()
 	create_button = Button.new()
 	create_button.text = "Create"
@@ -70,7 +85,12 @@ func _init():
 	layers_tree.set_column_expand(0, true)
 	layers_tree.connect("item_edited", self, "_layer_prop_changed")
 	layers_tree.connect("item_selected", self, "_layer_selected")
+	layers_tree.add_stylebox_override("bg", StyleBoxEmpty.new())
+	layers_tree.add_stylebox_override("bg_focus", StyleBoxEmpty.new())
 	
+	uv_scaler.add_child(uv_scaler_label)
+	uv_scaler.add_child(u_scaler)
+	uv_scaler.add_child(v_scaler)
 	layers_buttons.add_child(create_button)
 	layers_buttons.add_child(load_button)
 	prop_box.add_child(file_dialog)
@@ -111,6 +131,14 @@ func _on_dst_selected(path):
 func _on_srcs_selected(paths):
 	_save_array_file(paths)
 
+func _uv_scale_changed(v, i):
+	edited_obj.uv1_scale[i] = v
+	edited_obj.emit_signal("changed")
+
+func _fill_uv_scaler():
+	u_scaler.value = edited_obj.uv1_scale.x
+	v_scaler.value = edited_obj.uv1_scale.y
+
 func _layer_prop_changed():
 	var item = layers_tree.get_edited()
 	var data = item.get_metadata(0)
@@ -137,6 +165,7 @@ func update_property():
 		_fill_layers_tree(edited_obj)
 	else:
 		_clear_layers_tree()
+	_fill_uv_scaler()
 
 func _load_array_file(path):
 	var res = load(path)
