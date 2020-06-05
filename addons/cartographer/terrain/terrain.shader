@@ -6,6 +6,7 @@ uniform sampler2DArray terrain_textures : hint_albedo;
 uniform vec4 base_color = vec4(1);
 uniform vec3 terrain_size;
 uniform vec2 uv1_scale = vec2(4);
+uniform uint use_triplanar = 0;
 const int NUM_LAYERS = 16;
 const float MASK_SCALE = 2.0;
 varying float clipped;
@@ -163,15 +164,21 @@ void fragment() {
 	float msk;
 	for (int i = 0; i < NUM_LAYERS; i++) {
 		msk = get_mask_for(i, msk_uv);
-		// If the msk is 0 skip texturing
+		// If the msk is 0 skip texturing, is this a good idea?
 		if (msk > 0.0000001) {
-			tex = texture_triplanar(terrain_textures, p, float(i), b);
+			if ((uint(pow(2.0, float(i))) & use_triplanar) > uint(0)) {
+				tex = texture_triplanar(terrain_textures, p, float(i), b);
+			}
+			else {
+				tex = texture(terrain_textures, vec3(p.xz, float(i)));
+			}
 			clr += tex * msk;
 			alpha += msk;
 		}
 	}
 	
 //	ALBEDO = NORMAL;
+//	ALBEDO = texture(terrain_textures, vec3(UV, 0)).rgb;
 	ALBEDO = clr.rgb + base_color.rgb * (1.0 - alpha);
 //	ALBEDO = texture(terrain_height, UV).rgb;
 }
