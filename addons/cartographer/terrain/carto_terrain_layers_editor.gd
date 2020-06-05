@@ -202,7 +202,9 @@ func _fill_layers_tree(obj):
 	var w = 128
 	for i in texarr.get_depth():
 		var tex = ImageTexture.new()
-		tex.create_from_image(texarr.get_layer_data(i))
+		var img = texarr.get_layer_data(i)
+		img.resize(160, 160, Image.INTERPOLATE_BILINEAR)
+		tex.create_from_image(img)
 		var item = layers_tree.create_item()
 		item.set_cell_mode(0, TreeItem.CELL_MODE_ICON)
 		item.set_icon(0, tex)
