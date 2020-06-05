@@ -5,7 +5,8 @@ uniform sampler2D terrain_masks : hint_black;
 uniform sampler2DArray terrain_textures : hint_albedo;
 uniform vec4 base_color = vec4(1);
 uniform vec3 terrain_size;
-uniform vec2 uv1_scale = vec2(4);
+uniform float mesh_size = 256;
+uniform vec2 uv1_scale = vec2(1);
 uniform uint use_triplanar = 0;
 const int NUM_LAYERS = 16;
 const float MASK_SCALE = 2.0;
@@ -153,7 +154,8 @@ void fragment() {
 //	ALBEDO = mask.rgb;
 	
 	vec3 p = world_pos;
-	p = p / terrain_size.x * uv1_scale.xxx;
+//	p = p / terrain_size.x * uv1_scale.xxx;
+	p = p / mesh_size * vec3(uv1_scale.x, (uv1_scale.x + uv1_scale.y)/2.0, uv1_scale.y);
 	vec3 b = calc_normal(UV2);
 	b = normalize(vec3(b.x * b.x, b.y * b.y * 8.0, b.z * b.z));
 	
