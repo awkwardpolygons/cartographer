@@ -1,38 +1,45 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=6 format=2]
 
-[ext_resource path="res://addons/cartographer/plane.obj" type="ArrayMesh" id=1]
+[ext_resource path="res://clipmap.obj" type="ArrayMesh" id=1]
 [ext_resource path="res://uv.png" type="Texture" id=2]
 
 [sub_resource type="Shader" id=1]
 code = "shader_type spatial;
 //render_mode skip_vertex_transform;
 
-uniform sampler2D texture;
+const vec3 size = vec3(256, 256, 256);
+uniform sampler2D texture : hint_albedo;
+varying float clipped;
 
 void vertex() {
-//	vec3 off = vec3(0, 0, 0) + VERTEX;
-//	vec4 ws = WORLD_MATRIX * vec4(VERTEX, 1.0);
-//	vec2 uv = (ws.xz / 256.0) + 0.5;
-//	float height = texture(texture, uv).r * 20.0;
-//
-//	VERTEX = vec3(off.x, height, off.z);
-	
-	vec3 off = vec3(70, 0, 0) * fract(TIME / 4.0);
+	vec3 cam = CAMERA_MATRIX[3].xyz;
+	vec3 off = cam;
+//	vec3 off = vec3(70, 0, 0);
+//	off *= fract(TIME / 4.0);
+	off = clamp(off, size / 2.0 * -1.0, size / 2.0);
 	off = floor(off / 16.0) * 16.0;
 	
+	VERTEX *= 2.0;
 	vec2 uv = ((VERTEX.xz + off.xz) / 256.0) + 0.5;
 	off.y = texture(texture, uv).r * 20.0;
 	UV = uv;
 	VERTEX += off;
+	clipped = abs(VERTEX.x) > size.x / 2.0 || abs(VERTEX.z) > size.z / 2.0 ? 1.0 : 0.0;
 }
 
 void fragment() {
+	if (clipped > 0.0) {
+		discard;
+	}
 	ALBEDO = texture(texture, UV).rgb;
 }"
 
 [sub_resource type="ShaderMaterial" id=2]
 shader = SubResource( 1 )
 shader_param/texture = ExtResource( 2 )
+
+[sub_resource type="CubeMesh" id=3]
+size = Vector3( 2, 2, 256 )
 
 [node name="Spatial" type="Spatial"]
 
@@ -47,3 +54,6 @@ far = 1000.0
 
 [node name="DirectionalLight" type="DirectionalLight" parent="."]
 transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 0, 122, 124 )
+
+[node name="CSGMesh" type="CSGMesh" parent="."]
+mesh = SubResource( 3 )
