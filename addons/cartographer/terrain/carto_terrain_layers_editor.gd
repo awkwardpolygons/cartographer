@@ -128,9 +128,13 @@ func _ready():
 	edfs = Cartographer.editor.get_resource_filesystem()
 	add_child(prop_box)
 	set_bottom_editor(prop_box)
-	
+
+func update_property():
+	prints("update_property")
 	if edited_obj.textures != null:
 		_fill_layers_tree(edited_obj)
+	else:
+		_clear_layers_tree()
 
 func _load_array_file(path):
 	var res = load(path)
