@@ -4,7 +4,7 @@ class_name CartoTerrainLayers
 
 export(TextureArray) var textures
 export(Texture) var masks: Texture
-export(Vector2) var uv1_scale = Vector2(1.0, 1.0)
+export(Vector2) var uv1_scale: Vector2 = Vector2(1, 1)
 export(int) var selected: int = 0
 export(int) var use_triplanar: int = 0
 const MAX_LAYERS = 16
