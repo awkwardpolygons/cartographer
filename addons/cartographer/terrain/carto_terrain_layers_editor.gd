@@ -117,6 +117,8 @@ func _layer_prop_changed():
 	if data.prop == "use_triplanar":
 		var on = item.is_checked(0)
 		edited_obj.set_triplanar(data.layer, on)
+#		emit_changed(get_edited_property(), edited_obj, "use_triplanar")
+		edited_obj.emit_signal("changed")
 
 func _layer_selected():
 	var item = layers_tree.get_selected()
