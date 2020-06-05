@@ -5,9 +5,9 @@ class_name CartoTerrain, "res://addons/cartographer/terrain_icon.svg"
 export(float, 32, 1024, 32) var width: float = 256 setget _set_width
 export(float, 32, 1024, 32) var depth: float = 256 setget _set_depth
 export(float, 32, 1024, 32) var height: float = 64 setget _set_height
-export(Vector3) var size: Vector3 = Vector3(256, 64, 256) setget _set_size
 export(Resource) var terrain_layers
 
+var size: Vector3 = Vector3(256, 64, 256) setget _set_size
 var terrain: MeshInstance = self
 var bounds: CartoTerrainBounds
 var mask_painter: TexturePainter setget , _get_mask_painter
