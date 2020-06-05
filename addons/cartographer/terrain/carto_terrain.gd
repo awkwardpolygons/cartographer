@@ -94,6 +94,9 @@ func _enter_tree():
 func _apply_terrain_layers():
 	prints("_apply_terrain_layers")
 	terrain.material_override.set_shader_param("terrain_textures", terrain_layers.textures)
+#	terrain.material_override.set_shader_param("terrain_masks", terrain_layers.masks)
+	terrain.material_override.set_shader_param("use_triplanar", terrain_layers.use_triplanar)
+	terrain.material_override.set_shader_param("uv1_scale", terrain_layers.uv1_scale)
 
 func _init_mesh():
 	if terrain.mesh == null:
