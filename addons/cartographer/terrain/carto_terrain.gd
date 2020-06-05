@@ -2,6 +2,9 @@ tool
 extends MeshInstance
 class_name CartoTerrain, "res://addons/cartographer/terrain_icon.svg"
 
+export(float, 32, 1024, 32) var width: float = 256 setget _set_width
+export(float, 32, 1024, 32) var depth: float = 256 setget _set_depth
+export(float, 32, 1024, 32) var height: float = 64 setget _set_height
 export(Vector3) var size: Vector3 = Vector3(256, 64, 256) setget _set_size
 export(Resource) var terrain_layers
 
@@ -13,6 +16,21 @@ var data_dir: Directory setget , _get_data_dir
 var _shader = preload("res://addons/cartographer/terrain/terrain.shader")
 var brush: PaintBrush
 
+func _set_width(w: float):
+	width = w
+	self.size = Vector3(w, size.y, size.z)
+
+func _set_depth(d: float):
+	depth = d
+	self.size = Vector3(size.x, size.y, d)
+
+func _set_height(h: float):
+	height = h
+	self.size = Vector3(size.x, h, size.z)
+
+func _set_heightmap(h: Texture):
+	pass
+
 func _set_size(s: Vector3):
 	size = s
 	bounds.reset(transform.origin - Vector3(size.x/2, 0, size.z/2), size)
@@ -20,8 +38,8 @@ func _set_size(s: Vector3):
 #	if terrain.mesh:
 #		terrain.mesh.custom_aabb = bounds._aabb
 #		terrain.mesh.size = Vector2(s.x, s.z)
-#	if terrain.material_override:
-#		terrain.material_override.set_shader_param("terrain_size", s)
+	if terrain.material_override:
+		terrain.material_override.set_shader_param("terrain_size", s)
 
 func _get_mask_painter():
 	if not mask_painter:
