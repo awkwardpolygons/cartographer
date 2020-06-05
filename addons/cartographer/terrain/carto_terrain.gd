@@ -74,8 +74,6 @@ func _init():
 	# A custom AABB is needed because vertices are offset by the GPU
 	set_custom_aabb(bounds._aabb)
 
-var _inst
-var _mesh
 func _enter_tree():
 	if not has_meta("uid"):
 		# TODO: Improve this UID generator
