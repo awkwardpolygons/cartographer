@@ -58,14 +58,14 @@ func _init():
 	u_scaler = EditorSpinSlider.new()
 	u_scaler.label = "u"
 	u_scaler.min_value = 1
-	u_scaler.max_value = 100
+	u_scaler.max_value = 1024
 	u_scaler.flat = true
 	u_scaler.size_flags_horizontal = SIZE_EXPAND_FILL
 	u_scaler.connect("value_changed", self, "_uv_scale_changed", ["x"])
 	v_scaler = EditorSpinSlider.new()
 	v_scaler.label = "v"
 	v_scaler.min_value = 1
-	v_scaler.max_value = 100
+	v_scaler.max_value = 1024
 	v_scaler.flat = true
 	v_scaler.size_flags_horizontal = SIZE_EXPAND_FILL
 	v_scaler.connect("value_changed", self, "_uv_scale_changed", ["y"])
