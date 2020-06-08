@@ -5,9 +5,10 @@ uniform sampler2D terrain_masks : hint_black;
 uniform sampler2DArray terrain_textures : hint_albedo;
 uniform vec4 base_color = vec4(1);
 uniform vec3 terrain_size;
-uniform float mesh_size = 256;
+uniform float sq_dim = 256;
 uniform vec2 uv1_scale = vec2(1);
 uniform uint use_triplanar = 0;
+const float MESH_STRIDE = 16.0;
 const int NUM_LAYERS = 16;
 const float MASK_SCALE = 2.0;
 varying float clipped;
@@ -23,15 +24,15 @@ void clipmap(vec3 cam, inout vec3 vtx, inout vec2 uv, inout float clp) {
 	// Divide terrain_size by 2 to get the bounds around center, in local space
 	vec3 size = terrain_size / 2.0;
 	// cam is the camera offset, limit it to within the bounds of the terrain size
-	vec3 off = clamp(cam, size * -1.0, size);
+	vec3 off = clamp(cam, sq_dim * -1.0, sq_dim);
 	// Set the stride, or number of units it moves per step,
 	// which is the max quad size (16) so you don't get wavy terrain.
-	off = floor(off / 16.0) * 16.0;
+	off = floor(off / MESH_STRIDE) * MESH_STRIDE;
 	// Double the size of the mesh so we have some overlap to clip as it moves
 	vtx *= 2.0;
 	
 	// Calculate the terrain uv
-	uv = ((vtx.xz + off.xz) / terrain_size.xz) + 0.5;
+	uv = ((vtx.xz + off.xz) / sq_dim) + 0.5;
 	// Get the height from the heightmap
 //	off.y = texture(terrain_height, uv).r * terrain_size.y;
 //	vec2 h = texture(terrain_height, uv).rg;
@@ -155,7 +156,7 @@ void fragment() {
 	
 	vec3 p = world_pos;
 //	p = p / terrain_size.x * uv1_scale.xxx;
-	p = p / mesh_size * vec3(uv1_scale.x, (uv1_scale.x + uv1_scale.y)/2.0, uv1_scale.y);
+	p = p / sq_dim * vec3(uv1_scale.x, (uv1_scale.x + uv1_scale.y)/2.0, uv1_scale.y);
 	vec3 b = calc_normal(UV2);
 	b = normalize(vec3(b.x * b.x, b.y * b.y * 8.0, b.z * b.z));
 	

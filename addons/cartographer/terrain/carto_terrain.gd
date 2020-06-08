@@ -8,6 +8,7 @@ export(float, 32, 1024, 32) var height: float = 64 setget _set_height
 export(Resource) var terrain_layers
 
 var size: Vector3 = Vector3(256, 64, 256) setget _set_size
+var sq_dim: float
 var terrain: MeshInstance = self
 var bounds: CartoTerrainBounds
 var mask_painter: TexturePainter setget , _get_mask_painter
@@ -33,13 +34,15 @@ func _set_heightmap(h: Texture):
 
 func _set_size(s: Vector3):
 	size = s
+	sq_dim = max(s.x, s.z)
 	bounds.reset(transform.origin - Vector3(size.x/2, 0, size.z/2), size)
 	set_custom_aabb(bounds._aabb)
 #	if terrain.mesh:
 #		terrain.mesh.custom_aabb = bounds._aabb
 #		terrain.mesh.size = Vector2(s.x, s.z)
 	if terrain.material_override:
-		terrain.material_override.set_shader_param("terrain_size", s)
+		terrain.material_override.set_shader_param("terrain_size", size)
+		terrain.material_override.set_shader_param("sq_dim", sq_dim)
 
 func _get_mask_painter():
 	if not mask_painter:
@@ -123,6 +126,7 @@ func _init_mask_painter():
 		mask_painter = TexturePainter.new()
 		mask_painter.name = "MaskPainter"
 		terrain.add_child(mask_painter)
+#		mask_painter.texture = terrain_layers.masks
 
 func _init_height_painter():
 	if not height_painter:
@@ -131,6 +135,7 @@ func _init_height_painter():
 #		height_painter.hdr = true
 		height_painter.name = "HeightPainter"
 		terrain.add_child(height_painter)
+#		height_painter.texture = terrain_layers
 
 func paint(action: int, pos: Vector2):
 	height_painter.brush = brush
