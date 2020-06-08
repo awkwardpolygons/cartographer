@@ -13,7 +13,6 @@ var terrain: MeshInstance = self
 var bounds: CartoTerrainBounds
 var mask_painter: TexturePainter setget , _get_mask_painter
 var height_painter: TexturePainter setget , _get_height_painter
-var data_dir: Directory setget , _get_data_dir
 var _shader = preload("res://addons/cartographer/terrain/terrain.shader")
 var brush: PaintBrush
 
@@ -56,33 +55,12 @@ func _get_height_painter():
 			height_painter = get_node("HeightPainter")
 	return height_painter
 
-func _get_data_dir():
-	if data_dir != null:
-		return data_dir
-	if not has_meta("uid"):
-		return null
-	var id = get_meta("uid")
-	var data_part = "res://addons/cartographer/data/"
-	var terrain_part = "terrain_%s/" % id
-	var path = data_part + terrain_part
-	data_dir = Directory.new()
-	data_dir.open(data_part)
-	if not data_dir.dir_exists(terrain_part):
-		data_dir.make_dir(terrain_part)
-	data_dir.open(path)
-	return data_dir
-
 func _init():
 	bounds = CartoTerrainBounds.new(transform.origin - Vector3(size.x/2, 0, size.z/2), size)
 	# A custom AABB is needed because vertices are offset by the GPU
 	set_custom_aabb(bounds._aabb)
 
 func _enter_tree():
-	if not has_meta("uid"):
-		# TODO: Improve this UID generator
-		set_meta("uid", hash([OS.get_unique_id(), OS.get_unix_time(), randi()]) % 999999)
-	
-#	terrain_layers = CartoTerrainLayers.new(self.data_dir.get_current_dir())
 	if terrain_layers == null:
 		terrain_layers = CartoTerrainLayers.new()
 	terrain_layers.connect("changed", self, "_apply_terrain_layers")
