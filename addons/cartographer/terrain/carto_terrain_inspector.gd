@@ -8,6 +8,7 @@ func parse_property(object, type, path, hint, hint_text, usage):
 	if object == null:
 		return false
 	
+	# TODO: Cache the editor
 	var prop = object.get(path)
 	if prop is CartoTerrainLayers:
 		var ed = CartoTerrainLayersEditor.new()
