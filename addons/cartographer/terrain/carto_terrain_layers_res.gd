@@ -4,15 +4,27 @@ class_name CartoTerrainLayers
 
 export(TextureArray) var textures setget _set_textures
 export(ImageTexture) var masks: ImageTexture
-export(Vector2) var uv1_scale: Vector2 = Vector2(1, 1)
+export(Vector2) var uv1_scale: Vector2 = Vector2(1, 1) setget _set_uv1_scale
 export(int) var selected: int = 0
-export(int) var use_triplanar: int = 0
+export(int) var use_triplanar: int = 0 setget _set_use_triplanar
 const MAX_LAYERS = 16
 
 func _set_textures(ta):
 	textures = ta
 	if masks == null and ta != null:
 		create_masks()
+	# Needed because of https://github.com/godotengine/godot/issues/30179
+	emit_signal("changed")
+
+func _set_uv1_scale(s):
+	uv1_scale = s
+	# Needed because of https://github.com/godotengine/godot/issues/30179
+	emit_signal("changed")
+
+func _set_use_triplanar(t):
+	use_triplanar = t
+	# Needed because of https://github.com/godotengine/godot/issues/30179
+	emit_signal("changed")
 
 func calc_triplanar(idx: int, on: bool):
 	var flag: int = pow(2, idx)
