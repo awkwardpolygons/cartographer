@@ -56,6 +56,7 @@ func _get_brush():
 
 func _set_texture(t: Texture):
 	texture = t
+	_cvi.texture = t
 
 func save_to_image(i: Image):
 	i.copy_from(_vp.get_texture().get_data())
@@ -63,7 +64,8 @@ func save_to_image(i: Image):
 func paint_masks(action: int, pos: Vector2, layer: int):
 	layer = clamp(layer, 0, 15)
 	var region = int(layer / 4)
-	var channel: Color = Color(-1, -1, -1, -1)
+	var c = -1.0 / 15.0
+	var channel: Color = Color(c, c, c, c)
 	channel[layer % 4] = 1
 	_cvi.material.set_shader_param("action", action)
 	_cvi.material.set_shader_param("brush_pos", pos)

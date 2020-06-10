@@ -173,7 +173,7 @@ void fragment() {
 	for (int i = 0; i < NUM_LAYERS; i++) {
 		msk = get_mask_for(i, msk_uv);
 		// If the msk is 0 skip texturing, is this a good idea?
-		if (msk > 0.0000001) {
+//		if (msk > 0.0) {
 			if ((uint(pow(2.0, float(i))) & use_triplanar) > uint(0)) {
 				tex = texture_triplanar(terrain_textures, p, float(i), b);
 			}
@@ -182,12 +182,17 @@ void fragment() {
 			}
 			clr += tex * msk;
 			alpha += msk;
-		}
+//		}
 	}
+//	if (alpha > 1.0) {
+//		clr = vec4(1, 0, 0, 0);
+//	}
 	
 //	ALBEDO = NORMAL;
 //	ALBEDO = texture(terrain_textures, vec3(UV, 0)).rgb;
-//	ALBEDO = texture(terrain_masks, UV).rgb;
-	ALBEDO = clr.rgb + base_color.rgb * (1.0 - alpha);
+//	ALBEDO = texture(terrain_masks, UV / 2.0).rgb;
+	ALBEDO = clr.rgb;
+//	ALBEDO = (clr.rgb / alpha) + base_color.rgb * (1.0 - clamp(alpha, 0.0, 1.0));
+//	ALBEDO = clr.rgb + base_color.rgb * (1.0 - alpha);
 //	ALBEDO = texture(terrain_height, UV).rgb;
 }

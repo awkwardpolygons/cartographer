@@ -75,7 +75,7 @@ vec4 paint_masks(vec2 uv, int act) {
 	
 	vec2 pos = brush_pos/region_grid;
 	vec2 pts[] = { pos + region1.xy, pos + region2.xy, pos + region3.xy, pos + region4.xy };
-	vec4 chn = vec4(-1, -1, -1, -1);
+	vec4 chn = vec4(-1, -1, -1, -1) / 15.0;
 	
 	for (int i = 0; i < regions.length(); i++) {
 		vec2 pt = uv - pts[i];
