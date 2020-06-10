@@ -177,6 +177,10 @@ func _load_array_file(path):
 	emit_changed(get_edited_property(), edited_obj, "textures")
 	edited_obj.emit_signal("changed")
 
+func _create_masks(path):
+	edited_obj.create_masks()
+	ResourceSaver.save("%s.masks.res" % path.get_basename(), edited_obj.masks)
+
 func _save_array_file(paths):
 	var lth = len(paths)
 	var mul = int(ceil(sqrt(lth)))
@@ -208,6 +212,7 @@ func _save_array_file(paths):
 	yield(edfs, "resources_reimported")
 	prints("resources_reimported")
 	_load_array_file(dst_file_path)
+	_create_masks(dst_file_path)
 
 func _save_import_file(params: Dictionary):
 	var s = import_tmpl.format(params)
