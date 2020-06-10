@@ -54,7 +54,8 @@ void normal(inout vec3 nm, vec2 uv) {
 
 //vec3 calc_normal(vec2 uv, float h) {
 vec3 calc_normal(vec2 uv) {
-	vec3 e = vec3(1.0 / terrain_size.xz, 0.0);
+//	vec3 e = vec3(1.0 / terrain_size.xz, 0.0);
+	vec3 e = vec2(1.0 / sq_dim, 0.0).xxy;
 //	float x = h - get_height(uv + e.xz);
 //	float y = h - get_height(uv + e.zy);
 	float x = get_height(uv - e.xz) - get_height(uv + e.xz);
@@ -145,6 +146,9 @@ float get_mask_for(int layer, vec2 msk_uv) {
 }
 
 void fragment() {
+	vec3 nrm = calc_normal(UV2);
+	NORMAL = (vec4(nrm, 1.0) * CAMERA_MATRIX).xyz;
+//	NORMALMAP = nrm.xzy * vec3(1, -1, 1);
 //	normalmap(NORMALMAP, UV2);
 //	NORMALMAP = calc_normal(UV2).xzy * vec3(1, -1, 1);
 //	NORMAL = calc_normal(UV2) * mat3(CAMERA_MATRIX);
@@ -157,8 +161,9 @@ void fragment() {
 	vec3 p = world_pos;
 //	p = p / terrain_size.x * uv1_scale.xxx;
 	p = p / sq_dim * vec3(uv1_scale.x, (uv1_scale.x + uv1_scale.y)/2.0, uv1_scale.y);
-	vec3 b = calc_normal(UV2);
-	b = normalize(vec3(b.x * b.x, b.y * b.y * 8.0, b.z * b.z));
+//	vec3 b = calc_normal(UV2);
+	vec3 b = world_norm;
+	b = normalize(vec3(b.x * b.x, b.y * b.y * 16.0, b.z * b.z));
 	
 	vec4 clr = vec4(0);
 	float alpha = 0.0;
@@ -182,6 +187,7 @@ void fragment() {
 	
 //	ALBEDO = NORMAL;
 //	ALBEDO = texture(terrain_textures, vec3(UV, 0)).rgb;
+//	ALBEDO = texture(terrain_masks, UV).rgb;
 	ALBEDO = clr.rgb + base_color.rgb * (1.0 - alpha);
 //	ALBEDO = texture(terrain_height, UV).rgb;
 }
