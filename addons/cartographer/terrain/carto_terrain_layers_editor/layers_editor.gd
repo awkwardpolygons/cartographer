@@ -41,4 +41,3 @@ func _on_loaded(path):
 
 func update_property():
 	layers_list.bind(edited_obj)
-	edited_obj.emit_signal("changed")
