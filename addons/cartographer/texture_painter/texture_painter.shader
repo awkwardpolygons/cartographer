@@ -119,11 +119,12 @@ void fragment() {
 	
 	bool on = (action & ON) > 0;
 	int act = action & (~ON);
+	act = act & (~JUST_CHANGED);
 	
-//	if (act == NONE) {
-//		COLOR = tt;
-//	}
-	if (!on) {
+	if (act == NONE) {
+		COLOR = tt;
+	}
+	else if (!on) {
 		COLOR = st;
 	}
 	else if (act == RAISE) {
