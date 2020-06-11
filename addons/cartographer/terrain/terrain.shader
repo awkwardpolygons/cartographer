@@ -136,13 +136,13 @@ vec4 texture_triplanar(sampler2DArray sampler, vec3 tex_pos, float layer, vec3 b
 	return (tx * blend.x + ty * blend.y + tz * blend.z);
 }
 
-float get_mask_for(int layer, vec2 msk_uv) {
+vec4 get_mask_for(int layer, vec2 msk_uv) {
 	int x = (layer / 4);
 	x = x % 2;
 	int y = layer / 8;
 	vec2 region = vec2(float(x), float(y)) / MASK_SCALE;
 	vec4 msk_clr = texture(terrain_masks, msk_uv + region);
-	return get_channel(msk_clr, layer);
+	return msk_clr;
 }
 
 void fragment() {
@@ -167,26 +167,35 @@ void fragment() {
 	
 	vec4 clr = vec4(0);
 	float alpha = 0.0;
-	vec4 tex = vec4(0);
 	vec2 msk_uv = UV / uv1_scale / MASK_SCALE;
-	float msk;
-	for (int i = 0; i < NUM_LAYERS; i++) {
+	vec4 msk;
+	vec4 alb[4];
+	
+	for (int i = 0; i < NUM_LAYERS; i += 4) {
 		msk = get_mask_for(i, msk_uv);
-		// If the msk is 0 skip texturing, is this a good idea?
-//		if (msk > 0.0) {
-			if ((uint(pow(2.0, float(i))) & use_triplanar) > uint(0)) {
-				tex = texture_triplanar(terrain_textures, p, float(i), b);
+		
+		for (int j = 0; j < 4; j++) {
+			int lyr = i + j;
+			uint flg = uint(pow(2.0, float(lyr)));
+			
+			if ((flg & use_triplanar) > uint(0)) {
+				alb[j] = texture_triplanar(terrain_textures, p, float(lyr), b);
 			}
 			else {
-				tex = texture(terrain_textures, vec3(p.xz, float(i)));
+				alb[j] = texture(terrain_textures, vec3(p.xz, float(lyr)));
 			}
-			clr += tex * msk;
-			alpha += msk;
-//		}
+		}
+		
+		clr += alb[0] * msk[0];
+		clr += alb[1] * msk[1];
+		clr += alb[2] * msk[2];
+		clr += alb[3] * msk[3];
+		
+		alpha += msk[0];
+		alpha += msk[1];
+		alpha += msk[2];
+		alpha += msk[3];
 	}
-//	if (alpha > 1.0) {
-//		clr = vec4(1, 0, 0, 0);
-//	}
 	
 //	ALBEDO = NORMAL;
 //	ALBEDO = texture(terrain_textures, vec3(UV, 0)).rgb;
