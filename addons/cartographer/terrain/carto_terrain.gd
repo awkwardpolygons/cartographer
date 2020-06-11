@@ -5,7 +5,7 @@ class_name CartoTerrain, "res://addons/cartographer/terrain_icon.svg"
 export(float, 32, 1024, 32) var width: float = 256 setget _set_width
 export(float, 32, 1024, 32) var depth: float = 256 setget _set_depth
 export(float, 32, 1024, 32) var height: float = 64 setget _set_height
-export(ImageTexture) var height_map: ImageTexture
+export(ImageTexture) var height_map: ImageTexture setget _set_height_map
 export(Resource) var terrain_layers
 
 var size: Vector3 = Vector3(256, 64, 256) setget _set_size
@@ -30,8 +30,8 @@ func _set_height(h: float):
 	height = h
 	self.size = Vector3(size.x, h, size.z)
 
-func _set_heightmap(h: Texture):
-	pass
+func _set_height_map(h: ImageTexture):
+	height_map = h
 
 func _set_size(s: Vector3):
 	size = s
@@ -96,7 +96,6 @@ func _apply_terrain_layers():
 	terrain.material_override.set_shader_param("uv1_scale", terrain_layers.uv1_scale)
 #	if mask_painter:
 #		mask_painter.texture = terrain_layers.masks
-#		terrain_layers.masks = mask_painter.get_texture()
 
 func _init_painters():
 	_init_mask_painter()
