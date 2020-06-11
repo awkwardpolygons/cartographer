@@ -45,16 +45,10 @@ void clipmap(vec3 cam, inout vec3 vtx, inout vec2 uv, inout float clp) {
 	clp = abs(vtx.x) > size.x || abs(vtx.z) > size.z ? 1.0 : 0.0;
 }
 
-void normal(inout vec3 nm, vec2 uv) {
-	vec3 e = vec3(1.0 / terrain_size.xz, 0.0);
-	float x = get_height(uv + e.xz) - get_height(uv - e.xz);
-	float y = get_height(uv + e.zy) - get_height(uv - e.zy);
-	nm = normalize(vec3(-x, e.x * 2.0, -y));
-}
-
-//vec3 calc_normal(vec2 uv, float h) {
 vec3 calc_normal(vec2 uv) {
-//	vec3 e = vec3(1.0 / terrain_size.xz, 0.0);
+	// TODO: Modify this gradient step resolution based on the density of the mesh,
+	// vertices closer together use smaller steps to calc normal, vertices further
+	// apart use larger steps.
 	vec3 e = vec2(1.0 / sq_dim, 0.0).xxy;
 //	float x = h - get_height(uv + e.xz);
 //	float y = h - get_height(uv + e.zy);
@@ -80,27 +74,6 @@ void vertex() {
 	
 	world_pos = VERTEX;
 	world_norm = NORMAL;
-}
-
-float get_channel(vec4 val, int idx) {
-	idx = idx % 4;
-	switch (idx) {
-		case 0:
-			return val[0];
-		case 1:
-			return val[1];
-		case 2:
-			return val[2];
-		case 3:
-			return val[3];
-	}
-}
-
-void normalmap(inout vec3 nm, vec2 uv) {
-	vec3 e = vec3(1.0 / terrain_size.xz, 0.0);
-	float x = get_height(uv + e.xz) - get_height(uv - e.xz);
-	float y = get_height(uv + e.zy) - get_height(uv - e.zy);
-	nm = normalize(vec3(x, y, e.x));
 }
 
 // "Standard" triplanar blending.
