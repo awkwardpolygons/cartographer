@@ -64,7 +64,7 @@ func get_icon_from(idx: int, texarr: TextureArray):
 	var tex = ImageTexture.new()
 	var img = texarr.get_layer_data(idx)
 	img.resize(160, 160, Image.INTERPOLATE_BILINEAR)
-	tex.create_from_image(img)
+	tex.create_from_image(img, Texture.FLAGS_DEFAULT)
 	return tex
 
 func _on_toggled(toggled, item):
