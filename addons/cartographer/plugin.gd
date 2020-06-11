@@ -76,6 +76,9 @@ func forward_spatial_gui_input(camera, event):
 
 func get_action(event):
 	var action = Cartographer.get_action(event.alt)
+	_action &= ~Action.JUST_CHANGED
+	var prev = _action
+	
 	if event is InputEventMouseMotion:
 		if Input.is_mouse_button_pressed(BUTTON_LEFT):
 			_action = action | Action.ON
@@ -83,6 +86,8 @@ func get_action(event):
 		_action = action | (Action.ON if event.pressed else 0)
 	elif event is InputEventKey and event.scancode == KEY_BACKSPACE:
 		_action = Action.CLEAR | (Action.ON if event.is_pressed() else 0)
+	if prev != _action:
+		_action |= Action.JUST_CHANGED
 	return _action
 
 func try_paint(camera, action):
