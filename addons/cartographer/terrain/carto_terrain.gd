@@ -111,8 +111,7 @@ func _init_mask_painter():
 		mask_painter = TexturePainter.new()
 		mask_painter.name = "MaskPainter"
 		terrain.add_child(mask_painter)
-#		mask_painter.texture = terrain_layers.masks
-#		terrain_layers.masks = mask_painter.get_texture()
+		mask_painter.texture = terrain_layers.masks
 
 func _init_height_painter():
 	if not height_painter:
@@ -127,11 +126,15 @@ func paint(action: int, pos: Vector2):
 	height_painter.brush = brush
 	mask_painter.brush = brush
 	var on = action & Cartographer.Action.ON
-	var act = action & (~Cartographer.Action.ON)
+	var just_changed = action & Cartographer.Action.JUST_CHANGED
 	
-	if act & (Cartographer.Action.RAISE | Cartographer.Action.LOWER):
+	if not on and just_changed:
+		var img = mask_painter.get_texture().get_data()
+		terrain_layers.masks.create_from_image(img)
+	
+	if action & (Cartographer.Action.RAISE | Cartographer.Action.LOWER):
 		height_painter.paint_height(action, pos)
-	elif act & (Cartographer.Action.PAINT | Cartographer.Action.ERASE | Cartographer.Action.FILL):
+	elif action & (Cartographer.Action.PAINT | Cartographer.Action.ERASE | Cartographer.Action.FILL):
 		mask_painter.paint_masks(action, pos, terrain_layers.selected)
 
 func intersect_ray(from: Vector3, dir: Vector3):
