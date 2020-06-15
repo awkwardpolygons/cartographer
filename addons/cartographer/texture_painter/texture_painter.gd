@@ -57,6 +57,7 @@ func _get_brush():
 func _set_texture(t: Texture):
 	texture = t
 	_cvi.texture = t
+	_cvi.material.set_shader_param("action", Cartographer.Action.NONE)
 
 func save_to_image(i: Image):
 	i.copy_from(_vp.get_texture().get_data())
