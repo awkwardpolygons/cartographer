@@ -24,7 +24,7 @@ void clipmap(vec3 cam, inout vec3 vtx, inout vec2 uv, inout float clp) {
 	// Divide terrain_size by 2 to get the bounds around center, in local space
 	vec3 size = terrain_size / 2.0;
 	// cam is the camera offset, limit it to within the bounds of the terrain size
-	vec3 off = clamp(cam, sq_dim * -1.0, sq_dim);
+	vec3 off = clamp(cam, sq_dim / 2.0 * -1.0, sq_dim / 2.0);
 	// Set the stride, or number of units it moves per step,
 	// which is the max quad size (16) so you don't get wavy terrain.
 	off = floor(off / MESH_STRIDE) * MESH_STRIDE;
