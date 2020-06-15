@@ -1,0 +1,19 @@
+[remap]
+
+importer="wavefront_obj"
+type="Mesh"
+path="res://.import/clipmap_1024.obj-cc7f2ad4d77bac84b60fa79ab4209add.mesh"
+
+[deps]
+
+files=[ "res://.import/clipmap_1024.obj-cc7f2ad4d77bac84b60fa79ab4209add.mesh" ]
+
+source_file="res://addons/cartographer/meshes/clipmap_1024.obj"
+dest_files=[ "res://.import/clipmap_1024.obj-cc7f2ad4d77bac84b60fa79ab4209add.mesh", "res://.import/clipmap_1024.obj-cc7f2ad4d77bac84b60fa79ab4209add.mesh" ]
+
+[params]
+
+generate_tangents=true
+scale_mesh=Vector3( 1, 1, 1 )
+offset_mesh=Vector3( 0, 0, 0 )
+optimize_mesh=true

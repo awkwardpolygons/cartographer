@@ -1,0 +1,19 @@
+[remap]
+
+importer="wavefront_obj"
+type="Mesh"
+path="res://.import/quad.obj-e55c9a4f9dc6870521164d6945d9acb1.mesh"
+
+[deps]
+
+files=[ "res://.import/quad.obj-e55c9a4f9dc6870521164d6945d9acb1.mesh" ]
+
+source_file="res://addons/cartographer/meshes/quad.obj"
+dest_files=[ "res://.import/quad.obj-e55c9a4f9dc6870521164d6945d9acb1.mesh", "res://.import/quad.obj-e55c9a4f9dc6870521164d6945d9acb1.mesh" ]
+
+[params]
+
+generate_tangents=true
+scale_mesh=Vector3( 1, 1, 1 )
+offset_mesh=Vector3( 0, 0, 0 )
+optimize_mesh=true
