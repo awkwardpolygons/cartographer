@@ -2,6 +2,9 @@ tool
 extends Node
 
 enum Action {NONE = 0, JUST_CHANGED = 1, ON = 2, RAISE = 4, LOWER = 8, PAINT = 16, ERASE = 32, FILL = 64, CLEAR = 128}
+# TODO: A better approach:
+#enum Mode {SCULPT = 1, PAINT = 2}
+#enum Tool {RESET, FILL, BRUSH, SMOOTH, SHARPEN} # Use value for add, remove, eg. Vector3(-1) for remove
 var brushes: PaintBrushes
 var active_brush: PaintBrush setget _set_active_brush, _get_active_brush
 var undo_redo: UndoRedo
