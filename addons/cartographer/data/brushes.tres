@@ -1,6 +1,7 @@
-[gd_resource type="Resource" load_steps=9 format=2]
+[gd_resource type="Resource" load_steps=11 format=2]
 
 [ext_resource path="res://addons/cartographer/texture_painter/paint_brushes_res.gd" type="Script" id=1]
+[ext_resource path="res://addons/cartographer/brush_masks/round_soft.png" type="Texture" id=2]
 [ext_resource path="res://addons/cartographer/texture_painter/paint_brush_res.gd" type="Script" id=3]
 [ext_resource path="res://addons/cartographer/brush_masks/bristles.png" type="Texture" id=4]
 [ext_resource path="res://addons/cartographer/brush_masks/diagonal1.png" type="Texture" id=5]
@@ -10,42 +11,52 @@
 script = ExtResource( 3 )
 brush_mask = ExtResource( 4 )
 mask_channel = 0
-mode = 0
 brush_strength = 0.5
-brush_strength_jitter = 0.0
 brush_scale = 1.0
-brush_scale_jitter = 0.0
 brush_rotation = 0.0
-brush_rotation_jitter = 0.0
 brush_spacing = 0.0
+brush_strength_jitter = 0.0
+brush_scale_jitter = 0.0
+brush_rotation_jitter = 0.0
 brush_spacing_jitter = 0.0
 
 [sub_resource type="Resource" id=2]
 script = ExtResource( 3 )
 brush_mask = ExtResource( 5 )
 mask_channel = 0
-mode = 0
 brush_strength = 0.5
-brush_strength_jitter = 0.0
 brush_scale = 1.0
-brush_scale_jitter = 0.0
 brush_rotation = 0.0
-brush_rotation_jitter = 0.0
 brush_spacing = 0.0
+brush_strength_jitter = 0.0
+brush_scale_jitter = 0.0
+brush_rotation_jitter = 0.0
 brush_spacing_jitter = 0.0
 
 [sub_resource type="Resource" id=3]
 script = ExtResource( 3 )
 brush_mask = ExtResource( 6 )
 mask_channel = 0
-mode = 0
 brush_strength = 0.5
-brush_strength_jitter = 0.0
 brush_scale = 1.0
-brush_scale_jitter = 0.0
 brush_rotation = 0.0
-brush_rotation_jitter = 0.0
 brush_spacing = 0.0
+brush_strength_jitter = 0.0
+brush_scale_jitter = 0.0
+brush_rotation_jitter = 0.0
+brush_spacing_jitter = 0.0
+
+[sub_resource type="Resource" id=4]
+script = ExtResource( 3 )
+brush_mask = ExtResource( 2 )
+mask_channel = 0
+brush_strength = 0.07
+brush_scale = 1.0
+brush_rotation = 0.0
+brush_spacing = 0.0
+brush_strength_jitter = 0.0
+brush_scale_jitter = 0.0
+brush_rotation_jitter = 0.0
 brush_spacing_jitter = 0.0
 
 [resource]
@@ -53,5 +64,6 @@ script = ExtResource( 1 )
 data = {
 "res://addons/cartographer/brush_masks/bristles.png": SubResource( 1 ),
 "res://addons/cartographer/brush_masks/diagonal1.png": SubResource( 2 ),
-"res://addons/cartographer/brush_masks/diagonal2.png": SubResource( 3 )
+"res://addons/cartographer/brush_masks/diagonal2.png": SubResource( 3 ),
+"res://addons/cartographer/brush_masks/round_soft.png": SubResource( 4 )
 }
