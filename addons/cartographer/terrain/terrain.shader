@@ -172,6 +172,7 @@ void fragment() {
 	
 //	ALBEDO = NORMAL;
 //	ALBEDO = texture(terrain_textures, vec3(UV, 0)).rgb;
+//	ALBEDO = texture(terrain_height, UV).rgb;
 //	ALBEDO = texture(terrain_masks, UV / 2.0).rgb;
 	ALBEDO = clr.rgb;
 //	ALBEDO = (clr.rgb / alpha) + base_color.rgb * (1.0 - clamp(alpha, 0.0, 1.0));
