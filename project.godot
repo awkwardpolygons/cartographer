@@ -55,11 +55,6 @@ _global_script_classes=[ {
 "path": "res://addons/cartographer/texture_painter/texture_painter.gd"
 }, {
 "base": "VisualShaderNodeCustom",
-"class": "VisualShaderNodeCartoTerrain",
-"language": "GDScript",
-"path": "res://addons/cartographer/carto_shader_node.gd"
-}, {
-"base": "VisualShaderNodeCustom",
 "class": "VisualShaderNodePixelate",
 "language": "GDScript",
 "path": "res://shaders/vsn_pixelate.gd"
@@ -74,7 +69,6 @@ _global_script_class_icons={
 "PaintBrushes": "",
 "TextureArrayRect": "",
 "TexturePainter": "",
-"VisualShaderNodeCartoTerrain": "",
 "VisualShaderNodePixelate": ""
 }
 
