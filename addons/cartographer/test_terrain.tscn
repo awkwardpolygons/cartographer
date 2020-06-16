@@ -1,48 +1,16 @@
-<<<<<<< HEAD
-[gd_scene load_steps=15 format=2]
-
-[ext_resource path="res://addons/cartographer/terrain/terrain.shader" type="Shader" id=1]
-[ext_resource path="res://addons/cartographer/terrain/carto_terrain.gd" type="Script" id=2]
-[ext_resource path="res://addons/cartographer/terrain/carto_terrain_layers_res.gd" type="Script" id=3]
-[ext_resource path="res://default_env.tres" type="Environment" id=4]
-[ext_resource path="res://addons/cartographer/data/terrain_384598/terrain_textures.mtex" type="TextureArray" id=5]
-[ext_resource path="res://uv.png" type="Texture" id=6]
-[ext_resource path="res://addons/cartographer/data/terrain_384598/terrain_masks.tres" type="Texture" id=7]
-[ext_resource path="res://addons/cartographer/meshes/clipmap_256.obj" type="ArrayMesh" id=8]
-=======
 [gd_scene load_steps=23 format=2]
 
 [ext_resource path="res://addons/cartographer/meshes/clipmap_2.obj" type="ArrayMesh" id=1]
 [ext_resource path="res://default_env.tres" type="Environment" id=4]
 [ext_resource path="res://uv.png" type="Texture" id=6]
->>>>>>> 399901c... Update test terrain
 
 [sub_resource type="SpatialMaterial" id=1]
 albedo_texture = ExtResource( 6 )
 
 [sub_resource type="PrismMesh" id=2]
 
-[sub_resource type="ViewportTexture" id=3]
+[sub_resource type="CubeMesh" id=3]
 
-<<<<<<< HEAD
-[sub_resource type="ShaderMaterial" id=4]
-shader = ExtResource( 1 )
-shader_param/terrain_size = Vector3( 256, 64, 256 )
-shader_param/uv1_scale = Vector2( 8, 8 )
-shader_param/terrain_masks = SubResource( 3 )
-shader_param/terrain_textures = ExtResource( 5 )
-
-[sub_resource type="Resource" id=5]
-script = ExtResource( 3 )
-directory = "res://addons/cartographer/data/terrain_384598/"
-resolution = 1024
-textures = ExtResource( 5 )
-masks = ExtResource( 7 )
-uv1_scale = Vector2( 1, 1 )
-selected = 2
-
-[sub_resource type="CubeMesh" id=6]
-=======
 [sub_resource type="SphereMesh" id=4]
 radius = 4.0
 height = 8.0
@@ -183,7 +151,6 @@ nodes/vertex/connections = PoolIntArray( 3, 0, 4, 0, 3, 1, 5, 0, 6, 0, 7, 0, 7, 
 
 [sub_resource type="ShaderMaterial" id=19]
 shader = SubResource( 18 )
->>>>>>> 399901c... Update test terrain
 
 [node name="Spatial" type="Spatial"]
 
@@ -191,7 +158,7 @@ shader = SubResource( 18 )
 transform = Transform( 1, 0, 0, 0, 0.766044, 0.642788, 0, -0.642788, 0.766044, 0, 19, 29 )
 
 [node name="DirectionalLight" type="DirectionalLight" parent="."]
-transform = Transform( 1, 0, 0, 0, 0.573576, 0.819152, 0, -0.819152, 0.573576, 0, 5, 0 )
+transform = Transform( 1, 0, 0, 0, 0.819152, 0.573576, 0, -0.573576, 0.819152, 0, 60, 0 )
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = ExtResource( 4 )
@@ -205,21 +172,6 @@ material_override = SubResource( 1 )
 mesh = SubResource( 2 )
 material/0 = null
 
-<<<<<<< HEAD
-[node name="CartoTerrain" type="MeshInstance" parent="."]
-material_override = SubResource( 4 )
-mesh = ExtResource( 8 )
-material/0 = null
-script = ExtResource( 2 )
-__meta__ = {
-"uid": 384598
-}
-terrain_layers = SubResource( 5 )
-
-[node name="CSGMesh" type="CSGMesh" parent="."]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 127, 0, 127 )
-mesh = SubResource( 6 )
-=======
 [node name="CSGMesh" type="CSGMesh" parent="."]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 127, 0, 127 )
 mesh = SubResource( 3 )
@@ -235,4 +187,3 @@ material_override = SubResource( 19 )
 mesh = ExtResource( 1 )
 material/0 = null
 material/1 = null
->>>>>>> 399901c... Update test terrain
