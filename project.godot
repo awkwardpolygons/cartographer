@@ -34,11 +34,6 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://addons/cartographer/terrain/carto_terrain_material.gd"
 }, {
-"base": "MeshInstance",
-"class": "CartoTerrainOld",
-"language": "GDScript",
-"path": "res://addons/cartographer/terrain/carto_terrain (copy).gd"
-}, {
 "base": "Resource",
 "class": "PaintBrush",
 "language": "GDScript",
@@ -75,7 +70,6 @@ _global_script_class_icons={
 "CartoTerrainBounds": "",
 "CartoTerrainInspector": "",
 "CartoTerrainMaterial": "",
-"CartoTerrainOld": "res://addons/cartographer/terrain_icon.svg",
 "PaintBrush": "",
 "PaintBrushes": "",
 "TextureArrayRect": "",
