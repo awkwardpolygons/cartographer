@@ -9,20 +9,50 @@
 config_version=4
 
 _global_script_classes=[ {
-"base": "Spatial",
-"class": "CartoBrush",
+"base": "HeightMapShape",
+"class": "CartoHeightMapShape",
 "language": "GDScript",
-"path": "res://addons/cartographer/carto_brush.gd"
+"path": "res://addons/cartographer/terrain/carto_height_map_shape.gd"
 }, {
-"base": "CSGMesh",
+"base": "MeshInstance",
 "class": "CartoTerrain",
 "language": "GDScript",
-"path": "res://addons/cartographer/carto_terrain.gd"
+"path": "res://addons/cartographer/terrain/carto_terrain.gd"
+}, {
+"base": "Object",
+"class": "CartoTerrainBounds",
+"language": "GDScript",
+"path": "res://addons/cartographer/terrain/carto_terrain_bounds.gd"
+}, {
+"base": "EditorInspectorPlugin",
+"class": "CartoTerrainInspector",
+"language": "GDScript",
+"path": "res://addons/cartographer/terrain/carto_terrain_inspector.gd"
+}, {
+"base": "ShaderMaterial",
+"class": "CartoTerrainMaterial",
+"language": "GDScript",
+"path": "res://addons/cartographer/terrain/carto_terrain_material.gd"
+}, {
+"base": "MeshInstance",
+"class": "CartoTerrainOld",
+"language": "GDScript",
+"path": "res://addons/cartographer/terrain/carto_terrain (copy).gd"
 }, {
 "base": "Resource",
 "class": "PaintBrush",
 "language": "GDScript",
 "path": "res://addons/cartographer/texture_painter/paint_brush_res.gd"
+}, {
+"base": "Resource",
+"class": "PaintBrushes",
+"language": "GDScript",
+"path": "res://addons/cartographer/texture_painter/paint_brushes_res.gd"
+}, {
+"base": "TextureRect",
+"class": "TextureArrayRect",
+"language": "GDScript",
+"path": "res://addons/cartographer/texture_array_rect.gd"
 }, {
 "base": "Viewport",
 "class": "TexturePainter",
@@ -40,9 +70,15 @@ _global_script_classes=[ {
 "path": "res://shaders/vsn_pixelate.gd"
 } ]
 _global_script_class_icons={
-"CartoBrush": "res://addons/cartographer/layer_icon.svg",
+"CartoHeightMapShape": "",
 "CartoTerrain": "res://addons/cartographer/terrain_icon.svg",
+"CartoTerrainBounds": "",
+"CartoTerrainInspector": "",
+"CartoTerrainMaterial": "",
+"CartoTerrainOld": "res://addons/cartographer/terrain_icon.svg",
 "PaintBrush": "",
+"PaintBrushes": "",
+"TextureArrayRect": "",
 "TexturePainter": "",
 "VisualShaderNodeCartoTerrain": "",
 "VisualShaderNodePixelate": ""
@@ -53,6 +89,10 @@ _global_script_class_icons={
 config/name="awkpol1"
 run/main_scene="res://test.tscn"
 config/icon="res://icon.png"
+
+[autoload]
+
+Cartographer="*res://addons/cartographer/cartographer_singleton.gd"
 
 [editor_plugins]
 
