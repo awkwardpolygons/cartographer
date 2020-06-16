@@ -33,7 +33,7 @@ func _init():
 	_cvi.stretch_mode = TextureRect.STRETCH_SCALE
 	_vp.add_child(_cvi)
 	
-	_cvi.texture = load("res://largetex.tres")
+#	_cvi.texture = load("res://largetex.tres")
 	_cvi.material = ShaderMaterial.new()
 	_cvi.material.shader = _shader
 #	_cvi.material.set_shader_param("texture", load("res://addons/cartographer/rect_green.png"))
