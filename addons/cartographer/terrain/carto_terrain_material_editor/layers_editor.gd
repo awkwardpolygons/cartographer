@@ -1,8 +1,8 @@
 tool
 extends EditorProperty
 
-const FileManager = preload("res://addons/cartographer/terrain/carto_terrain_layers_editor/file_manager.gd")
-const LayersList = preload("res://addons/cartographer/terrain/carto_terrain_layers_editor/layers_list.gd")
+const FileManager = preload("res://addons/cartographer/terrain/carto_terrain_material_editor/file_manager.gd")
+const LayersList = preload("res://addons/cartographer/terrain/carto_terrain_material_editor/layers_list.gd")
 var prop_box: VBoxContainer
 var file_manager: FileManager
 var layers_list: LayersList
