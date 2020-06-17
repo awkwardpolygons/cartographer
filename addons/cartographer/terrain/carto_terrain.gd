@@ -12,6 +12,8 @@ var square_size: float = max(size.x, size.z)
 var bounds: CartoTerrainBounds
 var brush: PaintBrush
 
+signal size_changed
+
 func _set_width(w: float):
 	width = w
 	self.size = Vector3(w, size.y, size.z)
@@ -34,6 +36,7 @@ func _set_size(s):
 	if material:
 		material.set_shader_param("terrain_size", size)
 		material.set_shader_param("sq_dim", square_size)
+	emit_signal("size_changed", size)
 
 func _set_material(m):
 	material = m
