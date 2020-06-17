@@ -20,6 +20,7 @@ func _set_textures(ta):
 		create_mask_map()
 	if height_map == null and ta != null:
 		create_height_map()
+#	property_list_changed_notify()
 	emit_signal("changed")
 
 func _set_mask_map(m):
@@ -92,8 +93,10 @@ func commit_painter():
 	var img = painter.get_texture().get_data()
 	mask_map.set_data(img)
 #	mask_map.create_from_image(img)
+	emit_signal("changed")
 
 func commit_sculptor():
 	var img = sculptor.get_texture().get_data()
 	height_map.set_data(img)
 #	height_map.create_from_image(img)
+	emit_signal("changed")
