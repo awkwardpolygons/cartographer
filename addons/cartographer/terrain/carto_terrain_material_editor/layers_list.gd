@@ -9,6 +9,7 @@ signal property_set_value
 func _init():
 	alignment = BoxContainer.ALIGN_CENTER
 	group = ButtonGroup.new()
+	rect_min_size = Vector2(0, 160)
 
 func bind(layers):
 	if not (layers and layers.textures):
