@@ -20,7 +20,7 @@ func _update_terrain():
 		else:
 			_terrain = null
 
-func _bind_terrain_props():
+func _bind_terrain_props(__=null):
 	if not (_terrain and shape is HeightMapShape):
 		return
 	
@@ -62,10 +62,12 @@ func _exit_tree():
 	_ignore()
 
 func _watch():
+	_terrain.connect("size_changed", self, "_bind_terrain_props")
 	_terrain.material.connect("changed", self, "_bind_terrain_props")
 
 func _ignore():
 	if _terrain:
+		_terrain.disconnect("size_changed", self, "_bind_terrain_props")
 		_terrain.material.disconnect("changed", self, "_bind_terrain_props")
 
 func _center_crop(img: Image, crop: Vector2):
