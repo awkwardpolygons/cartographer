@@ -34,6 +34,11 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://addons/cartographer/terrain/carto_terrain_material.gd"
 }, {
+"base": "CollisionShape",
+"class": "CollisionCartoTerrain",
+"language": "GDScript",
+"path": "res://addons/cartographer/terrain/collision_carto_terrain.gd"
+}, {
 "base": "Resource",
 "class": "PaintBrush",
 "language": "GDScript",
@@ -65,6 +70,7 @@ _global_script_class_icons={
 "CartoTerrainBounds": "",
 "CartoTerrainInspector": "",
 "CartoTerrainMaterial": "",
+"CollisionCartoTerrain": "",
 "PaintBrush": "",
 "PaintBrushes": "",
 "TextureArrayRect": "",
