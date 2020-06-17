@@ -34,7 +34,7 @@ func _bind_terrain_props():
 	shape.map_depth = d
 	
 	if hmap:
-		hmap.resize(e, e, Image.INTERPOLATE_CUBIC)
+		hmap.resize(e, e, Image.INTERPOLATE_LANCZOS)
 		_center_crop(hmap, Vector2(shape.map_width, shape.map_depth))
 		_bind_height_data(hmap, h)
 
