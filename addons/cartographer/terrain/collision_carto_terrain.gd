@@ -44,7 +44,9 @@ func _bind_height_data(img: Image, height_mul):
 	var data = shape.map_data
 	for y in img.get_height():
 		for x in img.get_width():
-			data[i] = img.get_pixel(x, y).r * height_mul
+			var px = img.get_pixel(x, y)
+			var h =(px.r * 256.0 + px.g) / (256.0)
+			data[i] = h * height_mul
 			i += 1
 	img.unlock()
 	shape.map_data = data
