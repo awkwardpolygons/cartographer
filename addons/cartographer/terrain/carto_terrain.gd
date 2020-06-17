@@ -25,15 +25,15 @@ func _set_height(h: float):
 	self.size = Vector3(size.x, h, size.z)
 
 func _set_size(s):
-	prints("_set_size")
 	size = s
 	_update_bounds()
 	square_size = max(size.x, size.z)
 	var ms = 256 if square_size <= 256 else 512 if square_size <= 512 else 1024
 	if mesh == null or ms != mesh_size:
 		_init_mesh()
-	material.set_shader_param("terrain_size", size)
-	material.set_shader_param("sq_dim", square_size)
+	if material:
+		material.set_shader_param("terrain_size", size)
+		material.set_shader_param("sq_dim", square_size)
 
 func _set_material(m):
 	material = m
@@ -45,7 +45,6 @@ func _update_bounds():
 	set_custom_aabb(bounds._aabb)
 
 func _init_mesh():
-	prints(size, square_size)
 	mesh_size = 256 if square_size <= 256 else 512 if square_size <= 512 else 1024
 	mesh = load("res://addons/cartographer/meshes/clipmap_%s.obj" % mesh_size)
 
