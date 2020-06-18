@@ -91,7 +91,12 @@ func get_action(event):
 	return _action
 
 func try_paint(camera, action):
-	terrain.brush = Cartographer.active_brush
+	if not Cartographer.active_brush:
+		if action & Action.ON:
+			push_warning("Select a brush before painting or sculpting")
+		return false
+	else:
+		terrain.brush = Cartographer.active_brush
 	if action & Action.ON == 0:
 		terrain.paint(action, Vector2(-1, -1))
 		return false
