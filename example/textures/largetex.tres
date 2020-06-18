@@ -1,0 +1,10 @@
+[gd_resource type="LargeTexture" load_steps=3 format=2]
+
+[ext_resource path="res://example/textures/rect_purple.png" type="Texture" id=1]
+[ext_resource path="res://example/textures/rect_green.png" type="Texture" id=2]
+
+
+[resource]
+resource_local_to_scene = true
+flags = 23
+_data = [ Vector2( 0, 0 ), ExtResource( 2 ), Vector2( 512, 0 ), ExtResource( 1 ), Vector2( 0, 512 ), ExtResource( 2 ), Vector2( 512, 512 ), ExtResource( 1 ), Vector2( 1024, 1024 ) ]

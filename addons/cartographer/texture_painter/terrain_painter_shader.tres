@@ -1,6 +1,7 @@
 [gd_resource type="VisualShader" load_steps=17 format=2]
 
-[ext_resource path="res://addons/cartographer/rect_green.png" type="Texture" id=1]
+[ext_resource path="res://example/textures/rect_green.png" type="Texture" id=1]
+
 
 [sub_resource type="VisualShaderNodeVectorOp" id=1]
 output_port_for_preview = 0
