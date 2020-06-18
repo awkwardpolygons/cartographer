@@ -9,11 +9,6 @@
 config_version=4
 
 _global_script_classes=[ {
-"base": "HeightMapShape",
-"class": "CartoHeightMapShape",
-"language": "GDScript",
-"path": "res://addons/cartographer/terrain/carto_height_map_shape.gd"
-}, {
 "base": "MeshInstance",
 "class": "CartoTerrain",
 "language": "GDScript",
@@ -65,7 +60,6 @@ _global_script_classes=[ {
 "path": "res://shaders/vsn_pixelate.gd"
 } ]
 _global_script_class_icons={
-"CartoHeightMapShape": "",
 "CartoTerrain": "res://addons/cartographer/terrain_icon.svg",
 "CartoTerrainBounds": "",
 "CartoTerrainInspector": "",
