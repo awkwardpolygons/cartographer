@@ -11,7 +11,7 @@ func _set_terrain_path(p):
 
 func _update_terrain():
 	_ignore()
-	if is_inside_tree():
+	if is_inside_tree() and not terrain_path.is_empty():
 		var node = get_node(terrain_path)
 		if node is CartoTerrain:
 			_terrain = node
