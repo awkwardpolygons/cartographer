@@ -105,7 +105,8 @@ func try_paint(camera, action):
 	var viewport_container = viewport.get_parent()
 	var screen_pos = viewport.get_mouse_position() * viewport.size / viewport_container.rect_size
 	
-	var size = Vector3(terrain.size.x, 0, terrain.size.z)
+#	var size = Vector3(terrain.size.x, 0, terrain.size.z)
+	var size = Vector3(terrain.diameter, 0, terrain.diameter)
 	var org = camera.project_ray_origin(screen_pos)
 	var dir = camera.project_ray_normal(screen_pos)
 	var pos = terrain.intersect_ray(org, dir)

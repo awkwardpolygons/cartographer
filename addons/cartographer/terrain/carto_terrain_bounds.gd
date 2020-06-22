@@ -65,20 +65,24 @@ func _bbox_intersect_ray(from: Vector3, dir: Vector3, margin: float=0.04):
 	return pts
 
 func _hmap_intersect_ray(from: Vector3, to: Vector3, dir: Vector3, hmap: Texture):
-	var size = self.size
 	var hm = hmap.get_data()
-	var hm_size = hm.get_size()
+	var hm_size = hm.get_size() - Vector2(1, 1)
+	var bb_size = _get_size()
+	var diam = max(bb_size.x, bb_size.z)
+	bb_size.x = diam
+	bb_size.z = diam
 	var pos = from
+	
 	for i in range(ceil((to - from).length())):
 		pos += dir
 		hm.lock()
-		var x = (pos.x + size.x/2) / size.x * (hm_size.x - 1)
-		x = clamp(x, 0, (hm_size.x - 1))
-		var y = (pos.z + size.z/2) / size.z * (hm_size.y - 1)
-		y = clamp(y, 0, (hm_size.y - 1))
+		var x = (pos.x + bb_size.x/2) / bb_size.x * hm_size.x
+		x = clamp(x, 0, hm_size.x)
+		var y = (pos.z + bb_size.z/2) / bb_size.z * hm_size.y
+		y = clamp(y, 0, hm_size.y)
 		var pix = hm.get_pixel(x, y)
 		hm.unlock()
-		if pos.y <= pix.r * size.y:
+		if pos.y <= pix.r * bb_size.y:
 #			pos -= dir
 			return pos
 	return null
