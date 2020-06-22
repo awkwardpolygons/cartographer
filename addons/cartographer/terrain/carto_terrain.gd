@@ -1,5 +1,5 @@
 tool
-extends MeshInstance
+extends MultiMeshInstance
 class_name CartoTerrain, "res://addons/cartographer/terrain_icon.svg"
 
 export(float, 32, 1024, 32) var width: float = 256 setget _set_width
@@ -7,8 +7,8 @@ export(float, 32, 1024, 32) var depth: float = 256 setget _set_depth
 export(float, 32, 1024, 32) var height: float = 64 setget _set_height
 export(ShaderMaterial) var material setget _set_material
 var size: Vector3 = Vector3(256, 64, 256) setget _set_size
-var mesh_size: float
-var square_size: float = max(size.x, size.z)
+var diameter: float = max(size.x, size.z)
+var mesh_diameter = 0
 var bounds: CartoTerrainBounds
 var brush: PaintBrush
 
@@ -26,30 +26,45 @@ func _set_height(h: float):
 	height = h
 	self.size = Vector3(size.x, h, size.z)
 
-func _set_size(s):
-	size = s
-	_update_bounds()
-	square_size = max(size.x, size.z)
-	var ms = 256 if square_size <= 256 else 512 if square_size <= 512 else 1024
-	if mesh == null or ms != mesh_size:
-		_init_mesh()
-	if material:
-		material.set_shader_param("terrain_size", size)
-		material.set_shader_param("sq_dim", square_size)
-	emit_signal("size_changed", size)
-
 func _set_material(m):
 	material = m
 	material_override = m
 
-func _update_bounds():
-	bounds.reset(transform.origin - Vector3(size.x/2, 0, size.z/2), size)
-	# A custom AABB is needed because vertices are offset by the GPU
-	set_custom_aabb(bounds._aabb)
+func _set_size(s):
+	size = s
+	diameter = max(size.x, size.z)
+	_update_bounds()
+	if material:
+		material.set_shader_param("terrain_size", size)
+		material.set_shader_param("terrain_diameter", diameter)
+	emit_signal("size_changed", size)
 
-func _init_mesh():
-	mesh_size = 256 if square_size <= 256 else 512 if square_size <= 512 else 1024
-	mesh = load("res://addons/cartographer/meshes/clipmap_%s.obj" % mesh_size)
+func _update_bounds():
+#	var aabb = AABB(transform.origin - Vector3(size.x/2, 0, size.z/2), size)
+	bounds.reset(transform.origin - Vector3(size.x/2, 0, size.z/2), size)
+	var aabb = bounds._aabb
+	set_custom_aabb(aabb)
+	multimesh.mesh.custom_aabb = aabb
+	# Calculate the instance count based on the mesh size,
+	# plus one to correct the count, and plus one extra for clipping
+	multimesh.instance_count = ceil(log(diameter / mesh_diameter) / log(2)) + 1 + 1
+	if material:
+		material.set_shader_param("INSTANCE_COUNT", multimesh.instance_count)
+
+func _init():
+	multimesh = MultiMesh.new()
+	multimesh.mesh = preload("res://addons/cartographer/meshes/clipmap_multi.obj")
+	mesh_diameter = multimesh.mesh.get_aabb().get_longest_axis_size()
+	bounds = CartoTerrainBounds.new(transform.origin - Vector3(size.x/2, 0, size.z/2), size)
+	_update_bounds()
+
+func _enter_tree():
+	if not material:
+		_set_material(CartoTerrainMaterial.new())
+		material.set_shader_param("terrain_size", size)
+		material.set_shader_param("terrain_diameter", diameter)
+	material.shader = preload("res://addons/cartographer/terrain/carto_terrain.shader")
+	_init_editing()
 
 func _init_editing():
 	if Engine.is_editor_hint():
@@ -63,19 +78,6 @@ func _init_editing():
 			add_child(material.painter)
 		else:
 			material.painter = painter
-
-func _init():
-	bounds = CartoTerrainBounds.new(transform.origin - Vector3(size.x/2, 0, size.z/2), size)
-	# A custom AABB is needed because vertices are offset by the GPU
-	set_custom_aabb(bounds._aabb)
-
-func _enter_tree():
-	if not material:
-		_set_material(CartoTerrainMaterial.new())
-		material.set_shader_param("terrain_size", size)
-		material.set_shader_param("sq_dim", square_size)
-	_init_mesh()
-	_init_editing()
 
 func can_edit():
 	return material and material.sculptor and material.painter
