@@ -63,7 +63,6 @@ func _enter_tree():
 		_set_material(CartoTerrainMaterial.new())
 		material.set_shader_param("terrain_size", size)
 		material.set_shader_param("terrain_diameter", diameter)
-	material.shader = preload("res://addons/cartographer/terrain/carto_terrain.shader")
 	_init_editing()
 
 func _init_editing():

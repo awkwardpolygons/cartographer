@@ -52,7 +52,7 @@ func _set_use_triplanar(t):
 	emit_signal("changed")
 
 func _init():
-	shader = preload("res://addons/cartographer/terrain/terrain.shader")
+	shader = preload("res://addons/cartographer/terrain/carto_terrain.shader")
 	if Engine.is_editor_hint():
 		sculptor = TexturePainter.new()
 		sculptor.name = "Sculptor"
