@@ -5,7 +5,7 @@ enum MaskChannel {RED, GREEN, BLUE, ALPHA}
 export(Texture) var brush_mask: Texture setget set_brush_mask
 export(MaskChannel) var mask_channel;
 export(float, 0, 1, 0.01) var brush_strength: float = 0.5 setget set_brush_strength
-export(float, 0.1, 2, 0.01) var brush_scale: float = 1 setget set_brush_scale
+export(float, 0.1, 8, 0.01) var brush_scale: float = 1 setget set_brush_scale
 export(float, 0, 1, 0.01) var brush_rotation: float setget set_brush_rotation
 export(float, 0, 100, 0.01) var brush_spacing: float setget set_brush_spacing
 export(float, 0, 1, 0.01) var brush_strength_jitter: float setget set_brush_strength_jitter
