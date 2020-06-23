@@ -55,6 +55,8 @@ func _init():
 	shader = preload("res://addons/cartographer/terrain/carto_terrain.shader")
 	if Engine.is_editor_hint():
 		sculptor = TexturePainter.new()
+		sculptor.hdr = true
+		sculptor.usage = Viewport.USAGE_3D
 		sculptor.name = "Sculptor"
 		painter = TexturePainter.new()
 		painter.name = "Painter"
@@ -86,7 +88,7 @@ func create_mask_map():
 
 func create_height_map():
 	var tex = ImageTexture.new()
-	tex.create(2048, 2048, Image.FORMAT_RGBA8)
+	tex.create(2048, 2048, Image.FORMAT_RH)
 	_set_height_map(tex)
 
 func commit_painter():
@@ -97,6 +99,7 @@ func commit_painter():
 
 func commit_sculptor():
 	var img = sculptor.get_texture().get_data()
+	img.convert(Image.FORMAT_RH)
 	height_map.set_data(img)
 #	height_map.create_from_image(img)
 	emit_signal("changed")

@@ -106,9 +106,7 @@ vec4 paint_masks(vec2 uv, int act) {
 vec4 paint_height(vec2 uv) {
 	vec4 chn = vec4(1, 0, 0, 0);
 	vec2 pt = uv - brush_pos;
-//	return brush_tex(pt, vec2(0.1)).a * brush_strength * chn;
-	float h = brush_tex(pt, vec2(0.1)).a * brush_strength * 256.0 * 256.0;
-	return vec4(floor(h / 256.0) / 256.0, floor(mod(h, 256.0)) / 256.0, 0, 0);
+	return brush_tex(pt, vec2(0.1)).r * brush_strength * brush_strength * chn;
 }
 
 void fragment() {
@@ -133,7 +131,7 @@ void fragment() {
 	}
 	else if (act == LOWER) {
 		bt = paint_height(SCREEN_UV);
-		COLOR = st - bt;
+		COLOR = clamp(st - bt, 0.0, 1.0);
 	}
 	else if ((act & (PAINT | ERASE)) > 0) {
 		bt = paint_masks(SCREEN_UV, act);

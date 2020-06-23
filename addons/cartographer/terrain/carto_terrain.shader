@@ -16,8 +16,8 @@ varying vec3 position;
 varying vec3 normal;
 
 float get_height(vec2 uv) {
-	vec2 h = texture(terrain_height, uv).rg;
-	return (h.r * 256.0 + h.g) / (256.0);
+	vec4 h = texture(terrain_height, uv);
+	return h.r;
 }
 
 vec3 clip_map(int id, vec3 cam, vec3 vtx, inout vec2 uv, inout vec4 clr) {
