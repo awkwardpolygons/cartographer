@@ -60,7 +60,7 @@ _global_script_classes=[ {
 "path": "res://example/shaders/vsn_pixelate.gd"
 } ]
 _global_script_class_icons={
-"CartoTerrain": "",
+"CartoTerrain": "res://addons/cartographer/terrain_icon.svg",
 "CartoTerrainBounds": "",
 "CartoTerrainInspector": "",
 "CartoTerrainMaterial": "",
