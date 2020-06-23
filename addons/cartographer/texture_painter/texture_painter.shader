@@ -2,6 +2,7 @@ shader_type canvas_item;
 render_mode blend_disabled, unshaded;
 
 uniform sampler2D brush_mask;
+uniform int brush_mask_channel = 0;
 uniform int action = 0;
 uniform vec2 brush_pos;
 uniform vec4 brush_color;
@@ -69,6 +70,27 @@ vec4 blend_add(vec4 dst, vec4 src) {
 	return src + dst;
 }
 
+float get_brush_mask_channel(vec4 clr) {
+	float c = 0.0;
+	
+	switch (brush_mask_channel) {
+		case 0:
+			c = clr.r;
+			break;
+		case 1:
+			c = clr.g;
+			break;
+		case 2:
+			c = clr.b;
+			break;
+		case 3:
+			c = clr.a;
+			break;
+	}
+	
+	return c;
+}
+
 vec4 paint_masks(vec2 uv, vec2 scale, int act) {
 	vec4 regions[4] = { region1, region2, region3, region4 };
 	vec4 clr = vec4(0);
@@ -94,7 +116,7 @@ vec4 paint_masks(vec2 uv, vec2 scale, int act) {
 			float c = sdf_rbox(pt, scale, 0.0);
 			if (c < 0.0) {
 				if (within(pt + pts[i], regions[i])) {
-					clr = brush_tex(pt, scale).a * brush_strength * chn;
+					clr = get_brush_mask_channel(brush_tex(pt, scale)) * brush_strength * chn;
 				}
 			}
 		}
@@ -106,7 +128,9 @@ vec4 paint_masks(vec2 uv, vec2 scale, int act) {
 vec4 paint_height(vec2 uv, vec2 scale) {
 	vec4 chn = vec4(1, 0, 0, 0);
 	vec2 pt = uv - brush_pos;
-	return brush_tex(pt, scale).r * brush_strength * brush_strength * chn;
+	vec4 clr = brush_tex(pt, scale);
+	float h = get_brush_mask_channel(clr);
+	return h * brush_strength * brush_strength * chn;
 }
 
 void fragment() {
