@@ -72,17 +72,19 @@ func _hmap_intersect_ray(from: Vector3, to: Vector3, dir: Vector3, hmap: Texture
 	bb_size.x = diam
 	bb_size.z = diam
 	var pos = from
+	var ret = null
 	
+	hm.lock()
 	for i in range(ceil((to - from).length())):
 		pos += dir
-		hm.lock()
 		var x = (pos.x + bb_size.x/2) / bb_size.x * hm_size.x
 		x = clamp(x, 0, hm_size.x)
 		var y = (pos.z + bb_size.z/2) / bb_size.z * hm_size.y
 		y = clamp(y, 0, hm_size.y)
 		var pix = hm.get_pixel(x, y)
-		hm.unlock()
 		if pos.y <= pix.r * bb_size.y:
 #			pos -= dir
-			return pos
-	return null
+			ret = pos
+			break
+	hm.unlock()
+	return ret
