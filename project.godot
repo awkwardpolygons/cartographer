@@ -9,7 +9,7 @@
 config_version=4
 
 _global_script_classes=[ {
-"base": "MeshInstance",
+"base": "MultiMeshInstance",
 "class": "CartoTerrain",
 "language": "GDScript",
 "path": "res://addons/cartographer/terrain/carto_terrain.gd"
@@ -60,7 +60,7 @@ _global_script_classes=[ {
 "path": "res://example/shaders/vsn_pixelate.gd"
 } ]
 _global_script_class_icons={
-"CartoTerrain": "res://addons/cartographer/terrain_icon.svg",
+"CartoTerrain": "",
 "CartoTerrainBounds": "",
 "CartoTerrainInspector": "",
 "CartoTerrainMaterial": "",
