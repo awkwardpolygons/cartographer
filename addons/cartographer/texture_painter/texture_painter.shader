@@ -69,7 +69,7 @@ vec4 blend_add(vec4 dst, vec4 src) {
 	return src + dst;
 }
 
-vec4 paint_masks(vec2 uv, int act) {
+vec4 paint_masks(vec2 uv, vec2 scale, int act) {
 	vec4 regions[4] = { region1, region2, region3, region4 };
 	vec4 clr = vec4(0);
 	
@@ -91,10 +91,10 @@ vec4 paint_masks(vec2 uv, int act) {
 			clr = chn;
 		}
 		else {
-			float c = sdf_rbox(pt, vec2(0.1), 0.0);
+			float c = sdf_rbox(pt, scale, 0.0);
 			if (c < 0.0) {
 				if (within(pt + pts[i], regions[i])) {
-					clr = brush_tex(pt, vec2(0.1)).a * brush_strength * chn;
+					clr = brush_tex(pt, scale).a * brush_strength * chn;
 				}
 			}
 		}
@@ -103,14 +103,13 @@ vec4 paint_masks(vec2 uv, int act) {
 	return clr;
 }
 
-vec4 paint_height(vec2 uv) {
+vec4 paint_height(vec2 uv, vec2 scale) {
 	vec4 chn = vec4(1, 0, 0, 0);
 	vec2 pt = uv - brush_pos;
-	return brush_tex(pt, vec2(0.1)).r * brush_strength * brush_strength * chn;
+	return brush_tex(pt, scale).r * brush_strength * brush_strength * chn;
 }
 
 void fragment() {
-	vec2 brush_ratio = SCREEN_PIXEL_SIZE * vec2(textureSize(brush_mask, 0));
 	vec4 st = texture(SCREEN_TEXTURE, SCREEN_UV);
 	vec4 tt = texture(TEXTURE, SCREEN_UV);
 	vec4 bt = vec4(0);
@@ -126,19 +125,19 @@ void fragment() {
 		COLOR = st;
 	}
 	else if (act == RAISE) {
-		bt = paint_height(SCREEN_UV);
+		bt = paint_height(SCREEN_UV, vec2(brush_scale));
 		COLOR = st + bt;
 	}
 	else if (act == LOWER) {
-		bt = paint_height(SCREEN_UV);
+		bt = paint_height(SCREEN_UV, vec2(brush_scale));
 		COLOR = clamp(st - bt, 0.0, 1.0);
 	}
 	else if ((act & (PAINT | ERASE)) > 0) {
-		bt = paint_masks(SCREEN_UV, act);
+		bt = paint_masks(SCREEN_UV, vec2(brush_scale), act);
 		COLOR = st + bt;
 	}
 	else if (act == FILL) {
-		COLOR = paint_masks(SCREEN_UV, act);
+		COLOR = paint_masks(SCREEN_UV, vec2(brush_scale), act);
 	}
 	else if (act == CLEAR) {
 		COLOR = vec4(0);
