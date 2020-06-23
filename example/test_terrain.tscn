@@ -3,20 +3,20 @@
 [ext_resource path="res://example/default_env.tres" type="Environment" id=4]
 [ext_resource path="res://example/textures/uv.png" type="Texture" id=6]
 
-[sub_resource type="CubeMesh" id=3]
+[sub_resource type="CubeMesh" id=1]
 size = Vector3( 2, 2, 256 )
 
-[sub_resource type="SphereMesh" id=4]
+[sub_resource type="SphereMesh" id=2]
 radius = 4.0
 height = 8.0
 
-[sub_resource type="SphereShape" id=20]
+[sub_resource type="SphereShape" id=3]
 radius = 4.0
 
-[sub_resource type="SpatialMaterial" id=21]
+[sub_resource type="SpatialMaterial" id=4]
 albedo_texture = ExtResource( 6 )
 
-[sub_resource type="SphereMesh" id=22]
+[sub_resource type="SphereMesh" id=5]
 radius = 4.0
 height = 8.0
 
@@ -36,19 +36,19 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -39, 0, 0 )
 
 [node name="CSGMesh" type="CSGMesh" parent="."]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 127, 0, 0 )
-mesh = SubResource( 3 )
+mesh = SubResource( 1 )
 
 [node name="CSGMesh2" type="CSGMesh" parent="."]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -24, 10, -47 )
-mesh = SubResource( 4 )
+mesh = SubResource( 2 )
 
 [node name="RigidBody" type="RigidBody" parent="."]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 33.5, 42.9, 56.3 )
 
 [node name="CollisionShape" type="CollisionShape" parent="RigidBody"]
-shape = SubResource( 20 )
+shape = SubResource( 3 )
 
 [node name="MeshInstance2" type="MeshInstance" parent="RigidBody"]
-material_override = SubResource( 21 )
-mesh = SubResource( 22 )
+material_override = SubResource( 4 )
+mesh = SubResource( 5 )
 material/0 = null
