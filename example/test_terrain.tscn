@@ -1,7 +1,14 @@
-[gd_scene load_steps=8 format=2]
+[gd_scene load_steps=19 format=2]
 
+[ext_resource path="res://addons/cartographer/meshes/clipmap_multi.obj" type="ArrayMesh" id=1]
+[ext_resource path="res://addons/cartographer/terrain/carto_terrain.gd" type="Script" id=2]
+[ext_resource path="res://addons/cartographer/terrain/carto_terrain.shader" type="Shader" id=3]
 [ext_resource path="res://example/default_env.tres" type="Environment" id=4]
+[ext_resource path="res://addons/cartographer/terrain/carto_terrain_material.gd" type="Script" id=5]
 [ext_resource path="res://example/textures/uv.png" type="Texture" id=6]
+[ext_resource path="res://example/terra1.png" type="TextureArray" id=7]
+[ext_resource path="res://example/test_terrain_mask.res" type="Texture" id=8]
+[ext_resource path="res://example/test_terrain_height.res" type="Texture" id=9]
 
 [sub_resource type="CubeMesh" id=1]
 size = Vector3( 2, 2, 256 )
@@ -19,6 +26,33 @@ albedo_texture = ExtResource( 6 )
 [sub_resource type="SphereMesh" id=5]
 radius = 4.0
 height = 8.0
+
+[sub_resource type="ViewportTexture" id=6]
+
+[sub_resource type="ViewportTexture" id=7]
+
+[sub_resource type="ShaderMaterial" id=8]
+shader = ExtResource( 3 )
+shader_param/INSTANCE_COUNT = 1
+shader_param/terrain_size = Vector3( 256, 64, 256 )
+shader_param/terrain_diameter = 256.0
+shader_param/uv1_scale = Vector2( 16, 16 )
+shader_param/use_triplanar = 0
+shader_param/terrain_height = SubResource( 6 )
+shader_param/terrain_masks = SubResource( 7 )
+shader_param/terrain_textures = ExtResource( 7 )
+script = ExtResource( 5 )
+textures = ExtResource( 7 )
+mask_map = ExtResource( 8 )
+height_map = ExtResource( 9 )
+uv1_scale = Vector2( 16, 16 )
+use_triplanar = 0
+selected = 0
+
+[sub_resource type="MultiMesh" id=9]
+instance_count = 3
+mesh = ExtResource( 1 )
+transform_2d_array = PoolVector2Array( 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0 )
 
 [node name="Spatial" type="Spatial"]
 
@@ -52,3 +86,9 @@ shape = SubResource( 3 )
 material_override = SubResource( 4 )
 mesh = SubResource( 5 )
 material/0 = null
+
+[node name="CartoTerrain" type="MultiMeshInstance" parent="."]
+material_override = SubResource( 8 )
+multimesh = SubResource( 9 )
+script = ExtResource( 2 )
+material = SubResource( 8 )
