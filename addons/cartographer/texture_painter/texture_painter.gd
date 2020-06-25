@@ -48,9 +48,11 @@ func _set_brush(br: PaintBrush):
 	brush = br
 	var size = brush.brush_mask.get_size()
 	var scale = brush.brush_scale * (max(size.x, size.y) / 2048)
+	var mask_channel = Color(0, 0, 0, 0)
+	mask_channel[brush.mask_channel] = 1
 	
 	_cvi.material.set_shader_param("brush_mask", brush.brush_mask)
-	_cvi.material.set_shader_param("brush_mask_channel", brush.mask_channel)
+	_cvi.material.set_shader_param("brush_mask_channel", mask_channel)
 	_cvi.material.set_shader_param("brush_strength", brush.brush_strength)
 	_cvi.material.set_shader_param("brush_scale", scale)
 	_cvi.material.set_shader_param("brush_rotation", brush.brush_rotation)
