@@ -91,6 +91,35 @@ float get_brush_mask_channel(vec4 clr) {
 	return c;
 }
 
+vec4 paint_masks2(vec4 msk, vec2 uv, vec2 scale, int act) {
+	vec4 regions[4] = { region1, region2, region3, region4 };
+	vec4 clr = vec4(0);
+	
+	vec2 pos = brush_pos / region_grid;
+	vec2 pts[] = { pos + region1.xy, pos + region2.xy, pos + region3.xy, pos + region4.xy };
+	vec4 chn = vec4(-1);
+	vec4 sel = vec4(0);
+	float val= 0.0;
+	
+	for (int i = 0; i < regions.length(); i++) {
+		vec2 pt = uv - pts[i];
+		vec4 rg = regions[i];
+		float ar = float(active_region == i);
+		sel = clamp(active_channel, 0.0, 1.0);
+		vec4 sub = length(sel * msk) < 1.0 && ar == 1.0 ? vec4(0) : vec4(1);
+		chn = sel * ar - sub;
+		
+		float c = sdf_rbox(pt, scale, 0.0);
+		if (c < 0.0) {
+			if (within(pt + pts[i], rg)) {
+				clr = get_brush_mask_channel(brush_tex(pt, scale)) * brush_strength * chn;
+			}
+		}
+	}
+	
+	return clr;
+}
+
 vec4 paint_masks(vec2 uv, vec2 scale, int act) {
 	vec4 regions[4] = { region1, region2, region3, region4 };
 	vec4 clr = vec4(0);
@@ -157,7 +186,8 @@ void fragment() {
 		COLOR = clamp(st - bt, 0.0, 1.0);
 	}
 	else if ((act & (PAINT | ERASE)) > 0) {
-		bt = paint_masks(SCREEN_UV, vec2(brush_scale), act);
+//		bt = paint_masks(SCREEN_UV, vec2(brush_scale), act);
+		bt = paint_masks2(st, SCREEN_UV, vec2(brush_scale), act);
 		COLOR = st + bt;
 	}
 	else if (act == FILL) {
