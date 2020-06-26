@@ -70,27 +70,23 @@ float brush_val(vec2 uv, vec2 scale) {
 
 vec4 paint_masks2(vec4 msk, vec2 uv, vec2 scale, int act) {
 	vec4 regions[4] = { region1, region2, region3, region4 };
-	vec4 clr = vec4(0);
-	
 	vec2 pos = brush_pos / region_grid;
 	vec2 pts[] = { pos + region1.xy, pos + region2.xy, pos + region3.xy, pos + region4.xy };
-	vec4 chn = vec4(-1);
-	vec4 sel = vec4(0);
+	
+	vec4 sel = clamp(active_channel, 0.0, 1.0);
+	float val = length(sel * msk);
+	vec4 clr = vec4(0);
 	
 	for (int i = 0; i < regions.length(); i++) {
 		vec2 pt = uv - pts[i];
 		vec4 rg = regions[i];
 		float ar = float(active_region == i);
-		sel = clamp(active_channel, 0.0, 1.0);
-		vec4 sub = length(sel * msk) < 1.0 && ar == 1.0 ? vec4(0) : vec4(1);
-		chn = sel * ar - sub;
+		vec4 sub = val < 1.0 && ar == 1.0 ? vec4(0) : vec4(1);
+		vec4 chn = sel * ar - sub;
+		float bnd = sdf_rbox(pt, scale, 0.0) < 0.0 && within(pt + pts[i], rg) ? 1.0 : 0.0;
 		
-		float c = sdf_rbox(pt, scale, 0.0);
-		if (c < 0.0) {
-			if (within(pt + pts[i], rg)) {
-				clr = brush_val(pt, scale) * brush_strength * chn;
-			}
-		}
+		if (bnd == 1.0)
+			clr = brush_val(pt, scale) * brush_strength * chn;
 	}
 	
 	return clr;
