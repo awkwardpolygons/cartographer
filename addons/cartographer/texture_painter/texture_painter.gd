@@ -45,6 +45,9 @@ func _get_material():
 	return _cvi.material
 
 func _set_brush(br: PaintBrush):
+	if brush == br:
+		return
+	
 	brush = br
 	var size = brush.brush_mask.get_size()
 	var scale = brush.brush_scale * (max(size.x, size.y) / 2048)
@@ -71,7 +74,8 @@ func save_to_image(i: Image):
 func paint_masks(action: int, pos: Vector2, layer: int):
 	layer = clamp(layer, 0, 15)
 	var region = int(layer / 4)
-	var c = -1.0 / 15.0
+#	var c = -1.0 / 15.0
+	var c = 0
 	var channel: Color = Color(c, c, c, c)
 	channel[layer % 4] = 1
 	_cvi.material.set_shader_param("action", action)
