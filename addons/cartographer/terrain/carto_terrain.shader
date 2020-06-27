@@ -115,6 +115,12 @@ vec4 get_mask_for(int layer, vec2 msk_uv) {
 	return msk_clr;
 }
 
+vec4 blend_alpha(vec4 dst, vec4 src) {
+	float a = src.a + dst.a * (1.0 - src.a);
+	vec3 rgb = (src.rgb * src.a + dst.rgb * dst.a * (1.0 - src.a)) / a;
+	return vec4(rgb, a);
+}
+
 vec4 blend_terrain(vec2 uv2, vec3 uv3d, vec3 tri_blend) {
 	vec4 clr = vec4(0);
 	float alpha = 0.0;
@@ -148,6 +154,10 @@ vec4 blend_terrain(vec2 uv2, vec3 uv3d, vec3 tri_blend) {
 		alpha += msk[3];
 	}
 	
+	vec4 bclr = vec4(1, 0, 1, 1);
+	clr = clr / (alpha < 1.0 ? 1.0 : alpha);
+	clr.a = alpha;
+//	clr = blend_alpha(vec4(1, 0, 1, 1), clr);
 	return clr;
 }
 
@@ -158,6 +168,7 @@ void fragment() {
 	b = normalize(vec3(b.x * b.x, b.y * b.y * 16.0, b.z * b.z));
 	
 	ALBEDO = blend_terrain(UV2, uv3d, b).rgb;
+//	ALBEDO = texture(terrain_masks, UV2).rgb;
 //	ALBEDO = clr.rgb;
 //	ALBEDO = COLOR.rgb;
 }
