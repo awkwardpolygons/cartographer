@@ -73,7 +73,7 @@ int which_region(vec2 uv) {
 	return int(region_grid.x * loc.y + loc.x);
 }
 
-vec4 paint_masks2(vec4 tx, vec2 uv, vec2 scale, int act) {
+vec4 paint_masks(vec4 tx, vec2 uv, vec2 scale, int act) {
 	vec2 pos = brush_pos / region_grid;
 	vec2 pts[4] = { pos + region1.xy, pos + region2.xy, pos + region3.xy, pos + region4.xy };
 	
@@ -86,41 +86,11 @@ vec4 paint_masks2(vec4 tx, vec2 uv, vec2 scale, int act) {
 	bool tr = cr == ar; // Is this the targeted region
 	vec4 md = length(tx * ch) < 1.0 && tr && !er ? vec4(0) : vec4(1); // Modifier (add or sub mode)
 	ch = ch * float(tr && !er) - md;
-	return ch * br;
+	return ch * br * brush_strength * brush_strength;
 }
 
-vec4 paint_masks(vec2 uv, vec2 scale, int act) {
-	vec4 regions[4] = { region1, region2, region3, region4 };
-	vec4 clr = vec4(0);
-	
-	vec2 pos = brush_pos/region_grid;
-	vec2 pts[] = { pos + region1.xy, pos + region2.xy, pos + region3.xy, pos + region4.xy };
-	vec4 chn = vec4(-1, -1, -1, -1) / 15.0;
-	
-	for (int i = 0; i < regions.length(); i++) {
-		vec2 pt = uv - pts[i];
-		vec4 rg = regions[i];
-		
-		if (active_region == i && act != ERASE) {
-			chn = active_channel;
-		} else {
-			chn = SUBTRACT_CHANNELS;
-		}
-		
-		if (act == FILL && within(uv, rg)) {
-			clr = chn;
-		}
-		else {
-			float c = sdf_rbox(pt, scale, 0.0);
-			if (c < 0.0) {
-				if (within(pt + pts[i], regions[i])) {
-					clr = brush_val(pt, scale) * brush_strength * chn;
-				}
-			}
-		}
-	}
-	
-	return clr;
+vec4 paint_fill(vec2 uv) {
+	return float(which_region(uv) == active_region) * active_channel;
 }
 
 vec4 paint_height(vec2 uv, vec2 scale) {
@@ -154,13 +124,11 @@ void fragment() {
 		COLOR = clamp(st - bt, 0.0, 1.0);
 	}
 	else if ((act & (PAINT | ERASE)) > 0) {
-		
-//		bt = paint_masks(SCREEN_UV, vec2(brush_scale), act);
-		bt = paint_masks2(st, SCREEN_UV, vec2(brush_scale), act);
+		bt = paint_masks(st, SCREEN_UV, vec2(brush_scale), act);
 		COLOR = st + bt;
 	}
 	else if (act == FILL) {
-		COLOR = paint_masks(SCREEN_UV, vec2(brush_scale), act);
+		COLOR = paint_fill(SCREEN_UV);
 	}
 	else if (act == CLEAR) {
 		COLOR = vec4(0);
