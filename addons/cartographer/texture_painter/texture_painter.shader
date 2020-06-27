@@ -68,28 +68,25 @@ float brush_val(vec2 uv, vec2 scale) {
 	return length(texture(brush_mask, uv) * bounds * brush_mask_channel);
 }
 
-vec4 paint_masks2(vec4 msk, vec2 uv, vec2 scale, int act) {
-	vec4 regions[4] = { region1, region2, region3, region4 };
+int which_region(vec2 uv) {
+	vec2 loc = clamp(floor(uv * region_grid), vec2(0), region_grid - 1.0);
+	return int(region_grid.x * loc.y + loc.x);
+}
+
+vec4 paint_masks2(vec4 tx, vec2 uv, vec2 scale, int act) {
 	vec2 pos = brush_pos / region_grid;
-	vec2 pts[] = { pos + region1.xy, pos + region2.xy, pos + region3.xy, pos + region4.xy };
+	vec2 pts[4] = { pos + region1.xy, pos + region2.xy, pos + region3.xy, pos + region4.xy };
 	
-	vec4 sel = clamp(active_channel, 0.0, 1.0);
-	float val = length(sel * msk);
-	vec4 clr = vec4(0);
-	
-	for (int i = 0; i < regions.length(); i++) {
-		vec2 pt = uv - pts[i];
-		vec4 rg = regions[i];
-		float ar = float(active_region == i);
-		vec4 sub = val < 1.0 && ar == 1.0 ? vec4(0) : vec4(1);
-		vec4 chn = sel * ar - sub;
-		float bnd = sdf_rbox(pt, scale, 0.0) < 0.0 && within(pt + pts[i], rg) ? 1.0 : 0.0;
-		
-		if (bnd == 1.0)
-			clr = brush_val(pt, scale) * brush_strength * chn;
-	}
-	
-	return clr;
+	bool er = (act & ERASE) > 0;
+	int cr = which_region(uv); // Current region, that this texel is in
+	int ar = active_region; // Active region, based on the selected layer
+	vec4 ch = active_channel; // Active channel, based on the selected layer
+	vec2 pt = pts[cr]; // The brush position in this region
+	float br = brush_val(uv - pt, scale); // Value of the brush mask at this point
+	bool tr = cr == ar; // Is this the targeted region
+	vec4 md = length(tx * ch) < 1.0 && tr && !er ? vec4(0) : vec4(1); // Modifier (add or sub mode)
+	ch = ch * float(tr && !er) - md;
+	return ch * br;
 }
 
 vec4 paint_masks(vec2 uv, vec2 scale, int act) {
@@ -157,6 +154,7 @@ void fragment() {
 		COLOR = clamp(st - bt, 0.0, 1.0);
 	}
 	else if ((act & (PAINT | ERASE)) > 0) {
+		
 //		bt = paint_masks(SCREEN_UV, vec2(brush_scale), act);
 		bt = paint_masks2(st, SCREEN_UV, vec2(brush_scale), act);
 		COLOR = st + bt;
