@@ -24,7 +24,7 @@ func set_brush_strength_jitter(j: float):
 	brush_strength_jitter = clamp(j, 0, 1)
 
 func set_brush_scale(s: float):
-	brush_scale = clamp(s, 0, 2)
+	brush_scale = clamp(s, 0, 8)
 
 func set_brush_scale_jitter(j: float):
 	brush_scale_jitter = clamp(j, 0, 1)
