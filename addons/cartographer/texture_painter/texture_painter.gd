@@ -24,7 +24,7 @@ func _init():
 	_vp.usage = Viewport.USAGE_2D
 	_vp.render_target_v_flip = true
 	_vp.render_target_clear_mode = Viewport.CLEAR_MODE_NEVER
-	_vp.render_target_update_mode = Viewport.UPDATE_ALWAYS
+	_vp.render_target_update_mode = Viewport.UPDATE_WHEN_VISIBLE
 	
 	_cvi = TextureRect.new()
 	_cvi.rect_min_size = _vp.size
@@ -45,14 +45,12 @@ func _get_material():
 	return _cvi.material
 
 func _set_brush(br: PaintBrush):
-	if brush == br:
-		return
-	
 	brush = br
 	var scale = brush.get_relative_brush_scale(2048)
 	var mask_channel = brush.get_brush_channel_as_color()
 	
-	_cvi.material.set_shader_param("brush_mask", brush.brush_mask)
+	if brush.brush_mask != _cvi.material.get_shader_param("brush_mask"):
+		_cvi.material.set_shader_param("brush_mask", brush.brush_mask)
 	_cvi.material.set_shader_param("brush_mask_channel", mask_channel)
 	_cvi.material.set_shader_param("brush_strength", brush.brush_strength)
 	_cvi.material.set_shader_param("brush_scale", scale)
