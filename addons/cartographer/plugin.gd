@@ -91,13 +91,12 @@ func get_action(event):
 	return _action
 
 func try_paint(camera, action):
+	var is_on = action & Action.ON > 0
 	if not Cartographer.active_brush:
-		if action & Action.ON:
+		if is_on:
 			push_warning("Select a brush before painting or sculpting")
 		return false
-	else:
-		terrain.brush = Cartographer.active_brush
-	if action & Action.ON == 0:
+	if !is_on:
 		terrain.paint(action, Vector2(-1, -1))
 		return false
 	
@@ -115,5 +114,5 @@ func try_paint(camera, action):
 		var tex_pos = (size/2 + pos) / size
 		var uv = Vector2(clamp(tex_pos.x, 0, 1), clamp(tex_pos.z, 0, 1))
 		terrain.paint(action, uv)
-		return true
+		return is_on
 	return false
