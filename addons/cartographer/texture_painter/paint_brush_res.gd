@@ -44,3 +44,12 @@ func set_brush_spacing_jitter(j: float):
 func _init(mask = null):
 	if mask is Texture:
 		brush_mask = mask
+
+func get_relative_brush_scale(rel: float):
+	var size = brush_mask.get_size()
+	return brush_scale * (max(size.x, size.y) / rel)
+
+func get_brush_channel_as_color():
+	var clr = Color(0, 0, 0, 0)
+	clr[mask_channel] = 1
+	return clr
