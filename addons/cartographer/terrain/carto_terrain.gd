@@ -10,7 +10,7 @@ var size: Vector3 = Vector3(256, 64, 256) setget _set_size
 var diameter: float = max(size.x, size.z)
 var mesh_diameter = 0
 var bounds: CartoTerrainBounds
-var brush: PaintBrush
+var brush: PaintBrush setget _set_brush
 
 signal size_changed
 
@@ -39,6 +39,13 @@ func _set_size(s):
 		material.set_shader_param("terrain_diameter", diameter)
 	emit_signal("size_changed", size)
 
+func _set_brush(br: PaintBrush):
+	brush = br
+	if material:
+		material.sculptor.brush = brush
+		material.painter.brush = brush
+		material.set_shader_param("brush_scale", brush.get_relative_brush_scale(2048))
+
 func _update_bounds():
 #	var aabb = AABB(transform.origin - Vector3(size.x/2, 0, size.z/2), size)
 	bounds.reset(transform.origin - Vector3(size.x/2, 0, size.z/2), size)
@@ -66,6 +73,10 @@ func _enter_tree():
 		material.set_shader_param("INSTANCE_COUNT", multimesh.instance_count)
 	_init_editing()
 
+func _exit_tree():
+	if Engine.is_editor_hint():
+		Cartographer.disconnect("active_brush_changed", self, "_set_brush")
+
 func _init_editing():
 	if Engine.is_editor_hint():
 		var sculptor = find_node("Sculptor")
@@ -78,6 +89,7 @@ func _init_editing():
 			add_child(material.painter)
 		else:
 			material.painter = painter
+		Cartographer.connect("active_brush_changed", self, "_set_brush")
 
 func can_edit():
 	return material and material.sculptor and material.painter
@@ -86,10 +98,10 @@ func paint(action: int, pos: Vector2):
 	if not can_edit():
 		return ERR_UNAVAILABLE
 	
+	material.set_shader_param("brush_pos", pos)
+	
 	var sculptor = material.sculptor
 	var painter = material.painter
-	sculptor.brush = brush
-	painter.brush = brush
 	var on = action & Cartographer.Action.ON
 	var just_changed = action & Cartographer.Action.JUST_CHANGED
 	
