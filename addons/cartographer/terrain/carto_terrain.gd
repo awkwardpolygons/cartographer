@@ -63,6 +63,7 @@ func _enter_tree():
 		_set_material(CartoTerrainMaterial.new())
 		material.set_shader_param("terrain_size", size)
 		material.set_shader_param("terrain_diameter", diameter)
+		material.set_shader_param("INSTANCE_COUNT", multimesh.instance_count)
 	_init_editing()
 
 func _init_editing():
