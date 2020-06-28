@@ -17,7 +17,13 @@ func _init():
 	self.load()
 
 func _set_active_brush(br: PaintBrush):
+	if active_brush:
+		active_brush.disconnect("changed", self, "emit_active_brush_changed")
 	active_brush = br
+	active_brush.connect("changed", self, "emit_active_brush_changed", [active_brush])
+	emit_active_brush_changed(active_brush)
+
+func emit_active_brush_changed(br: PaintBrush):
 	emit_signal("active_brush_changed", br)
 
 func _get_active_brush():
