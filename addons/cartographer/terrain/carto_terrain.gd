@@ -93,14 +93,14 @@ func paint(action: int, pos: Vector2):
 	var on = action & Cartographer.Action.ON
 	var just_changed = action & Cartographer.Action.JUST_CHANGED
 	
-	if not on and just_changed:
-		material.commit_painter()
-		material.commit_sculptor()
-	
 	if action & (Cartographer.Action.RAISE | Cartographer.Action.LOWER):
 		sculptor.paint_height(action, pos)
+		if not on and just_changed:
+			material.commit_sculptor()
 	elif action & (Cartographer.Action.PAINT | Cartographer.Action.ERASE | Cartographer.Action.FILL):
 		painter.paint_masks(action, pos, material.selected)
+		if not on and just_changed:
+			material.commit_painter()
 
 func intersect_ray(from: Vector3, dir: Vector3):
 	var hmap = material.get_height_map()
