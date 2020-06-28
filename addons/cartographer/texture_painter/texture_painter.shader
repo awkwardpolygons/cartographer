@@ -73,18 +73,21 @@ int which_region(vec2 uv) {
 	return int(region_grid.x * loc.y + loc.x);
 }
 
-vec4 paint_masks(vec4 tx, vec2 uv, vec2 scale, int act) {
+vec4 paint_masks(sampler2D scr, vec2 uv, vec2 scale, int act) {
+	vec4 regions[] = {region1, region2, region3, region4};
 	vec2 pos = brush_pos / region_grid;
 	vec2 pts[4] = { pos + region1.xy, pos + region2.xy, pos + region3.xy, pos + region4.xy };
 	
 	bool er = (act & ERASE) > 0;
 	int cr = which_region(uv); // Current region, that this texel is in
 	int ar = active_region; // Active region, based on the selected layer
+	vec4 tx = texture(scr, uv - regions[cr].xy + regions[ar].xy);
 	vec4 ch = active_channel; // Active channel, based on the selected layer
 	vec2 pt = pts[cr]; // The brush position in this region
 	float br = brush_val(uv - pt, scale); // Value of the brush mask at this point
 	bool tr = cr == ar; // Is this the targeted region
-	vec4 md = length(tx * ch) < 1.0 && tr && !er ? vec4(0) : vec4(1); // Modifier (add or sub mode)
+//	vec4 md = length(tx * ch) < 1.0 && tr && !er ? vec4(0) : vec4(1); // Modifier (add or sub mode)
+	vec4 md = length(tx * ch) < 1.0 && !er ? vec4(0) : vec4(1); // Modifier (add or sub mode)
 	ch = ch * float(tr && !er) - md;
 	return ch * br * brush_strength * brush_strength;
 }
@@ -124,7 +127,7 @@ void fragment() {
 		COLOR = clamp(st - bt, 0.0, 1.0);
 	}
 	else if ((act & (PAINT | ERASE)) > 0) {
-		bt = paint_masks(st, SCREEN_UV, vec2(brush_scale), act);
+		bt = paint_masks(SCREEN_TEXTURE, SCREEN_UV, vec2(brush_scale), act);
 		COLOR = st + bt;
 	}
 	else if (act == FILL) {
