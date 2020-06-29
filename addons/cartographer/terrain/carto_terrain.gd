@@ -115,7 +115,53 @@ func paint(action: int, pos: Vector2):
 		if not on and just_changed:
 			material.commit_painter()
 
-func intersect_ray(from: Vector3, dir: Vector3):
+# TODO: Replace this with a threaded version?
+# This hacky little method only gets the pixel data from the texture in
+# intervals, because get_data() is an expensive op, and we only need to refresh
+# the heightmap data at best after a frame tick, but slower updates are viable.
+var _heightmap_data = null
+var _heightmap_data_tick = 0
+func _update_heightmap_data(enabled: bool = true):
+	if _heightmap_data == null or (enabled and _heightmap_data_tick == 0):
+		_heightmap_data = material.get_height_map().get_data()
+	if enabled and _heightmap_data_tick == 0:
+		_heightmap_data_tick = 1
+		yield(get_tree().create_timer(0.35), "timeout")
+		_heightmap_data_tick = 0
+
+func intersect_ray(from: Vector3, dir: Vector3, refresh: bool = true):
+	from = transform.xform_inv(from)
+	dir = transform.xform_inv(dir)
+	var to = dir * 800
+	
+	if not get_aabb().has_point(from):
+		var box = Geometry.build_box_planes(Vector3(size.x/2, size.y/2, size.z/2))
+		var pnt = Geometry.segment_intersects_convex(from, to, box)
+		from = pnt[0]
+	
+	_update_heightmap_data(refresh)
+	var hm = _heightmap_data
+	var hm_size = hm.get_size() - Vector2(1, 1)
+	var pos = from
+	var ret = null
+	var rng = ceil((to - from).length())
+	
+	hm.lock()
+	for i in rng:
+		pos += dir
+		var x = (pos.x + diameter/2) / diameter * hm_size.x
+		x = clamp(x, 0, hm_size.x)
+		var y = (pos.z + diameter/2) / diameter * hm_size.y
+		y = clamp(y, 0, hm_size.y)
+		var pix = hm.get_pixel(x, y)
+		if pos.y <= pix.r * height:
+#			pos -= dir
+			ret = pos
+			break
+	hm.unlock()
+	return ret
+
+func intersect_ray_old(from: Vector3, dir: Vector3):
 	var hmap = material.get_height_map()
 	from = transform.xform_inv(from)
 	return bounds.intersect_ray(from, dir, hmap)
