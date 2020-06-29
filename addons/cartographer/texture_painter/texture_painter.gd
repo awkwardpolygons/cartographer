@@ -46,6 +46,10 @@ func _get_material():
 
 func _set_brush(br: PaintBrush):
 	brush = br
+	
+	if brush == null:
+		return
+	
 	var scale = brush.get_relative_brush_scale(2048)
 	var mask_channel = brush.get_brush_channel_as_color()
 	
