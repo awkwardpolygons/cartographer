@@ -90,6 +90,7 @@ func _init_editing():
 		else:
 			material.painter = painter
 		Cartographer.connect("active_brush_changed", self, "_set_brush")
+		_set_brush(Cartographer.active_brush)
 
 func can_edit():
 	return material and material.sculptor and material.painter
