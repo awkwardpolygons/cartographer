@@ -92,6 +92,7 @@ func get_action(event):
 
 func try_paint(camera, action):
 	var is_on = action & Action.ON > 0
+	var is_sculpting = action & (Cartographer.Action.RAISE | Cartographer.Action.LOWER)
 	if not Cartographer.active_brush:
 		if is_on:
 			push_warning("Select a brush before painting or sculpting")
@@ -108,7 +109,7 @@ func try_paint(camera, action):
 	var size = Vector3(terrain.diameter, 0, terrain.diameter)
 	var org = camera.project_ray_origin(screen_pos)
 	var dir = camera.project_ray_normal(screen_pos)
-	var pos = terrain.intersect_ray(org, dir)
+	var pos = terrain.intersect_ray(org, dir, is_on and is_sculpting)
 	
 	if pos:
 		var tex_pos = (size/2 + pos) / size
