@@ -44,7 +44,8 @@ func _set_brush(br: PaintBrush):
 	if material:
 		material.sculptor.brush = brush
 		material.painter.brush = brush
-		material.set_shader_param("brush_scale", brush.get_relative_brush_scale(2048))
+		if brush:
+			material.set_shader_param("brush_scale", brush.get_relative_brush_scale(2048))
 
 func _update_bounds():
 #	var aabb = AABB(transform.origin - Vector3(size.x/2, 0, size.z/2), size)
@@ -131,13 +132,13 @@ func _update_heightmap_data(enabled: bool = true):
 
 func intersect_ray(from: Vector3, dir: Vector3, refresh: bool = true):
 	from = transform.xform_inv(from)
-	dir = transform.xform_inv(dir)
-	var to = dir * 800
 	
-	if not get_aabb().has_point(from):
-		var box = Geometry.build_box_planes(Vector3(size.x/2, size.y/2, size.z/2))
-		var pnt = Geometry.segment_intersects_convex(from, to, box)
-		from = pnt[0]
+	var pts = Cartographer.aabb_intersect_ray(get_aabb(), from, dir)
+	if pts == null:
+		return null
+	
+	var to = pts[-1]
+	from = pts[0]
 	
 	_update_heightmap_data(refresh)
 	var hm = _heightmap_data
@@ -155,13 +156,7 @@ func intersect_ray(from: Vector3, dir: Vector3, refresh: bool = true):
 		y = clamp(y, 0, hm_size.y)
 		var pix = hm.get_pixel(x, y)
 		if pos.y <= pix.r * height:
-#			pos -= dir
 			ret = pos
 			break
 	hm.unlock()
 	return ret
-
-func intersect_ray_old(from: Vector3, dir: Vector3):
-	var hmap = material.get_height_map()
-	from = transform.xform_inv(from)
-	return bounds.intersect_ray(from, dir, hmap)
