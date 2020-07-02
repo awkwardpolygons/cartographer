@@ -129,7 +129,7 @@ func _update_heightmap_data(enabled: bool = true):
 func intersect_ray(from: Vector3, dir: Vector3, refresh: bool = true):
 	from = transform.xform_inv(from)
 	
-	var pts = Cartographer.aabb_intersect_ray(get_aabb(), from, dir)
+	var pts = Cartographer.aabb_intersect_ray(_aabb, from, dir)
 	if pts == null:
 		return null
 	
