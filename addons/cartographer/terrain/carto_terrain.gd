@@ -32,11 +32,7 @@ func _set_material(m):
 
 func _set_size(s):
 	size = s
-	diameter = max(size.x, size.z)
 	_update_bounds()
-	if material:
-		material.set_shader_param("terrain_size", size)
-		material.set_shader_param("terrain_diameter", diameter)
 	emit_signal("size_changed", size)
 
 func _set_brush(br: PaintBrush):
@@ -48,6 +44,7 @@ func _set_brush(br: PaintBrush):
 			material.set_shader_param("brush_scale", brush.get_relative_brush_scale(2048))
 
 func _update_bounds():
+	diameter = max(size.x, size.z)
 	_aabb = AABB(transform.origin - Vector3(size.x/2, 0, size.z/2), size)
 	set_custom_aabb(_aabb)
 	multimesh.mesh.custom_aabb = _aabb
@@ -56,6 +53,8 @@ func _update_bounds():
 	multimesh.instance_count = ceil(log(diameter / mesh_diameter) / log(2)) + 1 + 1
 	if material:
 		material.set_shader_param("INSTANCE_COUNT", multimesh.instance_count)
+		material.set_shader_param("terrain_size", size)
+		material.set_shader_param("terrain_diameter", diameter)
 
 func _init():
 	multimesh = MultiMesh.new()
