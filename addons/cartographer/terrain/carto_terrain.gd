@@ -9,8 +9,8 @@ export(ShaderMaterial) var material setget _set_material
 var size: Vector3 = Vector3(256, 64, 256) setget _set_size
 var diameter: float = max(size.x, size.z)
 var mesh_diameter = 0
-var bounds: CartoTerrainBounds
 var brush: PaintBrush setget _set_brush
+var _aabb: AABB
 
 signal size_changed
 
@@ -48,11 +48,9 @@ func _set_brush(br: PaintBrush):
 			material.set_shader_param("brush_scale", brush.get_relative_brush_scale(2048))
 
 func _update_bounds():
-#	var aabb = AABB(transform.origin - Vector3(size.x/2, 0, size.z/2), size)
-	bounds.reset(transform.origin - Vector3(size.x/2, 0, size.z/2), size)
-	var aabb = bounds._aabb
-	set_custom_aabb(aabb)
-	multimesh.mesh.custom_aabb = aabb
+	_aabb = AABB(transform.origin - Vector3(size.x/2, 0, size.z/2), size)
+	set_custom_aabb(_aabb)
+	multimesh.mesh.custom_aabb = _aabb
 	# Calculate the instance count based on the mesh size,
 	# plus one to correct the count, and plus one extra for clipping
 	multimesh.instance_count = ceil(log(diameter / mesh_diameter) / log(2)) + 1 + 1
@@ -63,7 +61,6 @@ func _init():
 	multimesh = MultiMesh.new()
 	multimesh.mesh = preload("res://addons/cartographer/meshes/clipmap_multi.obj")
 	mesh_diameter = multimesh.mesh.get_aabb().get_longest_axis_size()
-	bounds = CartoTerrainBounds.new(transform.origin - Vector3(size.x/2, 0, size.z/2), size)
 	_update_bounds()
 
 func _enter_tree():
