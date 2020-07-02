@@ -104,13 +104,20 @@ vec4 paint_height(vec2 uv, vec2 scale) {
 }
 
 void fragment() {
-	vec4 st = texture(SCREEN_TEXTURE, SCREEN_UV);
-	vec4 tt = texture(TEXTURE, SCREEN_UV);
+	vec4 st;
+	vec4 tt;
 	vec4 bt = vec4(0);
 	
 	bool on = (action & ON) > 0;
 	int act = action & (~ON);
 	act = act & (~JUST_CHANGED);
+	
+	if (act != NONE) {
+		st = texture(SCREEN_TEXTURE, SCREEN_UV);
+	}
+	else {
+		tt = texture(TEXTURE, SCREEN_UV);
+	}
 	
 	if (act == NONE) {
 		COLOR = tt;
