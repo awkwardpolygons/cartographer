@@ -120,7 +120,7 @@ void fragment() {
 	}
 	else if (act == RAISE) {
 		bt = paint_height(SCREEN_UV, vec2(brush_scale));
-		COLOR = st + bt;
+		COLOR = clamp(st + bt, 0.0, 1.0);
 	}
 	else if (act == LOWER) {
 		bt = paint_height(SCREEN_UV, vec2(brush_scale));
