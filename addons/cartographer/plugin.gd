@@ -97,15 +97,11 @@ func try_paint(camera, action):
 		if is_on:
 			push_warning("Select a brush before painting or sculpting")
 		return false
-	if !is_on:
-		terrain.paint(action, Vector2(-1, -1))
-		return false
 	
 	var viewport = camera.get_viewport()
 	var viewport_container = viewport.get_parent()
 	var screen_pos = viewport.get_mouse_position() * viewport.size / viewport_container.rect_size
 	
-#	var size = Vector3(terrain.size.x, 0, terrain.size.z)
 	var size = Vector3(terrain.diameter, 0, terrain.diameter)
 	var org = camera.project_ray_origin(screen_pos)
 	var dir = camera.project_ray_normal(screen_pos)
