@@ -65,9 +65,10 @@ vec3 calc_normal(vec2 uv, float rng) {
 	// TODO: Modify this gradient step resolution based on the density of the mesh,
 	// vertices closer together use smaller steps to calc normal, vertices further
 	// apart use larger steps.
+//	vec3 e = vec2(1.0 / terrain_diameter, 0.0).xxy;
 //	vec3 e = vec2(1.0 / terrain_diameter / float(rng), 0.0).xxy;
-//	vec3 e = vec2(rng / terrain_diameter, 0.0).xxy;
-	vec3 e = vec2(clamp(rng / terrain_diameter * 0.01, 1.0 / terrain_diameter, terrain_diameter), 0.0).xxy;
+	vec3 e = vec2(rng / terrain_diameter, 0.0).xxy;
+//	vec3 e = vec2(clamp(rng / terrain_diameter * 0.01, 1.0 / terrain_diameter, terrain_diameter), 0.0).xxy;
 //	float x = h - get_height(uv + e.xz);
 //	float y = h - get_height(uv + e.zy);
 	float x = get_height(uv - e.xz) - get_height(uv + e.xz);
@@ -94,7 +95,8 @@ void vertex() {
 	VERTEX = clip_map(INSTANCE_ID, CAMERA_MATRIX[3].xyz, VERTEX, UV, COLOR);
 	UV2 = UV;
 	UV *= uv1_scale;
-	NORMAL = calc_normal(UV2, abs(length(CAMERA_MATRIX[3].xyz - VERTEX)));
+//	NORMAL = calc_normal(UV2, abs(length(CAMERA_MATRIX[3].xyz - VERTEX)));
+	NORMAL = calc_normal(UV2, float(id + 1));
 	
 	position = VERTEX;
 	normal = NORMAL;
