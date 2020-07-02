@@ -54,3 +54,33 @@ func load():
 
 func save():
 	ResourceSaver.save("res://addons/cartographer/data/brushes.tres", brushes)
+
+# Helper function
+func aabb_intersect_ray(aabb: AABB, from: Vector3, dir: Vector3, margin: float=0.04):
+	var size = aabb.size
+	var planes = Geometry.build_box_planes(size / 2)
+	from.y -= size.y/2
+	var pts = []
+	for plane in planes:
+		var pt = plane.intersects_ray(from, dir)
+		if pt == null \
+			or abs(pt.x) > size.x / 2 + margin \
+			or abs(pt.y) > size.y / 2 + margin \
+			or abs(pt.z) > size.z / 2 + margin:
+			continue
+		pt.y +=  size.y/2
+		pts.append(pt)
+	
+	from.y += size.y/2
+	if len(pts) >= 2:
+		var lrg = pts[0]
+		var sml = pts[0]
+		for pt in pts:
+			var v = pt.length_squared()
+			lrg = pt if v > lrg.length_squared() else lrg
+			sml = pt if v < sml.length_squared() else sml
+		return [lrg, sml]
+	elif len(pts) == 1 and aabb.has_point(from):
+		return [from, pts[0]]
+	else:
+		return null
