@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/star.png-7ae4b8fe14df1c414205d0b8f133c79c.stex"
+path="res://.import/round_3.exr-cc726d891d95a953c45d30f0c0d00c64.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://addons/cartographer/brush_masks/star.png"
-dest_files=[ "res://.import/star.png-7ae4b8fe14df1c414205d0b8f133c79c.stex" ]
+source_file="res://addons/cartographer/brush_masks/round_3.exr"
+dest_files=[ "res://.import/round_3.exr-cc726d891d95a953c45d30f0c0d00c64.stex" ]
 
 [params]
 
