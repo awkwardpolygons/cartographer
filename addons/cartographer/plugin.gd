@@ -28,12 +28,10 @@ func _enter_tree():
 
 func _on_selection_changed(brushes_panel):
 	var selected = editor.get_selection().get_selected_nodes()
-#	print("selected ", selected)
 	if len(selected) == 0:
 		handles(null)
 
 func _exit_tree():
-#	print(brushes_panel)
 	remove_control_from_docks(brushes_panel)
 	remove_control_from_container(EditorPlugin.CONTAINER_SPATIAL_EDITOR_MENU, toolbar)
 	if brushes_panel:
@@ -47,12 +45,10 @@ func save_external_data():
 func get_plugin_name():
 	return "Cartographer"
 
-# TODO: Investigate MultiNodeEdit
 func handles(obj: Object):
-#	print("handles ", obj)
 	if obj is CartoTerrain:
 		return true
-#	edit(null)
+	edit(null)
 	return false
 
 func get_terrain_from(obj: Object):
@@ -70,8 +66,8 @@ func make_visible(visible):
 
 func forward_spatial_gui_input(camera, event):
 	var action = get_action(event)
-#	prints("-->", action, Cartographer.get_action())
-#	return true
+	if terrain == null:
+		return
 	return try_paint(camera, action)
 
 func get_action(event):
