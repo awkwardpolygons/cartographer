@@ -107,11 +107,16 @@ func paint(action: int, pos: Vector2):
 	
 	if action & (Cartographer.Action.RAISE | Cartographer.Action.LOWER):
 		sculptor.paint_height(action, pos)
+		# Use force_draw here and below to force Godot to update the viewport
+		# buffers before saving them. Fixes frame lag, where some edits arrive
+		# after the commit.
 		if not on and just_changed:
+			VisualServer.force_draw()
 			material.commit_sculptor()
 	elif action & (Cartographer.Action.PAINT | Cartographer.Action.ERASE | Cartographer.Action.FILL):
 		painter.paint_masks(action, pos, material.selected)
 		if not on and just_changed:
+			VisualServer.force_draw()
 			material.commit_painter()
 
 # TODO: Replace this with a threaded version?
