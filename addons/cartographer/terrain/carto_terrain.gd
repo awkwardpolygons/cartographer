@@ -119,20 +119,6 @@ func paint(action: int, pos: Vector2):
 			VisualServer.force_draw()
 			material.commit_painter()
 
-# TODO: Replace this with a threaded version?
-# This hacky little method only gets the pixel data from the texture in
-# intervals, because get_data() is an expensive op, and we only need to refresh
-# the heightmap data at best after a frame tick, but slower updates are viable.
-var _heightmap_data = null
-var _heightmap_data_tick = 0
-func _update_heightmap_data(enabled: bool = true):
-	if _heightmap_data == null or (enabled and _heightmap_data_tick == 0):
-		_heightmap_data = material.get_height_map().get_data()
-	if enabled and _heightmap_data_tick == 0:
-		_heightmap_data_tick = 1
-		yield(get_tree().create_timer(0.35), "timeout")
-		_heightmap_data_tick = 0
-
 # This class provides a thread for sampling the heigthmap texture in intervals,
 # because get_data() is an expensive op, and we only need to refresh
 # the heightmap data at best after a frame tick, but slower updates are viable. 
@@ -178,8 +164,6 @@ func intersect_ray(from: Vector3, dir: Vector3, refresh: bool = true):
 	var to = pts[-1]
 	from = pts[0]
 	
-#	_update_heightmap_data(refresh)
-#	var hm = _heightmap_data
 	if refresh:
 		hmfetcher.update()
 	var hm = hmfetcher.data
