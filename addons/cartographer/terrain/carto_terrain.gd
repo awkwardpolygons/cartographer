@@ -73,6 +73,7 @@ func _enter_tree():
 func _exit_tree():
 	if Engine.is_editor_hint():
 		Cartographer.disconnect("active_brush_changed", self, "_set_brush")
+		hmfetcher._exit()
 
 func _init_editing():
 	if Engine.is_editor_hint():
@@ -88,6 +89,7 @@ func _init_editing():
 			material.painter = painter
 		Cartographer.connect("active_brush_changed", self, "_set_brush")
 		_set_brush(Cartographer.active_brush)
+		hmfetcher = HeightmapFetcher.new(material.get_height_map())
 
 func can_edit():
 	return material and material.sculptor and material.painter
@@ -126,6 +128,41 @@ func _update_heightmap_data(enabled: bool = true):
 		yield(get_tree().create_timer(0.35), "timeout")
 		_heightmap_data_tick = 0
 
+# This class provides a thread for sampling the heigthmap texture in intervals,
+# because get_data() is an expensive op, and we only need to refresh
+# the heightmap data at best after a frame tick, but slower updates are viable. 
+var hmfetcher
+class HeightmapFetcher extends Reference:
+	var heightmap: Texture
+	var thread: Thread = Thread.new()
+	var gate: Mutex = Mutex.new()
+	var tick: Semaphore = Semaphore.new()
+	var data: Image = null
+	var _run = true
+	
+	func _init(hm: Texture):
+		heightmap = hm
+		data = heightmap.get_data()
+		var err = thread.start(self, "worker")
+	
+	func _exit():
+		_run = false
+		tick.post()
+		thread.wait_to_finish()
+	
+	func update():
+		if gate.try_lock() == OK:
+			tick.post()
+			gate.unlock()
+	
+	func worker(arg):
+		while _run:
+			data = heightmap.get_data()
+			gate.unlock()
+			tick.wait()
+			gate.lock()
+			OS.delay_msec(350)
+
 func intersect_ray(from: Vector3, dir: Vector3, refresh: bool = true):
 	from = transform.xform_inv(from)
 	
@@ -136,8 +173,11 @@ func intersect_ray(from: Vector3, dir: Vector3, refresh: bool = true):
 	var to = pts[-1]
 	from = pts[0]
 	
-	_update_heightmap_data(refresh)
-	var hm = _heightmap_data
+#	_update_heightmap_data(refresh)
+#	var hm = _heightmap_data
+	if refresh:
+		hmfetcher.update()
+	var hm = hmfetcher.data
 	var hm_size = hm.get_size() - Vector2(1, 1)
 	var pos = from
 	var ret = null
