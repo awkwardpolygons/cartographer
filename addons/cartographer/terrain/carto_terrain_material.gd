@@ -83,7 +83,9 @@ func get_triplanar(idx: int) -> bool:
 
 func create_mask_map():
 	var tex = ImageTexture.new()
-	tex.create(2048, 2048, Image.FORMAT_RGBA8)
+	var img = Image.new()
+	img.create(2048, 2048, false, Image.FORMAT_RGBA8)
+	tex.create_from_image(img)
 	_set_mask_map(tex)
 
 func create_height_map():
