@@ -18,6 +18,29 @@ Cartogrpaher is a GPU powered terrain editor for Godot 3.
 - - [ ] Improve ray picking performance
 - [x] Dynamic lighting
 - - [ ] Lightmap baking
+- [x] Brushes panel
+- [x] Custom Brushes
+- - [x] Brush strength
+- - [x] Brush scale
+- - [ ] Brush rotation
+- - [ ] Brush spacing
+- - [ ] Brush strength jitter
+- - [ ] Brush scale jitter
+- - [ ] Brush rotation jitter
+- - [ ] Brush spacing jitter
+- [x] Editing tools
+- - [x] Raise
+- - [x] Lower
+- - [x] Paint
+- - [x] Erase
+- - [x] Fill
+- - [ ] Smooth
+- - [ ] Sharpen
+- - [ ] Level
+- [ ] Advanced editing with:
+- - [ ] Anchors
+- - [ ] Shapes
+
 
 # Guide
 ## Terrain Editing
