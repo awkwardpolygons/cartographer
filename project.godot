@@ -68,7 +68,8 @@ _global_script_class_icons={
 
 [application]
 
-config/name="awkpol1"
+config/name="Cartographer"
+config/description="GPU powered terrain editor for Godot"
 run/main_scene="res://example/test_terrain.tscn"
 config/icon="res://icon.png"
 
