@@ -2,8 +2,8 @@
 
 importer="texture"
 type="StreamTexture"
-path.s3tc="res://.import/grass_05.png-41b45920038c503a0b98392263960428.s3tc.stex"
-path.etc2="res://.import/grass_05.png-41b45920038c503a0b98392263960428.etc2.stex"
+path.s3tc="res://.import/grass_04.png-ddcf83d837255198fe7f7a3295048837.s3tc.stex"
+path.etc2="res://.import/grass_04.png-ddcf83d837255198fe7f7a3295048837.etc2.stex"
 metadata={
 "imported_formats": [ "s3tc", "etc2" ],
 "vram_texture": true
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://example/textures/realistic/ground/grass_05.png"
-dest_files=[ "res://.import/grass_05.png-41b45920038c503a0b98392263960428.s3tc.stex", "res://.import/grass_05.png-41b45920038c503a0b98392263960428.etc2.stex" ]
+source_file="res://example/textures/realistic/craziwolf/grass_04.png"
+dest_files=[ "res://.import/grass_04.png-ddcf83d837255198fe7f7a3295048837.s3tc.stex", "res://.import/grass_04.png-ddcf83d837255198fe7f7a3295048837.etc2.stex" ]
 
 [params]
 

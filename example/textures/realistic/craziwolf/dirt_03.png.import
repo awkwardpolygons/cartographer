@@ -2,8 +2,8 @@
 
 importer="texture"
 type="StreamTexture"
-path.s3tc="res://.import/dirt_06.png-3136ee0e317c78885b3badd9acef940e.s3tc.stex"
-path.etc2="res://.import/dirt_06.png-3136ee0e317c78885b3badd9acef940e.etc2.stex"
+path.s3tc="res://.import/dirt_03.png-53a4e78702f280a7f26adaf9953a08bd.s3tc.stex"
+path.etc2="res://.import/dirt_03.png-53a4e78702f280a7f26adaf9953a08bd.etc2.stex"
 metadata={
 "imported_formats": [ "s3tc", "etc2" ],
 "vram_texture": true
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://example/textures/realistic/ground/dirt_06.png"
-dest_files=[ "res://.import/dirt_06.png-3136ee0e317c78885b3badd9acef940e.s3tc.stex", "res://.import/dirt_06.png-3136ee0e317c78885b3badd9acef940e.etc2.stex" ]
+source_file="res://example/textures/realistic/craziwolf/dirt_03.png"
+dest_files=[ "res://.import/dirt_03.png-53a4e78702f280a7f26adaf9953a08bd.s3tc.stex", "res://.import/dirt_03.png-53a4e78702f280a7f26adaf9953a08bd.etc2.stex" ]
 
 [params]
 
