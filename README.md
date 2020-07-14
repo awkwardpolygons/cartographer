@@ -9,6 +9,7 @@ Cartogrpaher is a GPU powered terrain editor for Godot 3.
 - [x] Terrain sizes from 32 to 1024 units
 - [x] Upto 16 texture layers
 - - [x] 16 layer Weightmap with GPU painting
+- - [x] Triplanar texture mapping
 - - [ ] Full PBR material support
 - [x] GPU Heightmap sculpting
 - - [x] 16bit Heightmaps
