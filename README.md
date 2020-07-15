@@ -1,6 +1,6 @@
 [screenshot]: https://raw.githubusercontent.com/awkwardpolygons/cartographer/master/addons/cartographer/screenshot.png "Cartographer screenshot"
 # Cartographer
-Cartogrpaher is a GPU powered terrain editor for Godot 3.
+Cartographer is a GPU powered terrain editor for Godot 3.
 
 ![][screenshot]
 
