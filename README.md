@@ -8,42 +8,42 @@ Cartographer is a GPU powered terrain editor for Godot 3.
 
 - [x] Terrain sizes from 32 to 1024 units
 - [x] Upto 16 texture layers
-- - [x] 16 layer Weightmap with GPU painting
-- - [x] Triplanar texture mapping
-- - [ ] Full PBR material support
+  - [x] 16 layer Weightmap with GPU painting
+  - [x] Triplanar texture mapping
+  - [ ] Full PBR material support
 - [x] GPU Heightmap sculpting
-- - [x] 16bit Heightmaps
+  - [x] 16bit Heightmaps
 - [x] GPU Clipmap LOD terrain mesh
 - [x] Heightmap physics collision shape generator
 - [x] Terrain ray picking for painting and sculpting
-- - [ ] Improve ray picking performance
+  - [ ] Improve ray picking performance
 - [x] Dynamic lighting
-- - [ ] Lightmap baking
+  - [ ] Lightmap baking
 - [ ] Customizable terrain visual shader
-- - [ ] Custom visual shader nodes
+  - [ ] Custom visual shader nodes
 - [ ] Undo / redo
 - [x] Brushes panel
 - [x] Custom Brushes
-- - [x] Brush strength
-- - [x] Brush scale
-- - [ ] Brush rotation
-- - [ ] Brush spacing
-- - [ ] Brush strength jitter
-- - [ ] Brush scale jitter
-- - [ ] Brush rotation jitter
-- - [ ] Brush spacing jitter
+  - [x] Brush strength
+  - [x] Brush scale
+  - [ ] Brush rotation
+  - [ ] Brush spacing
+  - [ ] Brush strength jitter
+  - [ ] Brush scale jitter
+  - [ ] Brush rotation jitter
+  - [ ] Brush spacing jitter
 - [x] Editing tools
-- - [x] Raise
-- - [x] Lower
-- - [x] Paint
-- - [x] Erase
-- - [x] Fill
-- - [ ] Smooth
-- - [ ] Sharpen
-- - [ ] Level
+  - [x] Raise
+  - [x] Lower
+  - [x] Paint
+  - [x] Erase
+  - [x] Fill
+  - [ ] Smooth
+  - [ ] Sharpen
+  - [ ] Level
 - [ ] Advanced editing with:
-- - [ ] Anchors
-- - [ ] Shapes
+  - [ ] Anchors
+  - [ ] Shapes
 
 
 # Guide
