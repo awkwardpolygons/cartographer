@@ -50,6 +50,7 @@ Cartographer is a GPU powered terrain editor for Godot 3.
 ## Terrain Editing
 
 1. Install the addon into your project.
+   1. Remember to enable the cartographer singleton.
 2. In a spatial scene click add and type "cartoterrain".
 3. Add a CartoTerrain node.
 4. Inspect the terrain node, set the height, width, depth to desired size.
