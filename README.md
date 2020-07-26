@@ -16,7 +16,7 @@ Cartographer is a GPU powered terrain editor for Godot 3.
 - [x] GPU Clipmap LOD terrain mesh
 - [x] Heightmap physics collision shape generator
 - [x] Terrain ray picking for painting and sculpting
-  - [ ] Improve ray picking performance
+  - [x] GPU ray picking
 - [x] Dynamic lighting
   - [ ] Lightmap baking
 - [ ] Customizable terrain visual shader
