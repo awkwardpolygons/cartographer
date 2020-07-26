@@ -76,10 +76,10 @@ func aabb_intersect_ray(aabb: AABB, from: Vector3, dir: Vector3, margin: float=0
 		var lrg = pts[0]
 		var sml = pts[0]
 		for pt in pts:
-			var v = pt.length_squared()
-			lrg = pt if v > lrg.length_squared() else lrg
-			sml = pt if v < sml.length_squared() else sml
-		return [lrg, sml]
+			var v = pt.distance_squared_to(from)
+			lrg = pt if v > lrg.distance_squared_to(from) else lrg
+			sml = pt if v < sml.distance_squared_to(from) else sml
+		return [sml, lrg]
 	elif len(pts) == 1 and aabb.has_point(from):
 		return [from, pts[0]]
 	else:
