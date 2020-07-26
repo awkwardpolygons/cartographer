@@ -101,11 +101,9 @@ func try_paint(camera, action):
 	var size = Vector3(terrain.diameter, 0, terrain.diameter)
 	var org = camera.project_ray_origin(screen_pos)
 	var dir = camera.project_ray_normal(screen_pos)
-	var pos = terrain.intersect_ray(org, dir, is_on and is_sculpting)
+	var pos = terrain.intersect_ray(org, dir)
 	
 	if pos:
-		var tex_pos = (size/2 + pos) / size
-		var uv = Vector2(clamp(tex_pos.x, 0, 1), clamp(tex_pos.z, 0, 1))
-		terrain.paint(action, uv)
+		terrain.paint(action, pos)
 		return is_on
 	return false
