@@ -102,10 +102,10 @@ void vertex() {
 	normal = NORMAL;
 }
 
-vec4 draw_gizmo(vec2 uv) {
-	float r = length(uv - brush_pos);
+vec4 draw_gizmo(vec4 clr, vec2 uv, vec2 pos) {
+	float r = length(uv - pos);
 	float w = 1.0 / terrain_diameter * 2.0;
-	return r > brush_scale || r < brush_scale - w ? vec4(0) : vec4(1, 0, 1, 1);
+	return r > brush_scale || r < brush_scale - w ? vec4(0) : clr;
 }
 
 vec4 texture_triplanar(sampler2DArray sampler, vec3 tex_pos, float layer, vec3 blend) {
@@ -176,7 +176,7 @@ void fragment() {
 	vec3 b = normal;
 	b = normalize(vec3(b.x * b.x, b.y * b.y * 16.0, b.z * b.z));
 	
-	vec4 giz = draw_gizmo(UV2);
+	vec4 giz = draw_gizmo(vec4(1, 0, 1, 1), UV2, brush_pos);
 	
 	ALBEDO = blend_terrain(UV2, uv3d, b).rgb + giz.rgb;
 //	ALBEDO = texture(terrain_masks, UV2).rgb;
