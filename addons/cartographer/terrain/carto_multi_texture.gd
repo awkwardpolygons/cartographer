@@ -1,0 +1,3 @@
+tool
+extends TextureArray
+class_name CartoMultiTexture
