@@ -1,0 +1,174 @@
+[gd_scene load_steps=2 format=2]
+
+[sub_resource type="GDScript" id=1]
+script/source = "tool
+extends WindowDialog
+
+var width_input
+var height_input
+var depth_input
+var format_input
+var formats = {
+	\"FORMAT_L8\": Image.FORMAT_L8,
+	\"FORMAT_LA8\": Image.FORMAT_LA8,
+	\"FORMAT_R8\": Image.FORMAT_R8,
+	\"FORMAT_RG8\": Image.FORMAT_RG8,
+	\"FORMAT_RGB8\": Image.FORMAT_RGB8,
+	\"FORMAT_RGBA8\": Image.FORMAT_RGBA8,
+}
+
+signal acknowledged
+
+func _ready():
+	width_input = $Box/WidthInput/Width
+	height_input = $Box/HeightInput/Height
+	depth_input = $Box/DepthInput/Depth
+	format_input = $Box/FormatInput/Format
+	
+	for k in formats:
+		var v = formats[k]
+		format_input.add_item(k, v)
+
+func _on_action(ok):
+	var vals = []
+	if ok:
+		var selected = format_input.selected
+		var format = format_input.get_item_id(selected) if selected > -1 else -1
+		vals = [width_input.value, height_input.value, depth_input.value, format]
+	emit_signal(\"acknowledged\", ok, vals)
+	hide()
+"
+
+[node name="CreateDialog" type="WindowDialog"]
+margin_right = 200.0
+margin_bottom = 70.0
+rect_min_size = Vector2( 350, 200 )
+window_title = "Create layers..."
+script = SubResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Box" type="VBoxContainer" parent="."]
+anchor_right = 1.0
+margin_left = 8.0
+margin_top = 8.0
+margin_right = -8.0
+margin_bottom = 164.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="WidthInput" type="HBoxContainer" parent="Box"]
+margin_right = 334.0
+margin_bottom = 32.0
+rect_min_size = Vector2( 0, 32 )
+
+[node name="Label" type="Label" parent="Box/WidthInput"]
+margin_top = 9.0
+margin_right = 165.0
+margin_bottom = 23.0
+size_flags_horizontal = 3
+text = "Width"
+
+[node name="Width" type="SpinBox" parent="Box/WidthInput"]
+margin_left = 169.0
+margin_right = 334.0
+margin_bottom = 32.0
+size_flags_horizontal = 3
+min_value = 32.0
+max_value = 4096.0
+value = 1024.0
+
+[node name="HeightInput" type="HBoxContainer" parent="Box"]
+margin_top = 36.0
+margin_right = 334.0
+margin_bottom = 68.0
+rect_min_size = Vector2( 0, 32 )
+
+[node name="Label" type="Label" parent="Box/HeightInput"]
+margin_top = 9.0
+margin_right = 165.0
+margin_bottom = 23.0
+size_flags_horizontal = 3
+text = "Height"
+
+[node name="Height" type="SpinBox" parent="Box/HeightInput"]
+margin_left = 169.0
+margin_right = 334.0
+margin_bottom = 32.0
+size_flags_horizontal = 3
+min_value = 32.0
+max_value = 4096.0
+value = 1024.0
+
+[node name="DepthInput" type="HBoxContainer" parent="Box"]
+margin_top = 72.0
+margin_right = 334.0
+margin_bottom = 104.0
+rect_min_size = Vector2( 0, 32 )
+
+[node name="Label" type="Label" parent="Box/DepthInput"]
+margin_top = 9.0
+margin_right = 165.0
+margin_bottom = 23.0
+size_flags_horizontal = 3
+text = "Depth"
+
+[node name="Depth" type="SpinBox" parent="Box/DepthInput"]
+margin_left = 169.0
+margin_right = 334.0
+margin_bottom = 32.0
+size_flags_horizontal = 3
+min_value = 1.0
+max_value = 16.0
+value = 16.0
+
+[node name="FormatInput" type="HBoxContainer" parent="Box"]
+margin_top = 108.0
+margin_right = 334.0
+margin_bottom = 140.0
+rect_min_size = Vector2( 0, 32 )
+
+[node name="Label" type="Label" parent="Box/FormatInput"]
+margin_top = 9.0
+margin_right = 165.0
+margin_bottom = 23.0
+size_flags_horizontal = 3
+text = "Format"
+
+[node name="Format" type="OptionButton" parent="Box/FormatInput"]
+margin_left = 169.0
+margin_right = 334.0
+margin_bottom = 32.0
+size_flags_horizontal = 3
+text = "FORMAT_L8"
+items = [ "FORMAT_L8", null, false, 0, null, "FORMAT_LA8", null, false, 1, null, "FORMAT_R8", null, false, 2, null, "FORMAT_RG8", null, false, 3, null, "FORMAT_RGB8", null, false, 4, null, "FORMAT_RGBA8", null, false, 5, null ]
+selected = 0
+
+[node name="Spacer" type="Control" parent="Box"]
+margin_top = 144.0
+margin_right = 334.0
+margin_bottom = 149.0
+rect_min_size = Vector2( 0, 5 )
+
+[node name="Buttons" type="HBoxContainer" parent="Box"]
+margin_top = 153.0
+margin_right = 334.0
+margin_bottom = 185.0
+rect_min_size = Vector2( 0, 32 )
+
+[node name="Cancel" type="Button" parent="Box/Buttons"]
+margin_right = 165.0
+margin_bottom = 32.0
+size_flags_horizontal = 3
+text = "Cancel"
+
+[node name="Accept" type="Button" parent="Box/Buttons"]
+margin_left = 169.0
+margin_right = 334.0
+margin_bottom = 32.0
+size_flags_horizontal = 3
+text = "Create"
+[connection signal="pressed" from="Box/Buttons/Cancel" to="." method="_on_action" binds= [ false ]]
+[connection signal="pressed" from="Box/Buttons/Accept" to="." method="_on_action" binds= [ true ]]
