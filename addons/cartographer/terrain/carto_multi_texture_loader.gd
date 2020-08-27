@@ -12,11 +12,16 @@ func handles_type(typename: String) -> bool:
 	return true
 
 func load(path: String, original_path: String):
+	var ta: CartoMultiTexture
+	var data: Dictionary
 	var file = File.new()
-#	file.open(path, File.READ)
-	file.open_compressed(path, File.READ, File.COMPRESSION_ZSTD)
-	var data = file.get_var(true)
-	var err = file.get_error()
+	var err = file.open_compressed(path, File.READ, File.COMPRESSION_ZSTD)
+	if err == OK:
+		data = file.get_var(true)
+		err = file.get_error()
 	file.close()
-	prints(data.layers, err)
-	return CartoMultiTexture.new()
+	if err == OK:
+		ta = CartoMultiTexture.new()
+		ta.data = data
+		return ta
+	return err
