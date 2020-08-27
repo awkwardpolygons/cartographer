@@ -9,12 +9,12 @@ func recognize(res: Resource) -> bool:
 	return res is CartoMultiTexture
 
 func save(path: String, res: Resource, flags: int) -> int:
-	var ta = load("res://example/terra1.png")
+#	var ta = load("res://example/terra1.png")
+	var ta = res as CartoMultiTexture
 	var file = File.new()
-#	file.open(path, File.WRITE)
-	file.open_compressed(path, File.WRITE, File.COMPRESSION_ZSTD)
-	file.store_var(ta.data, true)
-	var err = file.get_error()
+	var err = file.open_compressed(path, File.WRITE, File.COMPRESSION_ZSTD)
+	if err == OK:
+		file.store_var(ta.data, true)
+		err = file.get_error()
 	file.close()
-	prints(ta.data)
 	return err
