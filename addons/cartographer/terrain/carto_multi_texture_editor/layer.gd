@@ -4,6 +4,8 @@ extends CartoAxisLayout
 const LayerPreview = preload("res://addons/cartographer/terrain/carto_multi_texture_editor/layer_preview.gd")
 export(int) var idx: int setget set_idx
 export(TextureArray) var texarr: TextureArray setget set_texarr
+export(ButtonGroup) var group: ButtonGroup setget set_group
+var main_button: Button
 var file_dialog = EditorFileDialog.new()
 var preview_buttons: VBoxContainer
 var layer_preview
@@ -24,6 +26,11 @@ func set_texarr(ta):
 	layer_preview.texarr = texarr
 	for ch in channels.get_children():
 		ch.texarr = texarr
+
+func set_group(g):
+	group = g
+	if main_button:
+		main_button.group = group
 
 func _init():
 	_init_file_dialog()
@@ -116,8 +123,30 @@ func _init_preview_buttons():
 	load_button.rect_min_size = Vector2(button_size, button_size)
 	load_button.connect("pressed", self, "_on_load", [-1])
 	
+	main_button = Button.new()
+	main_button.anchor_bottom = ANCHOR_END
+	main_button.anchor_right = ANCHOR_END
+	main_button.toggle_mode = true
+	var ns = StyleBoxEmpty.new()
+	var sbh = StyleBoxFlat.new()
+	sbh.bg_color = Color(0.1, 0.3, 0.8, 0.2)
+	var sbp = StyleBoxFlat.new()
+	sbp.bg_color = Color(0.1, 0.3, 0.8, 0.0)
+	sbp.border_color = Color(0.1, 0.3, 0.8, 1)
+	sbp.border_width_top = 3
+	sbp.border_width_right = 3
+	sbp.border_width_bottom = 3
+	sbp.border_width_left = 3
+	main_button.add_stylebox_override("normal", ns)
+	main_button.add_stylebox_override("hover", sbh)
+	main_button.add_stylebox_override("focus", ns)
+	main_button.add_stylebox_override("pressed", sbp)
+	main_button.group = group
+	
 	preview_buttons.add_child(load_button)
 	preview_buttons.add_child(more_button)
+	
+	layer_preview.add_child(main_button)
 
 func _on_more(visible):
 	channels.visible = visible
