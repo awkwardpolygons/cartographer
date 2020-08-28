@@ -1,7 +1,7 @@
 tool
 extends ColorRect
 
-enum TextureChannel {RED = 1, GREEN = 2, BLUE = 4, ALPHA = 8}
+enum TextureChannel {RED = 0, GREEN = 1, BLUE = 2, ALPHA = 3}
 export(int) var idx: int setget set_idx
 export(TextureArray) var texarr: TextureArray setget set_texarr
 export(TextureChannel) var channel: int setget set_channel
