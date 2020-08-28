@@ -5,7 +5,8 @@ const LayerList = preload("res://addons/cartographer/terrain/carto_multi_texture
 const Layer = preload("res://addons/cartographer/terrain/carto_multi_texture_editor/layer.gd")
 #const Layer = preload("res://addons/cartographer/terrain/carto_multi_texture_editor/layer.tscn")
 var layer_list
-var create_button
+var layer_group: ButtonGroup
+var create_button: Button
 var create_dialog: WindowDialog
 
 func _init():
@@ -22,6 +23,8 @@ func _init():
 #	layer_list.anchor_bottom = ANCHOR_END
 	layer_list.anchor_right = ANCHOR_END
 #	layer_list.rect_min_size = Vector2(0, 512)
+	
+	layer_group = ButtonGroup.new()
 	
 	create_button = Button.new()
 	create_button.text = "Create"
@@ -72,6 +75,7 @@ func update_list():
 		layer.idx = i
 		layer.texarr = mtex
 		layer.rect_min_size = Vector2(128, 128)
+		layer.group = layer_group
 		layer_list.add_child(layer)
 
 func _enter_tree():
