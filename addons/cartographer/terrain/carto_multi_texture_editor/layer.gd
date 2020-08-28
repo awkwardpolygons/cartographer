@@ -79,10 +79,10 @@ func _init_file_dialog():
 	channel_option_label.text = "Choose the channel"
 	
 	channel_option = OptionButton.new()
-	channel_option.add_item("RED", 0)
-	channel_option.add_item("GREEN", 1)
-	channel_option.add_item("BLUE", 2)
-	channel_option.add_item("ALPHA", 3)
+	channel_option.add_item("RED", CartoTerrainMaterial.TextureChannel.RED)
+	channel_option.add_item("GREEN", CartoTerrainMaterial.TextureChannel.GREEN)
+	channel_option.add_item("BLUE", CartoTerrainMaterial.TextureChannel.BLUE)
+	channel_option.add_item("ALPHA", CartoTerrainMaterial.TextureChannel.ALPHA)
 	
 	channel_option_box.add_child(channel_option_label)
 	channel_option_box.add_child(channel_option)

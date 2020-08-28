@@ -1,10 +1,9 @@
 tool
 extends ColorRect
 
-enum TextureChannel {RED = 0, GREEN = 1, BLUE = 2, ALPHA = 3}
 export(int) var idx: int setget set_idx
 export(TextureArray) var texarr: TextureArray setget set_texarr
-export(TextureChannel) var channel: int setget set_channel
+export(CartoTerrainMaterial.TextureChannel) var channel: int setget set_channel
 
 func set_idx(i):
 	idx = i
