@@ -2,6 +2,7 @@ tool
 extends ShaderMaterial
 class_name CartoTerrainMaterial2
 
+enum TextureChannel {RED = 0, GREEN = 1, BLUE = 2, ALPHA = 3}
 const MAX_LAYERS = 16
 export(TextureArray) var albedo_textures setget _set_albedo_textures
 export(TextureArray) var amr_textures setget _set_amr_textures # ao + metallic + roughness

@@ -3,6 +3,7 @@ tool
 extends ShaderMaterial
 class_name CartoTerrainMaterial
 
+enum TextureChannel {RED = 0, GREEN = 1, BLUE = 2, ALPHA = 3}
 const MAX_LAYERS = 16
 export(TextureArray) var textures setget _set_textures
 export(ImageTexture) var mask_map: ImageTexture setget _set_mask_map
