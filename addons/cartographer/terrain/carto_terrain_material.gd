@@ -1,42 +1,65 @@
-# BUG: emit_signal("changed") Needed because of https://github.com/godotengine/godot/issues/30179
 tool
 extends ShaderMaterial
 class_name CartoTerrainMaterial
 
 enum TextureChannel {RED = 0, GREEN = 1, BLUE = 2, ALPHA = 3}
 const MAX_LAYERS = 16
-export(TextureArray) var textures setget _set_textures
+
+var albedo_colors: PoolColorArray
+var albedo_textures: TextureArray setget _set_albedo_textures
+var ao_textures setget _set_ao_textures
+var depth_textures setget _set_depth_textures
+var metallic_textures setget _set_metallic_textures
+var normal_textures setget _set_normal_textures
+var roughness_textures setget _set_roughness_textures
+
 export(ImageTexture) var weightmap: ImageTexture setget _set_weightmap
 export(ImageTexture) var heightmap: ImageTexture setget _set_heightmap
 export(Vector2) var uv1_scale: Vector2 = Vector2(1, 1) setget _set_uv1_scale
-export(int) var use_triplanar: int = 0 setget _set_use_triplanar
 export(int) var selected: int = 0
 var sculptor: TexturePainter
 var painter: TexturePainter
 
-func _set_textures(ta):
-	textures = ta
-	set_shader_param("albedo_textures", textures)
-	if weightmap == null and ta != null:
-		create_weightmap()
-	if heightmap == null and ta != null:
-		create_heightmap()
-#	property_list_changed_notify()
+func _set_albedo_textures(ta: TextureArray):
+	albedo_textures = ta
+	set_shader_param("albedo_textures", albedo_textures)
+	albedo_textures.connect("changed", self, "_on_layer_selected", [ta])
 	emit_signal("changed")
 
-func _set_weightmap(m):
+func _set_ao_textures(ta: TextureArray):
+	ao_textures = ta
+	set_shader_param("ao_textures", ao_textures)
+	emit_signal("changed")
+
+func _set_depth_textures(ta: TextureArray):
+	depth_textures = ta
+	set_shader_param("depth_textures", depth_textures)
+	emit_signal("changed")
+
+func _set_metallic_textures(ta: TextureArray):
+	metallic_textures = ta
+	set_shader_param("metallic_textures", metallic_textures)
+	emit_signal("changed")
+
+func _set_normal_textures(ta: TextureArray):
+	normal_textures = ta
+	set_shader_param("normal_textures", normal_textures)
+	emit_signal("changed")
+
+func _set_roughness_textures(ta: TextureArray):
+	roughness_textures = ta
+	set_shader_param("roughness_textures", roughness_textures)
+	emit_signal("changed")
+
+func _set_weightmap(m: ImageTexture):
 	weightmap = m
-	if m.get_size() == Vector2(0, 0):
-		m.create(2048, 2048, Image.FORMAT_RGBA8)
 	if painter:
 		painter.texture = m
 	set_shader_param("weightmap", get_weightmap())
 	emit_signal("changed")
 
-func _set_heightmap(m):
+func _set_heightmap(m: ImageTexture):
 	heightmap = m
-	if m.get_size() == Vector2(0, 0):
-		m.create(2048, 2048, Image.FORMAT_RGBA8)
 	if sculptor:
 		sculptor.texture = m
 	set_shader_param("heightmap", get_heightmap())
@@ -47,13 +70,9 @@ func _set_uv1_scale(s):
 	set_shader_param("uv1_scale", uv1_scale)
 	emit_signal("changed")
 
-func _set_use_triplanar(t):
-	use_triplanar = t
-	set_shader_param("use_triplanar", use_triplanar)
-	emit_signal("changed")
-
 func _init():
 	shader = preload("res://addons/cartographer/terrain/carto_terrain.shader")
+	
 	if Engine.is_editor_hint():
 		sculptor = TexturePainter.new()
 		sculptor.hdr = true
@@ -68,20 +87,6 @@ func get_weightmap():
 func get_heightmap():
 	return heightmap if not sculptor else sculptor.get_texture()
 
-func calc_triplanar(idx: int, on: bool):
-	var flag: int = pow(2, idx)
-	if on:
-		return use_triplanar | flag
-	else:
-		return use_triplanar & ~flag
-
-func set_triplanar(idx: int, on: bool):
-	_set_use_triplanar(calc_triplanar(idx, on))
-
-func get_triplanar(idx: int) -> bool:
-	var flag: int = pow(2, idx)
-	return (use_triplanar & flag) > 0
-
 func create_weightmap():
 	var tex = ImageTexture.new()
 	var img = Image.new()
@@ -95,14 +100,58 @@ func create_heightmap():
 	_set_heightmap(tex)
 
 func commit_painter():
+	if not weightmap:
+		create_weightmap()
 	var img = painter.get_texture().get_data()
 	weightmap.set_data(img)
-#	weightmap.create_from_image(img)
 	emit_signal("changed")
 
 func commit_sculptor():
+	if not heightmap:
+		create_heightmap()
 	var img = sculptor.get_texture().get_data()
 	img.convert(Image.FORMAT_RH)
 	heightmap.set_data(img)
-#	heightmap.create_from_image(img)
 	emit_signal("changed")
+
+func _on_layer_selected(ta):
+	selected = ta.selected
+
+func _get_property_list():
+	var properties = []
+	properties.append(_prop_group("Albedo", "albedo_"))
+	properties.append(_prop_info("albedo_colors", TYPE_COLOR_ARRAY))
+	properties.append(_prop_info("albedo_textures", TYPE_OBJECT, PROPERTY_HINT_RESOURCE_TYPE, "TextureArray"))
+	
+	properties.append(_prop_group("Metallic", "metallic_"))
+	properties.append(_prop_info("metallic_textures", TYPE_OBJECT, PROPERTY_HINT_RESOURCE_TYPE, "TextureArray"))
+	
+	properties.append(_prop_group("Roughness", "roughness_"))
+	properties.append(_prop_info("roughness_textures", TYPE_OBJECT, PROPERTY_HINT_RESOURCE_TYPE, "TextureArray"))
+	
+	properties.append(_prop_group("Normal Map", "normal_"))
+	properties.append(_prop_info("normal_textures", TYPE_OBJECT, PROPERTY_HINT_RESOURCE_TYPE, "TextureArray"))
+	
+	properties.append(_prop_group("Ambient Occlusion", "ao_"))
+	properties.append(_prop_info("ao_textures", TYPE_OBJECT, PROPERTY_HINT_RESOURCE_TYPE, "TextureArray"))
+	
+	properties.append(_prop_group("Depth", "depth_"))
+	properties.append(_prop_info("depth_textures", TYPE_OBJECT, PROPERTY_HINT_RESOURCE_TYPE, "TextureArray"))
+	return properties
+
+func _prop_group(name: String, prefix: String) -> Dictionary:
+	return {
+		name = name,
+		type = TYPE_NIL,
+		hint_string = prefix,
+		usage = PROPERTY_USAGE_GROUP | PROPERTY_USAGE_SCRIPT_VARIABLE
+	}
+
+func _prop_info(name: String, type: int, hint: int = PROPERTY_HINT_NONE, hint_string: String = "") -> Dictionary:
+	return {
+		name = name,
+		type = type,
+		hint = hint,
+		hint_string = hint_string,
+		usage = PROPERTY_USAGE_DEFAULT | PROPERTY_USAGE_SCRIPT_VARIABLE
+	}
