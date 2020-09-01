@@ -2,7 +2,11 @@ tool
 extends TextureArray
 class_name CartoMultiTexture
 
-var selected: int = -1
+var selected: int = -1 setget set_selected
+
+func set_selected(i: int):
+	selected = i
+	emit_signal("changed")
 
 func get_size():
 	return Vector2(get_width(), get_height())
