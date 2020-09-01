@@ -32,6 +32,8 @@ func _on_selection_changed(brushes_panel):
 		handles(null)
 
 func _exit_tree():
+	remove_autoload_singleton("Cartographer")
+	remove_inspector_plugin(inspector_plugin)
 	remove_control_from_docks(brushes_panel)
 	remove_control_from_container(EditorPlugin.CONTAINER_SPATIAL_EDITOR_MENU, toolbar)
 	if brushes_panel:
