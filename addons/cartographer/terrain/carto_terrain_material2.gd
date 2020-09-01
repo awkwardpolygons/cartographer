@@ -4,9 +4,15 @@ class_name CartoTerrainMaterial2
 
 enum TextureChannel {RED = 0, GREEN = 1, BLUE = 2, ALPHA = 3}
 const MAX_LAYERS = 16
-export(TextureArray) var albedo_textures setget _set_albedo_textures
-export(TextureArray) var amr_textures setget _set_amr_textures # ao + metallic + roughness
-export(TextureArray) var ndb_textures setget _set_ndb_textures # normal + depth + bump
+
+var albedo_colors: PoolColorArray
+var albedo_textures setget _set_albedo_textures
+var ao_textures setget _set_ao_textures
+var depth_textures setget _set_depth_textures
+var metallic_textures setget _set_metallic_textures
+var normal_textures setget _set_normal_textures
+var roughness_textures setget _set_roughness_textures
+
 export(ImageTexture) var weightmap: ImageTexture setget _set_weightmap
 export(ImageTexture) var heightmap: ImageTexture setget _set_heightmap
 export(Vector2) var uv1_scale: Vector2 = Vector2(1, 1) setget _set_uv1_scale
@@ -19,14 +25,29 @@ func _set_albedo_textures(ta: TextureArray):
 	set_shader_param("albedo_textures", albedo_textures)
 	emit_signal("changed")
 
-func _set_amr_textures(ta: TextureArray):
-	amr_textures = ta
-	set_shader_param("amr_textures", amr_textures)
+func _set_ao_textures(ta: TextureArray):
+	ao_textures = ta
+	set_shader_param("ao_textures", ao_textures)
 	emit_signal("changed")
 
-func _set_ndb_textures(ta: TextureArray):
-	ndb_textures = ta
-	set_shader_param("ndb_textures", ndb_textures)
+func _set_depth_textures(ta: TextureArray):
+	depth_textures = ta
+	set_shader_param("depth_textures", depth_textures)
+	emit_signal("changed")
+
+func _set_metallic_textures(ta: TextureArray):
+	metallic_textures = ta
+	set_shader_param("metallic_textures", metallic_textures)
+	emit_signal("changed")
+
+func _set_normal_textures(ta: TextureArray):
+	normal_textures = ta
+	set_shader_param("normal_textures", normal_textures)
+	emit_signal("changed")
+
+func _set_roughness_textures(ta: TextureArray):
+	roughness_textures = ta
+	set_shader_param("roughness_textures", roughness_textures)
 	emit_signal("changed")
 
 func _set_weightmap(it: ImageTexture):
@@ -87,3 +108,40 @@ func commit_sculptor():
 	img.convert(Image.FORMAT_RH)
 	heightmap.set_data(img)
 	emit_signal("changed")
+
+func _get_property_list():
+	var properties = []
+	properties.append(_prop_group("Albedo", "albedo_"))
+	properties.append(_prop_info("albedo_colors", TYPE_COLOR_ARRAY))
+	properties.append(_prop_info("albedo_textures", TYPE_OBJECT))
+	
+	properties.append(_prop_group("Metallic", "metallic_"))
+	properties.append(_prop_info("metallic_textures", TYPE_OBJECT))
+	
+	properties.append(_prop_group("Roughness", "roughness_"))
+	properties.append(_prop_info("roughness_textures", TYPE_OBJECT))
+	
+	properties.append(_prop_group("Normal Map", "normal_"))
+	properties.append(_prop_info("normal_textures", TYPE_OBJECT))
+	
+	properties.append(_prop_group("Ambient Occlusion", "ao_"))
+	properties.append(_prop_info("ao_textures", TYPE_OBJECT))
+	
+	properties.append(_prop_group("Depth", "depth_"))
+	properties.append(_prop_info("depth_textures", TYPE_OBJECT))
+	return properties
+
+func _prop_group(name: String, prefix: String) -> Dictionary:
+	return {
+		name = name,
+		type = TYPE_NIL,
+		hint_string = prefix,
+		usage = PROPERTY_USAGE_GROUP | PROPERTY_USAGE_SCRIPT_VARIABLE
+	}
+
+func _prop_info(name: String, type: int) -> Dictionary:
+	return {
+		name = name,
+		type = type,
+		usage = PROPERTY_USAGE_DEFAULT | PROPERTY_USAGE_SCRIPT_VARIABLE
+	}
