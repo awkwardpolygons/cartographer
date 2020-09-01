@@ -38,4 +38,5 @@ func set_layer(src, idx: int, chn_src: int = -1, chn_dst: int = -1):
 		dst.unlock()
 		src.unlock()
 	
+	dst.generate_mipmaps()
 	set_layer_data(dst, idx)
