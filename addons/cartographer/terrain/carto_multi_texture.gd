@@ -2,6 +2,8 @@ tool
 extends TextureArray
 class_name CartoMultiTexture
 
+var selected: int = -1
+
 func get_size():
 	return Vector2(get_width(), get_height())
 
