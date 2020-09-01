@@ -62,12 +62,13 @@ func update_list():
 		layer.rect_min_size = Vector2(128, 128)
 		layer.group = layer_group
 		layer_list.add_child(layer)
+		layer.main_button.connect("toggled", self, "_on_layer_toggled", [i])
 
 func _enter_tree():
-	pass
 #	prints(get_tree().root.get_child(0).get_child(2).theme.get_stylebox("pressed", "Button"))
 #	for ch in get_tree().root.get_child(0).get_children():
 #		prints(ch)
+	pass
 
 func _ready():
 	rect_min_size = Vector2(0, 1024)
@@ -76,3 +77,7 @@ func _ready():
 	add_child(create_button)
 	add_child(create_dialog)
 	set_bottom_editor(layer_list)
+
+func _on_layer_toggled(on, i):
+	if on:
+		get_edited_object().selected = i
