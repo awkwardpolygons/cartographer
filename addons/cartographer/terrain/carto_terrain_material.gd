@@ -6,8 +6,8 @@ class_name CartoTerrainMaterial
 enum TextureChannel {RED = 0, GREEN = 1, BLUE = 2, ALPHA = 3}
 const MAX_LAYERS = 16
 export(TextureArray) var textures setget _set_textures
-export(ImageTexture) var mask_map: ImageTexture setget _set_mask_map
-export(ImageTexture) var height_map: ImageTexture setget _set_height_map
+export(ImageTexture) var weightmap: ImageTexture setget _set_weightmap
+export(ImageTexture) var heightmap: ImageTexture setget _set_heightmap
 export(Vector2) var uv1_scale: Vector2 = Vector2(1, 1) setget _set_uv1_scale
 export(int) var use_triplanar: int = 0 setget _set_use_triplanar
 export(int) var selected: int = 0
@@ -16,30 +16,30 @@ var painter: TexturePainter
 
 func _set_textures(ta):
 	textures = ta
-	set_shader_param("terrain_textures", textures)
-	if mask_map == null and ta != null:
-		create_mask_map()
-	if height_map == null and ta != null:
-		create_height_map()
+	set_shader_param("albedo_textures", textures)
+	if weightmap == null and ta != null:
+		create_weightmap()
+	if heightmap == null and ta != null:
+		create_heightmap()
 #	property_list_changed_notify()
 	emit_signal("changed")
 
-func _set_mask_map(m):
-	mask_map = m
+func _set_weightmap(m):
+	weightmap = m
 	if m.get_size() == Vector2(0, 0):
 		m.create(2048, 2048, Image.FORMAT_RGBA8)
 	if painter:
 		painter.texture = m
-	set_shader_param("terrain_masks", get_mask_map())
+	set_shader_param("weightmap", get_weightmap())
 	emit_signal("changed")
 
-func _set_height_map(m):
-	height_map = m
+func _set_heightmap(m):
+	heightmap = m
 	if m.get_size() == Vector2(0, 0):
 		m.create(2048, 2048, Image.FORMAT_RGBA8)
 	if sculptor:
 		sculptor.texture = m
-	set_shader_param("terrain_height", get_height_map())
+	set_shader_param("heightmap", get_heightmap())
 	emit_signal("changed")
 
 func _set_uv1_scale(s):
@@ -62,11 +62,11 @@ func _init():
 		painter = TexturePainter.new()
 		painter.name = "Painter"
 
-func get_mask_map():
-	return mask_map if not painter else painter.get_texture()
+func get_weightmap():
+	return weightmap if not painter else painter.get_texture()
 
-func get_height_map():
-	return height_map if not sculptor else sculptor.get_texture()
+func get_heightmap():
+	return heightmap if not sculptor else sculptor.get_texture()
 
 func calc_triplanar(idx: int, on: bool):
 	var flag: int = pow(2, idx)
@@ -82,27 +82,27 @@ func get_triplanar(idx: int) -> bool:
 	var flag: int = pow(2, idx)
 	return (use_triplanar & flag) > 0
 
-func create_mask_map():
+func create_weightmap():
 	var tex = ImageTexture.new()
 	var img = Image.new()
 	img.create(2048, 2048, false, Image.FORMAT_RGBA8)
 	tex.create_from_image(img)
-	_set_mask_map(tex)
+	_set_weightmap(tex)
 
-func create_height_map():
+func create_heightmap():
 	var tex = ImageTexture.new()
 	tex.create(2048, 2048, Image.FORMAT_RH)
-	_set_height_map(tex)
+	_set_heightmap(tex)
 
 func commit_painter():
 	var img = painter.get_texture().get_data()
-	mask_map.set_data(img)
-#	mask_map.create_from_image(img)
+	weightmap.set_data(img)
+#	weightmap.create_from_image(img)
 	emit_signal("changed")
 
 func commit_sculptor():
 	var img = sculptor.get_texture().get_data()
 	img.convert(Image.FORMAT_RH)
-	height_map.set_data(img)
-#	height_map.create_from_image(img)
+	heightmap.set_data(img)
+#	heightmap.create_from_image(img)
 	emit_signal("changed")

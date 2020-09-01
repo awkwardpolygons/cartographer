@@ -5,9 +5,9 @@ const float MESH_STRIDE = 16.0;
 const int NUM_LAYERS = 16;
 const float MASK_SCALE = 2.0;
 uniform int INSTANCE_COUNT = 1;
-uniform sampler2D terrain_height : hint_black;
-uniform sampler2D terrain_masks : hint_black;
-uniform sampler2DArray terrain_textures : hint_albedo;
+uniform sampler2D heightmap : hint_black;
+uniform sampler2D weightmap : hint_black;
+uniform sampler2DArray albedo_textures : hint_albedo;
 uniform vec3 terrain_size;
 uniform float terrain_diameter = 256;
 uniform vec2 uv1_scale = vec2(1);
@@ -19,7 +19,7 @@ varying vec3 position;
 varying vec3 normal;
 
 float get_height(vec2 uv) {
-	vec4 h = texture(terrain_height, uv);
+	vec4 h = texture(heightmap, uv);
 	return h.r;
 }
 
@@ -110,9 +110,9 @@ vec4 draw_gizmo(vec4 clr, vec2 uv, vec2 pos) {
 }
 
 vec4 texture_triplanar(sampler2DArray sampler, vec3 tex_pos, float layer, vec3 blend) {
-	vec4 tx = texture(terrain_textures, vec3(tex_pos.yz, layer));
-	vec4 ty = texture(terrain_textures, vec3(tex_pos.xz, layer));
-	vec4 tz = texture(terrain_textures, vec3(tex_pos.xy, layer));
+	vec4 tx = texture(albedo_textures, vec3(tex_pos.yz, layer));
+	vec4 ty = texture(albedo_textures, vec3(tex_pos.xz, layer));
+	vec4 tz = texture(albedo_textures, vec3(tex_pos.xy, layer));
 	return (tx * blend.x + ty * blend.y + tz * blend.z);
 }
 
@@ -121,7 +121,7 @@ vec4 get_mask_for(int layer, vec2 msk_uv) {
 	x = x % 2;
 	int y = layer / 8;
 	vec2 region = vec2(float(x), float(y)) / MASK_SCALE;
-	vec4 msk_clr = texture(terrain_masks, msk_uv + region);
+	vec4 msk_clr = texture(weightmap, msk_uv + region);
 	return msk_clr;
 }
 
@@ -146,10 +146,10 @@ vec4 blend_terrain(vec2 uv2, vec3 uv3d, vec3 tri_blend) {
 			uint flg = uint(pow(2.0, float(lyr)));
 			
 			if ((flg & use_triplanar) > uint(0)) {
-				alb[j] = texture_triplanar(terrain_textures, uv3d, float(lyr), tri_blend);
+				alb[j] = texture_triplanar(albedo_textures, uv3d, float(lyr), tri_blend);
 			}
 			else {
-				alb[j] = texture(terrain_textures, vec3(uv3d.xz, float(lyr)));
+				alb[j] = texture(albedo_textures, vec3(uv3d.xz, float(lyr)));
 			}
 		}
 		
@@ -180,7 +180,7 @@ void fragment() {
 	vec4 giz = draw_gizmo(vec4(1, 0, 1, 1), UV2, brush_pos);
 	
 	ALBEDO = blend_terrain(UV2, uv3d, b).rgb + giz.rgb;
-//	ALBEDO = texture(terrain_masks, UV2).rgb;
+//	ALBEDO = texture(weightmap, UV2).rgb;
 //	ALBEDO = clr.rgb;
 //	ALBEDO = COLOR.rgb;
 }

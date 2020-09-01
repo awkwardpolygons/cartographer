@@ -94,7 +94,7 @@ func _init_editing():
 		_set_brush(Cartographer.active_brush)
 		
 		picker = HeightmapPicker.new()
-		picker.heightmap = material.get_height_map()
+		picker.heightmap = material.get_heightmap()
 		picker.diameter = diameter
 		picker.height = height
 		add_child(picker)

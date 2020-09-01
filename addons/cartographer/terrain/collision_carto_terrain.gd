@@ -28,7 +28,7 @@ func _bind_terrain_props(__=null):
 	var d = _terrain.depth
 	var h = _terrain.height
 	var e = _terrain.diameter
-	var hmap = _terrain.material.height_map.get_data() if _terrain.material and _terrain.material.height_map else null
+	var hmap = _terrain.material.heightmap.get_data() if _terrain.material and _terrain.material.heightmap else null
 	
 	shape.map_width = w
 	shape.map_depth = d
