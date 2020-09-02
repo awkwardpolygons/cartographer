@@ -78,7 +78,7 @@ func _do_layout():
 	var sec_axis = get_secondary_axis()
 	var pos: Vector2
 	var rect: Rect2
-	var size
+	var size = Vector2(0, 0)
 	
 	for ch in get_children():
 		if !ch.visible or ch is Popup:
