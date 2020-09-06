@@ -48,20 +48,23 @@ func on_create_acknowledged(ok, vals):
 
 func update_list():
 	var mtex = get_edited_object()
-	var have = layer_list.get_child_count()
+	var children = layer_list.get_children()
+	var have = children.size()
 	var want = mtex.get_depth() if mtex else 0
 	
 	for i in have:
-		var ch = layer_list.get_child(i)
+		var ch = children[i]
 		layer_list.remove_child(ch)
+		ch.queue_free()
 	
 	for i in want:
 		var layer = Layer.new()
+		layer_list.add_child(layer)
 		layer.idx = i
 		layer.texarr = mtex
 		layer.rect_min_size = Vector2(128, 128)
 		layer.group = layer_group
-		layer_list.add_child(layer)
+		layer.connect("layer_set", self, "_on_layer_set")
 		layer.main_button.connect("toggled", self, "_on_layer_toggled", [i])
 
 func _enter_tree():
