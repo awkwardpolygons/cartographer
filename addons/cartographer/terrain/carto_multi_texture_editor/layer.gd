@@ -15,6 +15,8 @@ var channel_option: OptionButton
 var channel_option_box: HBoxContainer
 var selected_channel: int
 
+signal layer_set
+
 func set_idx(i):
 	idx = i
 	layer_preview.idx = idx
@@ -164,6 +166,7 @@ func _on_file_selected(path):
 		var chn_src = channel_option.get_selected_id()
 		var chn_dst = selected_channel
 		texarr.set_layer(src, idx, chn_src, chn_dst)
+	emit_signal("layer_set", idx)
 
 func get_preferred_size() -> Vector2:
 	var size = .get_combined_minimum_size()
