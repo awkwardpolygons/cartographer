@@ -36,15 +36,14 @@ func on_create_acknowledged(ok, vals):
 		return
 	
 	var flags = TextureLayered.FLAG_MIPMAPS | TextureLayered.FLAG_REPEAT | TextureLayered.FLAG_FILTER
-	prints(flags)
 	mtex.create(vals[0], vals[1], vals[2], vals[3], flags)
 	var img = Image.new()
-	img.create(vals[0], vals[1], false, vals[3])
+	img.create(vals[0], vals[1], true, vals[3])
 	
 	for i in vals[2]:
 		mtex.set_layer_data(img, i)
 	
-	update_list()
+	emit_changed("data", mtex.data)
 
 func update_list():
 	var mtex = get_edited_object()
@@ -75,11 +74,16 @@ func _enter_tree():
 
 func _ready():
 	rect_min_size = Vector2(0, 1024)
-	update_list()
 	add_child(layer_list)
 	add_child(create_button)
 	add_child(create_dialog)
 	set_bottom_editor(layer_list)
+
+func update_property():
+	update_list()
+
+func _on_layer_set(idx):
+	emit_changed("data", get_edited_object().data)
 
 func _on_layer_toggled(on, i):
 	if on:
