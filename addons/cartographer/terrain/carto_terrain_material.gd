@@ -22,6 +22,8 @@ var sculptor: TexturePainter
 var painter: TexturePainter
 
 func _set_albedo_textures(ta: TextureArray):
+	if ta and not ta is CartoMultiTexture:
+		ta.set_script(preload("res://addons/cartographer/terrain/carto_multi_texture.gd"))
 	if albedo_textures and albedo_textures.has_signal("changed"):
 		albedo_textures.disconnect("changed", self, "_on_layer_selected")
 	albedo_textures = ta
