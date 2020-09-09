@@ -8,11 +8,7 @@ const MAX_LAYERS = 16
 var albedo_colors: PoolColorArray
 var albedo_textures: TextureArray setget _set_albedo_textures
 var orm_textures: TextureArray setget _set_orm_textures
-#var ao_textures: TextureArray setget _set_ao_textures
-#var depth_textures: TextureArray setget _set_depth_textures
-#var metallic_textures: TextureArray setget _set_metallic_textures
 var normal_textures: TextureArray setget _set_normal_textures
-#var roughness_textures: TextureArray setget _set_roughness_textures
 
 var weightmap: ImageTexture setget _set_weightmap
 var heightmap: ImageTexture setget _set_heightmap
@@ -22,45 +18,28 @@ var sculptor: TexturePainter
 var painter: TexturePainter
 
 func _set_albedo_textures(ta: TextureArray):
-	if ta and not ta is CartoMultiTexture:
-		ta.set_script(preload("res://addons/cartographer/terrain/carto_multi_texture.gd"))
-	if albedo_textures and albedo_textures.has_signal("changed"):
-		albedo_textures.disconnect("changed", self, "_on_layer_selected")
-	albedo_textures = ta
+	albedo_textures = _prep_textures(ta, albedo_textures)
 	set_shader_param("albedo_textures", albedo_textures)
-	if albedo_textures:
-		albedo_textures.connect("changed", self, "_on_layer_selected", [ta])
 	emit_signal("changed")
 
 func _set_orm_textures(ta: TextureArray):
-	orm_textures = ta
+	orm_textures = _prep_textures(ta, orm_textures)
 	set_shader_param("orm_textures", orm_textures)
 	emit_signal("changed")
-
-#func _set_ao_textures(ta: TextureArray):
-#	ao_textures = ta
-#	set_shader_param("ao_textures", ao_textures)
-#	emit_signal("changed")
-#
-#func _set_depth_textures(ta: TextureArray):
-#	depth_textures = ta
-#	set_shader_param("depth_textures", depth_textures)
-#	emit_signal("changed")
-#
-#func _set_metallic_textures(ta: TextureArray):
-#	metallic_textures = ta
-#	set_shader_param("metallic_textures", metallic_textures)
-#	emit_signal("changed")
 #
 func _set_normal_textures(ta: TextureArray):
-	normal_textures = ta
+	normal_textures = _prep_textures(ta, normal_textures)
 	set_shader_param("normal_textures", normal_textures)
 	emit_signal("changed")
-#
-#func _set_roughness_textures(ta: TextureArray):
-#	roughness_textures = ta
-#	set_shader_param("roughness_textures", roughness_textures)
-#	emit_signal("changed")
+
+func _prep_textures(new: TextureArray, old: TextureArray):
+	if old and old.has_signal("changed"):
+		old.disconnect("changed", self, "_on_layer_selected")
+	if new:
+		if not new is CartoMultiTexture:
+			new.set_script(preload("res://addons/cartographer/terrain/carto_multi_texture.gd"))
+		new.connect("changed", self, "_on_layer_selected", [new])
+	return new
 
 func _set_weightmap(m: ImageTexture):
 	weightmap = m
@@ -136,21 +115,9 @@ func _get_property_list():
 	
 	properties.append(_prop_group("AO, Roughness, Metallic", "orm_"))
 	properties.append(_prop_info("orm_textures", TYPE_OBJECT, PROPERTY_HINT_RESOURCE_TYPE, "TextureArray"))
-
-#	properties.append(_prop_group("Metallic", "metallic_"))
-#	properties.append(_prop_info("metallic_textures", TYPE_OBJECT, PROPERTY_HINT_RESOURCE_TYPE, "TextureArray"))
-#
-#	properties.append(_prop_group("Roughness", "roughness_"))
-#	properties.append(_prop_info("roughness_textures", TYPE_OBJECT, PROPERTY_HINT_RESOURCE_TYPE, "TextureArray"))
-#
+	
 	properties.append(_prop_group("Normal Map", "normal_"))
 	properties.append(_prop_info("normal_textures", TYPE_OBJECT, PROPERTY_HINT_RESOURCE_TYPE, "TextureArray"))
-#
-#	properties.append(_prop_group("Ambient Occlusion", "ao_"))
-#	properties.append(_prop_info("ao_textures", TYPE_OBJECT, PROPERTY_HINT_RESOURCE_TYPE, "TextureArray"))
-#
-#	properties.append(_prop_group("Depth", "depth_"))
-#	properties.append(_prop_info("depth_textures", TYPE_OBJECT, PROPERTY_HINT_RESOURCE_TYPE, "TextureArray"))
 	
 	properties.append(_prop_info("heightmap", TYPE_OBJECT, PROPERTY_HINT_RESOURCE_TYPE, "ImageTexture"))
 	properties.append(_prop_info("weightmap", TYPE_OBJECT, PROPERTY_HINT_RESOURCE_TYPE, "ImageTexture"))
