@@ -7,49 +7,58 @@ const MAX_LAYERS = 16
 
 var albedo_colors: PoolColorArray
 var albedo_textures: TextureArray setget _set_albedo_textures
-var ao_textures setget _set_ao_textures
-var depth_textures setget _set_depth_textures
-var metallic_textures setget _set_metallic_textures
-var normal_textures setget _set_normal_textures
-var roughness_textures setget _set_roughness_textures
+var orm_textures: TextureArray setget _set_orm_textures
+#var ao_textures: TextureArray setget _set_ao_textures
+#var depth_textures: TextureArray setget _set_depth_textures
+#var metallic_textures: TextureArray setget _set_metallic_textures
+var normal_textures: TextureArray setget _set_normal_textures
+#var roughness_textures: TextureArray setget _set_roughness_textures
 
-export(ImageTexture) var weightmap: ImageTexture setget _set_weightmap
-export(ImageTexture) var heightmap: ImageTexture setget _set_heightmap
-export(Vector2) var uv1_scale: Vector2 = Vector2(1, 1) setget _set_uv1_scale
-export(int) var selected: int = 0
+var weightmap: ImageTexture setget _set_weightmap
+var heightmap: ImageTexture setget _set_heightmap
+var uv1_scale: Vector2 = Vector2(1, 1) setget _set_uv1_scale
+var selected: int = 0
 var sculptor: TexturePainter
 var painter: TexturePainter
 
 func _set_albedo_textures(ta: TextureArray):
+	if albedo_textures and albedo_textures.has_signal("changed"):
+		albedo_textures.disconnect("changed", self, "_on_layer_selected")
 	albedo_textures = ta
 	set_shader_param("albedo_textures", albedo_textures)
-	albedo_textures.connect("changed", self, "_on_layer_selected", [ta])
+	if albedo_textures:
+		albedo_textures.connect("changed", self, "_on_layer_selected", [ta])
 	emit_signal("changed")
 
-func _set_ao_textures(ta: TextureArray):
-	ao_textures = ta
-	set_shader_param("ao_textures", ao_textures)
+func _set_orm_textures(ta: TextureArray):
+	orm_textures = ta
+	set_shader_param("orm_textures", orm_textures)
 	emit_signal("changed")
 
-func _set_depth_textures(ta: TextureArray):
-	depth_textures = ta
-	set_shader_param("depth_textures", depth_textures)
-	emit_signal("changed")
-
-func _set_metallic_textures(ta: TextureArray):
-	metallic_textures = ta
-	set_shader_param("metallic_textures", metallic_textures)
-	emit_signal("changed")
-
+#func _set_ao_textures(ta: TextureArray):
+#	ao_textures = ta
+#	set_shader_param("ao_textures", ao_textures)
+#	emit_signal("changed")
+#
+#func _set_depth_textures(ta: TextureArray):
+#	depth_textures = ta
+#	set_shader_param("depth_textures", depth_textures)
+#	emit_signal("changed")
+#
+#func _set_metallic_textures(ta: TextureArray):
+#	metallic_textures = ta
+#	set_shader_param("metallic_textures", metallic_textures)
+#	emit_signal("changed")
+#
 func _set_normal_textures(ta: TextureArray):
 	normal_textures = ta
 	set_shader_param("normal_textures", normal_textures)
 	emit_signal("changed")
-
-func _set_roughness_textures(ta: TextureArray):
-	roughness_textures = ta
-	set_shader_param("roughness_textures", roughness_textures)
-	emit_signal("changed")
+#
+#func _set_roughness_textures(ta: TextureArray):
+#	roughness_textures = ta
+#	set_shader_param("roughness_textures", roughness_textures)
+#	emit_signal("changed")
 
 func _set_weightmap(m: ImageTexture):
 	weightmap = m
@@ -123,20 +132,27 @@ func _get_property_list():
 	properties.append(_prop_info("albedo_colors", TYPE_COLOR_ARRAY))
 	properties.append(_prop_info("albedo_textures", TYPE_OBJECT, PROPERTY_HINT_RESOURCE_TYPE, "TextureArray"))
 	
-	properties.append(_prop_group("Metallic", "metallic_"))
-	properties.append(_prop_info("metallic_textures", TYPE_OBJECT, PROPERTY_HINT_RESOURCE_TYPE, "TextureArray"))
-	
-	properties.append(_prop_group("Roughness", "roughness_"))
-	properties.append(_prop_info("roughness_textures", TYPE_OBJECT, PROPERTY_HINT_RESOURCE_TYPE, "TextureArray"))
-	
+	properties.append(_prop_group("AO, Roughness, Metallic", "orm_"))
+	properties.append(_prop_info("orm_textures", TYPE_OBJECT, PROPERTY_HINT_RESOURCE_TYPE, "TextureArray"))
+
+#	properties.append(_prop_group("Metallic", "metallic_"))
+#	properties.append(_prop_info("metallic_textures", TYPE_OBJECT, PROPERTY_HINT_RESOURCE_TYPE, "TextureArray"))
+#
+#	properties.append(_prop_group("Roughness", "roughness_"))
+#	properties.append(_prop_info("roughness_textures", TYPE_OBJECT, PROPERTY_HINT_RESOURCE_TYPE, "TextureArray"))
+#
 	properties.append(_prop_group("Normal Map", "normal_"))
 	properties.append(_prop_info("normal_textures", TYPE_OBJECT, PROPERTY_HINT_RESOURCE_TYPE, "TextureArray"))
+#
+#	properties.append(_prop_group("Ambient Occlusion", "ao_"))
+#	properties.append(_prop_info("ao_textures", TYPE_OBJECT, PROPERTY_HINT_RESOURCE_TYPE, "TextureArray"))
+#
+#	properties.append(_prop_group("Depth", "depth_"))
+#	properties.append(_prop_info("depth_textures", TYPE_OBJECT, PROPERTY_HINT_RESOURCE_TYPE, "TextureArray"))
 	
-	properties.append(_prop_group("Ambient Occlusion", "ao_"))
-	properties.append(_prop_info("ao_textures", TYPE_OBJECT, PROPERTY_HINT_RESOURCE_TYPE, "TextureArray"))
-	
-	properties.append(_prop_group("Depth", "depth_"))
-	properties.append(_prop_info("depth_textures", TYPE_OBJECT, PROPERTY_HINT_RESOURCE_TYPE, "TextureArray"))
+	properties.append(_prop_info("heightmap", TYPE_OBJECT, PROPERTY_HINT_RESOURCE_TYPE, "ImageTexture"))
+	properties.append(_prop_info("weightmap", TYPE_OBJECT, PROPERTY_HINT_RESOURCE_TYPE, "ImageTexture"))
+	properties.append(_prop_info("uv1_scale", TYPE_VECTOR2))
 	return properties
 
 func _prop_group(name: String, prefix: String) -> Dictionary:
@@ -144,7 +160,7 @@ func _prop_group(name: String, prefix: String) -> Dictionary:
 		name = name,
 		type = TYPE_NIL,
 		hint_string = prefix,
-		usage = PROPERTY_USAGE_GROUP | PROPERTY_USAGE_SCRIPT_VARIABLE
+		usage = PROPERTY_USAGE_GROUP | PROPERTY_USAGE_CATEGORY
 	}
 
 func _prop_info(name: String, type: int, hint: int = PROPERTY_HINT_NONE, hint_string: String = "") -> Dictionary:
