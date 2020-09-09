@@ -3,11 +3,13 @@ render_mode cull_disabled;
 
 const float MESH_STRIDE = 16.0;
 const int NUM_LAYERS = 16;
-const float MASK_SCALE = 2.0;
+const float WEIGHTMAP_SCALE = 2.0;
 uniform int INSTANCE_COUNT = 1;
 uniform sampler2D heightmap : hint_black;
 uniform sampler2D weightmap : hint_black;
 uniform sampler2DArray albedo_textures : hint_albedo;
+uniform sampler2DArray orm_textures : hint_black;
+uniform sampler2DArray normal_textures : hint_black;
 uniform vec3 terrain_size;
 uniform float terrain_diameter = 256;
 uniform vec2 uv1_scale = vec2(1);
@@ -78,26 +80,12 @@ vec3 calc_normal(vec2 uv, float rng) {
 }
 
 void vertex() {
-	int id = INSTANCE_ID;
-	int sfc = int(ceil(VERTEX.y)); // Get the surface num, stored in the y val, 0 for the inner surface, 1 for the outer
-	int lvl = int(CAMERA_MATRIX[3].y / 64.0); // Get the current starting instance level, based on the camera's height above the plane, in steps of 64
-	lvl = min(lvl, INSTANCE_COUNT - 1); // Cap the lvl at the instance count
-	vec3 pos = CAMERA_MATRIX[3].xyz * vec3(1, 0, 1);
-	float mul = pow(2.0, float(INSTANCE_ID)); // Get the size mulitplier for each instance, each level is twice the size of the former
-	
-	bool below = lvl + 1 - id > 0; // true if this vertex is on or below the first active level
-	bool above = id + 1 - lvl > 0; // true if this vertex is on or above the first active level
-	bool clip = (bool(sfc) || below) && above;
-	
-//	COLOR = vec4(0.1 * float(id * 2 + sfc), 0, 0.1, 1);
-	
-//	VERTEX *= vec3(mul, 1.0 / float(clip) - 1.0, mul);
-//	VERTEX += pos;
 	VERTEX = clip_map(INSTANCE_ID, CAMERA_MATRIX[3].xyz, VERTEX, UV, COLOR);
 	UV2 = UV;
 	UV *= uv1_scale;
+
 //	NORMAL = calc_normal(UV2, abs(length(CAMERA_MATRIX[3].xyz - VERTEX)));
-	NORMAL = calc_normal(UV2, float(id + 1));
+	NORMAL = calc_normal(UV2, float(INSTANCE_ID + 1));
 	
 	position = VERTEX;
 	normal = NORMAL;
@@ -116,13 +104,14 @@ vec4 texture_triplanar(sampler2DArray sampler, vec3 tex_pos, float layer, vec3 b
 	return (tx * blend.x + ty * blend.y + tz * blend.z);
 }
 
-vec4 get_mask_for(int layer, vec2 msk_uv) {
+vec4 get_weight(int layer, vec2 uv) {
+	uv /= WEIGHTMAP_SCALE;
 	int x = (layer / 4);
 	x = x % 2;
 	int y = layer / 8;
-	vec2 region = vec2(float(x), float(y)) / MASK_SCALE;
-	vec4 msk_clr = texture(weightmap, msk_uv + region);
-	return msk_clr;
+	vec2 region = vec2(float(x), float(y)) / WEIGHTMAP_SCALE;
+	vec4 weight = texture(weightmap, uv + region);
+	return weight;
 }
 
 vec4 blend_alpha(vec4 dst, vec4 src) {
@@ -131,44 +120,51 @@ vec4 blend_alpha(vec4 dst, vec4 src) {
 	return vec4(rgb, a);
 }
 
-vec4 blend_terrain(vec2 uv2, vec3 uv3d, vec3 tri_blend) {
-	vec4 clr = vec4(0);
-	float alpha = 0.0;
-	vec2 msk_uv = uv2 / MASK_SCALE;
-	vec4 msk;
-	vec4 alb[4];
+vec4 blend_terrain(vec2 uv2, vec3 uv3d, vec3 tri_blend, out vec4 orm, out vec4 nrm) {
+	vec4 alb = vec4(0);
+	float alp = 0.0;
+	vec4 wgt;
+	vec4 alb_arr[4];
+	vec4 orm_arr[4];
+	vec4 nrm_arr[4];
 	
 	for (int i = 0; i < NUM_LAYERS; i += 4) {
-		msk = get_mask_for(i, msk_uv);
+		wgt = get_weight(i, uv2);
 		
 		for (int j = 0; j < 4; j++) {
 			int lyr = i + j;
 			uint flg = uint(pow(2.0, float(lyr)));
 			
 			if ((flg & use_triplanar) > uint(0)) {
-				alb[j] = texture_triplanar(albedo_textures, uv3d, float(lyr), tri_blend);
+				alb_arr[j] = texture_triplanar(albedo_textures, uv3d, float(lyr), tri_blend);
 			}
 			else {
-				alb[j] = texture(albedo_textures, vec3(uv3d.xz, float(lyr)));
+				alb_arr[j] = texture(albedo_textures, vec3(uv3d.xz, float(lyr)));
+				orm_arr[j] = texture(orm_textures, vec3(uv3d.xz, float(lyr)));
+				nrm_arr[j] = texture(normal_textures, vec3(uv3d.xz, float(lyr)));
 			}
 		}
 		
-		clr += alb[0] * msk[0];
-		clr += alb[1] * msk[1];
-		clr += alb[2] * msk[2];
-		clr += alb[3] * msk[3];
+		// Move the vector into an array because Godot doesn't support variable
+		// indexing on vectors, constants only.
+		float wgt_arr[4] = {wgt[0], wgt[1], wgt[2], wgt[3]};
 		
-		alpha += msk[0];
-		alpha += msk[1];
-		alpha += msk[2];
-		alpha += msk[3];
+		for (int k = 0; k < 4; k++) {
+			float w = wgt_arr[k];
+			float a = alb_arr[k].a;
+			w = w * (w < 1.0 ? a : 1.0);
+			alb += alb_arr[k] * w;
+			orm += orm_arr[k] * w;
+			nrm += nrm_arr[k] * w;
+			alp += w;
+		}
 	}
 	
-	vec4 bclr = vec4(1, 0, 1, 1);
-	clr = clr / (alpha < 1.0 ? 1.0 : alpha);
-	clr.a = alpha;
-//	clr = blend_alpha(vec4(1, 0, 1, 1), clr);
-	return clr;
+	alp = (alp < 1.0 ? 1.0 : alp);
+	alb = alb / alp;
+	orm = orm / alp;
+	nrm = nrm / alp;
+	return alb;
 }
 
 void fragment() {
@@ -178,8 +174,15 @@ void fragment() {
 	b = normalize(vec3(b.x * b.x, b.y * b.y * 16.0, b.z * b.z));
 	
 	vec4 giz = draw_gizmo(vec4(1, 0, 1, 1), UV2, brush_pos);
+	vec4 orm;
+	vec4 nmp;
+	vec4 clr = blend_terrain(UV2, uv3d, b, orm, nmp);
 	
-	ALBEDO = blend_terrain(UV2, uv3d, b).rgb + giz.rgb;
+	ALBEDO = clr.rgb + giz.rgb;
+	AO = orm.r;
+	ROUGHNESS = orm.g;
+	METALLIC = orm.b;
+	NORMALMAP = nmp.rgb;
 //	ALBEDO = texture(weightmap, UV2).rgb;
 //	ALBEDO = clr.rgb;
 //	ALBEDO = COLOR.rgb;
