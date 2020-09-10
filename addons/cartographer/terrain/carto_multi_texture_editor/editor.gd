@@ -83,10 +83,7 @@ func _on_create_acknowledged(ok, vals):
 	emit_changed("data", data)
 
 func _on_layer_set(idx, data):
-	prints(get_edited_object().data)
-#	emit_changed("data", get_edited_object().data)
 	emit_changed("data", data)
-	prints(get_edited_object().data)
 
 func _on_layer_toggled(on, i):
 	if on:
