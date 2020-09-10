@@ -45,7 +45,7 @@ func update_list():
 		layer.texarr = mtex
 		layer.rect_min_size = Vector2(128, 128)
 		layer.group = layer_group
-		layer.connect("layer_set", self, "_on_layer_set")
+		layer.connect("update_layer", self, "_on_update_layer")
 		layer.main_button.connect("toggled", self, "_on_layer_toggled", [i])
 
 func _enter_tree():
@@ -82,8 +82,16 @@ func _on_create_acknowledged(ok, vals):
 	
 	emit_changed("data", data)
 
-func _on_layer_set(idx, data):
-	emit_changed("data", data)
+func _on_update_layer(layer):
+	var texarr = get_edited_object()
+	var undo_redo = Cartographer.undo_redo
+	undo_redo.create_action("Update layer")
+	undo_redo.add_do_method(self, "_do_layer_update", layer)
+	undo_redo.add_undo_method(self, "_do_layer_update", [texarr.get_layer(layer[1]), layer[1]])
+	undo_redo.commit_action()
+
+func _do_layer_update(layer):
+	get_edited_object().callv("set_layer", layer)
 
 func _on_layer_toggled(on, i):
 	if on:
