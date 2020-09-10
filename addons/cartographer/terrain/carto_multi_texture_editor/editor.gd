@@ -22,28 +22,10 @@ func _init():
 	create_button.text = "Create"
 	create_button.rect_min_size = Vector2(32, 32)
 	create_button.size_flags_horizontal = SIZE_EXPAND_FILL
-	create_button.connect("pressed", self, "on_create_pressed")
+	create_button.connect("pressed", self, "_on_create_pressed")
 	
 	create_dialog = preload("res://addons/cartographer/terrain/carto_multi_texture_editor/create_dialog.tscn").instance()
-	create_dialog.connect("acknowledged", self, "on_create_acknowledged")
-
-func on_create_pressed():
-	create_dialog.popup_centered(Vector2(400, 200))
-
-func on_create_acknowledged(ok, vals):
-	var mtex = get_edited_object()
-	if not ok or not mtex:
-		return
-	
-	var flags = TextureLayered.FLAG_MIPMAPS | TextureLayered.FLAG_REPEAT | TextureLayered.FLAG_FILTER
-	mtex.create(vals[0], vals[1], vals[2], vals[3], flags)
-	var img = Image.new()
-	img.create(vals[0], vals[1], true, vals[3])
-	
-	for i in vals[2]:
-		mtex.set_layer_data(img, i)
-	
-	emit_changed("data", mtex.data)
+	create_dialog.connect("acknowledged", self, "_on_create_acknowledged")
 
 func update_list():
 	var mtex = get_edited_object()
@@ -82,8 +64,29 @@ func _ready():
 func update_property():
 	update_list()
 
-func _on_layer_set(idx):
-	emit_changed("data", get_edited_object().data)
+func _on_create_pressed():
+	create_dialog.popup_centered(Vector2(400, 200))
+
+func _on_create_acknowledged(ok, vals):
+	var mtex = get_edited_object()
+	var data = mtex.create_data(vals[0], vals[1], vals[2], vals[3], Texture.FLAGS_DEFAULT)
+	if not ok or not mtex:
+		return
+	
+	for i in vals[2]:
+		var img = Image.new()
+		img.create(vals[0], vals[1], true, vals[3])
+		img.fill(Color(0, 0, 0, 0))
+		img.generate_mipmaps()
+		data.layers.append(img)
+	
+	emit_changed("data", data)
+
+func _on_layer_set(idx, data):
+	prints(get_edited_object().data)
+#	emit_changed("data", get_edited_object().data)
+	emit_changed("data", data)
+	prints(get_edited_object().data)
 
 func _on_layer_toggled(on, i):
 	if on:

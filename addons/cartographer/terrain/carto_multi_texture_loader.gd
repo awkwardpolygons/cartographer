@@ -18,10 +18,16 @@ func load(path: String, original_path: String):
 	var err = file.open_compressed(path, File.READ, File.COMPRESSION_ZSTD)
 	if err == OK:
 		data = file.get_var(true)
+#		data.layers[0].generate_mipmaps()
 		err = file.get_error()
 	file.close()
 	if err == OK:
 		ta = CartoMultiTexture.new()
 		ta.data = data
+		for i in data.layers.size():
+			var img = data.layers[i]
+			img.generate_mipmaps()
+			ta.set_layer_data(img, i)
+#		ta.create(data.width, data.height, data.depth, data.flags)
 		return ta
 	return err
