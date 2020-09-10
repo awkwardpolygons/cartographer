@@ -43,3 +43,10 @@ func set_layer(src, idx: int, chn_src: int = -1, chn_dst: int = -1):
 	
 	dst.generate_mipmaps()
 	set_layer_data(dst, idx)
+	emit_signal("changed")
+	property_list_changed_notify()
+
+func get_layer(idx: int) -> Image:
+	if idx < data.layers.size():
+		return data.layers[idx]
+	return null
