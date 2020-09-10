@@ -8,7 +8,7 @@ uniform int channel = -1;
 //uniform sampler2D bgtex;
 
 void fragment() {
-	vec4 clr = textureLod(texarr, vec3(UV, float(idx)), 0.0);
+	vec4 clr = texture(texarr, vec3(UV, float(idx)));
 //	vec4 bg = texture(bgtex, UV * 8.0);
 	if (channel == RED) {
 		clr = vec4(clr.r, 0, 0, 1)
