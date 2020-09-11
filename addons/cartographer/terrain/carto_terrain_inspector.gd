@@ -4,6 +4,7 @@ class_name CartoTerrainInspector
 # const LayersEditor = preload("res://addons/cartographer/terrain/carto_terrain_material_editor/layers_editor.gd")
 const MultiTextureEditor = preload("res://addons/cartographer/terrain/carto_multi_texture_editor/editor.gd")
 const skip_props = ["selected", "use_triplanar", "shader"]
+var undo_redo: UndoRedo
 
 func can_handle(object):
 	return object is CartoMultiTexture

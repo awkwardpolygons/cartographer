@@ -24,6 +24,7 @@ func _enter_tree():
 	toolbar.visible = false
 	Cartographer.editor = editor
 	Cartographer.undo_redo = get_undo_redo()
+	inspector_plugin.undo_redo = get_undo_redo()
 	editor.get_selection().connect("selection_changed", self, "_on_selection_changed", [brushes_panel])
 
 func _on_selection_changed(brushes_panel):
