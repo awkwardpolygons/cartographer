@@ -16,7 +16,11 @@ func parse_property(object, type, path, hint, hint_text, usage):
 	
 	if object is CartoMultiTexture and path == "flags":
 		var mted = MultiTextureEditor.new()
-		add_property_editor_for_multiple_properties("Layers", PoolStringArray(["data"]), mted)
+		mted.texarr = object as CartoMultiTexture
+		mted.undo_redo = undo_redo
+#		add_property_editor_for_multiple_properties("Layers", PoolStringArray(["data"]), mted)
+#		add_property_editor("data", mted)
+		add_custom_control(mted)
 	elif path in skip_props:
 		return true
 	
