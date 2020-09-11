@@ -112,13 +112,13 @@ func _get_property_list():
 	properties.append(_prop_group("Albedo", "albedo_"))
 	properties.append(_prop_info("albedo_colors", TYPE_COLOR_ARRAY))
 	properties.append(_prop_info("albedo_textures", TYPE_OBJECT, PROPERTY_HINT_RESOURCE_TYPE, "TextureArray"))
-	
+
 	properties.append(_prop_group("AO, Roughness, Metallic", "orm_"))
 	properties.append(_prop_info("orm_textures", TYPE_OBJECT, PROPERTY_HINT_RESOURCE_TYPE, "TextureArray"))
-	
+
 	properties.append(_prop_group("Normal Map", "normal_"))
 	properties.append(_prop_info("normal_textures", TYPE_OBJECT, PROPERTY_HINT_RESOURCE_TYPE, "TextureArray"))
-	
+
 	properties.append(_prop_info("heightmap", TYPE_OBJECT, PROPERTY_HINT_RESOURCE_TYPE, "ImageTexture"))
 	properties.append(_prop_info("weightmap", TYPE_OBJECT, PROPERTY_HINT_RESOURCE_TYPE, "ImageTexture"))
 	properties.append(_prop_info("uv1_scale", TYPE_VECTOR2))
