@@ -32,21 +32,22 @@ func _init():
 	create_dialog.connect("acknowledged", self, "_on_create_acknowledged")
 
 func update_list():
-	var mtex = get_edited_object()
 	var children = layer_list.get_children()
 	var have = children.size()
-	var want = mtex.get_depth() if mtex else 0
+	var want = texarr.get_depth() if texarr else 0
 	
 	for i in have:
 		var ch = children[i]
 		layer_list.remove_child(ch)
+		ch.disconnect("update_layer", self, "_on_update_layer")
+		ch.main_button.disconnect("toggled", self, "_on_layer_toggled")
 		ch.queue_free()
 	
 	for i in want:
 		var layer = Layer.new()
 		layer_list.add_child(layer)
 		layer.idx = i
-		layer.texarr = mtex
+		layer.texarr = texarr
 		layer.rect_min_size = Vector2(128, 128)
 		layer.group = layer_group
 		layer.connect("update_layer", self, "_on_update_layer")
