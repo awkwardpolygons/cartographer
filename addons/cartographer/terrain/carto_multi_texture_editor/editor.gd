@@ -8,6 +8,7 @@ var create_button: Button
 var create_dialog: WindowDialog
 
 func _init():
+	label = "Layers"
 	layer_list = CartoAxisLayout.new()
 	layer_list.pad_primary_start = 10
 	layer_list.pad_primary_end = 10
