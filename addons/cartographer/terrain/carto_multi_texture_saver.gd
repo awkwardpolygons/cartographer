@@ -11,6 +11,7 @@ func recognize(res: Resource) -> bool:
 func save(path: String, res: Resource, flags: int) -> int:
 #	var ta = load("res://example/terra1.png")
 	var ta = res as CartoMultiTexture
+	ta.take_over_path(path)
 	var file = File.new()
 	var err = file.open_compressed(path, File.WRITE, File.COMPRESSION_ZSTD)
 	if err == OK:
