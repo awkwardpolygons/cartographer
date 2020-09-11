@@ -78,31 +78,50 @@ func _on_create_pressed():
 	create_dialog.popup_centered(Vector2(400, 200))
 
 func _on_create_acknowledged(ok, vals):
-	var mtex = get_edited_object()
-	var data = mtex.create_data(vals[0], vals[1], vals[2], vals[3], Texture.FLAGS_DEFAULT)
-	if not ok or not mtex:
+#	var texarr = get_edited_object() as CartoMultiTexture
+#	var texarr = CartoMultiTexture.new()
+#	texarr = texarr
+#	var data = texarr.create_data(vals[0], vals[1], vals[2], vals[3], Texture.FLAGS_DEFAULT)
+	var data = {
+		"width": vals[0],
+		"height": vals[1],
+		"depth": vals[2],
+		"format": vals[3],
+		"flags": Texture.FLAGS_DEFAULT,
+		"layers": [],
+	}
+	if not ok or not texarr:
 		return
+#	texarr.create(vals[0], vals[1], vals[2], vals[3], Texture.FLAGS_DEFAULT)
+#	update_list()
 	
+#	texarr.data = data
+#
 	for i in vals[2]:
 		var img = Image.new()
 		img.create(vals[0], vals[1], true, vals[3])
-		img.fill(Color(0, 0, 0, 0))
+		img.fill(Color(0, 1, 1, 1))
 		img.generate_mipmaps()
 		data.layers.append(img)
-	
+#		texarr.set_layer(img, i)
+#
+#	texarr.data = data
+#	yield(get_tree().create_timer(2.0), "timeout")
+#	yield(get_tree(), "idle_frame")
 	emit_changed("data", data)
-
-func _on_update_layer(layer):
-	var texarr = get_edited_object()
-	var undo_redo = Cartographer.undo_redo
-	undo_redo.create_action("Update layer")
-	undo_redo.add_do_method(self, "_do_layer_update", layer)
-	undo_redo.add_undo_method(self, "_do_layer_update", [texarr.get_layer(layer[1]), layer[1]])
-	undo_redo.commit_action()
-
-func _do_layer_update(layer):
-	get_edited_object().callv("set_layer", layer)
+	update_property()
 
 func _on_layer_toggled(on, i):
 	if on:
-		get_edited_object().selected = i
+		texarr.selected = i
+
+# Use a static reference for the do / undo methods because the editor might unload
+# this instance.
+func _on_update_layer(layer):
+	undo_redo.create_action("Update layer")
+	undo_redo.add_do_method(get_script(), "_do_layer_update", texarr, layer)
+	undo_redo.add_undo_method(get_script(), "_do_layer_update", texarr, [texarr.get_layer(layer[1]), layer[1]])
+	undo_redo.commit_action()
+
+static func _do_layer_update(ta, layer):
+	ta.callv("set_layer", layer)
