@@ -57,10 +57,15 @@ func _enter_tree():
 #	prints(get_tree().root.get_child(0).get_child(2).theme.get_stylebox("pressed", "Button"))
 #	for ch in get_tree().root.get_child(0).get_children():
 #		prints(ch)
+#	prints(get_edited_object(), get_edited_object().data, get_edited_property(), texarr)
 	pass
 
+func _exit_tree():
+	create_dialog.disconnect("acknowledged", self, "_on_create_acknowledged")
+	create_button.disconnect("pressed", self, "_on_create_pressed")
+
 func _ready():
-	rect_min_size = Vector2(0, 1024)
+	rect_min_size = Vector2(0, 256)
 	add_child(layer_list)
 	add_child(create_button)
 	add_child(create_dialog)
