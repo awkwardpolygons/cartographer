@@ -1,7 +1,7 @@
 tool
 extends EditorPlugin
 
-const Action = Cartographer.Action
+enum Action {NONE = 0, JUST_CHANGED = 1, ON = 2, RAISE = 4, LOWER = 8, PAINT = 16, ERASE = 32, FILL = 64, CLEAR = 128}
 const BrushesPanel = preload("res://addons/cartographer/brushes_panel/brushes_panel.tscn")
 const Toolbar = preload("res://addons/cartographer/toolbar/cartographer_toolbar.tscn")
 
