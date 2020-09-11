@@ -1,7 +1,10 @@
 tool
 extends EditorProperty
 
+const CreateDialog = preload("res://addons/cartographer/terrain/carto_multi_texture_editor/create_dialog.tscn")
 const Layer = preload("res://addons/cartographer/terrain/carto_multi_texture_editor/layer.gd")
+var texarr
+var undo_redo
 var layer_list: CartoAxisLayout
 var layer_group: ButtonGroup
 var create_button: Button
@@ -25,7 +28,7 @@ func _init():
 	create_button.size_flags_horizontal = SIZE_EXPAND_FILL
 	create_button.connect("pressed", self, "_on_create_pressed")
 	
-	create_dialog = preload("res://addons/cartographer/terrain/carto_multi_texture_editor/create_dialog.tscn").instance()
+	create_dialog = CreateDialog.instance()
 	create_dialog.connect("acknowledged", self, "_on_create_acknowledged")
 
 func update_list():
