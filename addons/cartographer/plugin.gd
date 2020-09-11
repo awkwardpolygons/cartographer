@@ -6,19 +6,22 @@ const BrushesPanel = preload("res://addons/cartographer/brushes_panel/brushes_pa
 const Toolbar = preload("res://addons/cartographer/toolbar/cartographer_toolbar.tscn")
 
 var _action = Action.NONE
-var brushes_panel = BrushesPanel.instance()
-var toolbar = Toolbar.instance()
-var editor = get_editor_interface()
-var terrain: CartoTerrain
-var do_paint: bool = false
-var inspector_plugin: CartoTerrainInspector
+var brushes_panel
+var toolbar
+var editor: EditorInterface
+var terrain
+var inspector_plugin
 
 func _init():
+	editor = get_editor_interface()
 	add_autoload_singleton("Cartographer", "res://addons/cartographer/cartographer_singleton.gd")
 	inspector_plugin = CartoTerrainInspector.new()
 	add_inspector_plugin(inspector_plugin)
 
 func _enter_tree():
+	brushes_panel = BrushesPanel.instance()
+	toolbar = Toolbar.instance()
+	
 	add_control_to_dock(EditorPlugin.DOCK_SLOT_RIGHT_UL, brushes_panel)
 	add_control_to_container(EditorPlugin.CONTAINER_SPATIAL_EDITOR_MENU, toolbar)
 	toolbar.visible = false
