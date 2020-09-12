@@ -2,11 +2,26 @@ tool
 extends TextureArray
 class_name CartoMultiTexture
 
+signal selected
+
 var selected: int = -1 setget set_selected
+var redata setget _set_redata, _get_redata
+
+func _set_redata(d):
+	data = d
+#	for i in data.layers.size():
+#		var img = d.layers[i]
+#		img.generate_mipmaps()
+#		set_layer_data(img, i)
+	emit_signal("changed")
+#	property_list_changed_notify()
+
+func _get_redata():
+	return data
 
 func set_selected(i: int):
 	selected = i
-	emit_signal("changed")
+	emit_signal("selected")
 
 func get_size():
 	return Vector2(get_width(), get_height())
