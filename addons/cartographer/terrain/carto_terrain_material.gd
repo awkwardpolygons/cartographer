@@ -18,27 +18,26 @@ var sculptor: TexturePainter
 var painter: TexturePainter
 
 func _set_albedo_textures(ta: TextureArray):
-	albedo_textures = _prep_textures(ta, albedo_textures)
-	set_shader_param("albedo_textures", albedo_textures)
-	emit_signal("changed")
+	albedo_textures = _prep_textures("albedo_textures", ta, albedo_textures)
 
 func _set_orm_textures(ta: TextureArray):
-	orm_textures = _prep_textures(ta, orm_textures)
-	set_shader_param("orm_textures", orm_textures)
-	emit_signal("changed")
-#
-func _set_normal_textures(ta: TextureArray):
-	normal_textures = _prep_textures(ta, normal_textures)
-	set_shader_param("normal_textures", normal_textures)
-	emit_signal("changed")
+	orm_textures = _prep_textures("orm_textures", ta, orm_textures)
 
-func _prep_textures(new: TextureArray, old: TextureArray):
+func _set_normal_textures(ta: TextureArray):
+	normal_textures = _prep_textures("normal_textures", ta, normal_textures)
+
+func _prep_textures(name: String, new: TextureArray, old: TextureArray):
+	if old and old.has_signal("selected"):
+		old.disconnect("selected", self, "_on_layer_selected")
 	if old and old.has_signal("changed"):
-		old.disconnect("changed", self, "_on_layer_selected")
+		old.disconnect("changed", self, "_on_layer_changed")
 	if new:
 		if not new is CartoMultiTexture:
 			new.set_script(preload("res://addons/cartographer/terrain/carto_multi_texture.gd"))
-		new.connect("changed", self, "_on_layer_selected", [new])
+		new.connect("selected", self, "_on_layer_selected", [name, new])
+		new.connect("changed", self, "_on_layer_changed", [name, new])
+	else:
+		_on_layer_changed(name, new)
 	return new
 
 func _set_weightmap(m: ImageTexture):
@@ -104,8 +103,15 @@ func commit_sculptor():
 	heightmap.set_data(img)
 	emit_signal("changed")
 
-func _on_layer_selected(ta):
+func _on_layer_selected(name, ta):
 	selected = ta.selected
+
+func _on_layer_changed(name, ta):
+	if ta and ta.get_depth() > 0:
+		set_shader_param(name, ta)
+	else:
+		set_shader_param(name, null)
+	emit_signal("changed")
 
 func _get_property_list():
 	var properties = []
