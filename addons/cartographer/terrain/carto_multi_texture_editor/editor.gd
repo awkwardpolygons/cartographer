@@ -94,7 +94,7 @@ func _on_create_acknowledged(ok, vals):
 		img.generate_mipmaps()
 		data.layers.append(img)
 	
-	emit_changed("redata", data)
+	emit_changed("data", data)
 	update_property()
 
 func _on_layer_toggled(on, i):
