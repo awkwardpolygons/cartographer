@@ -60,20 +60,18 @@ func _init_channels():
 	channels.pad_secondary_end = 30
 	channels.visible = false
 	
-	var load_button = Button.new()
-	load_button.icon = preload("res://addons/cartographer/icons/icon_load.svg")
-	load_button.rect_min_size = Vector2(button_size, button_size)
-	load_button.margin_top = padding
-	load_button.margin_left = padding
-	
 	for i in 4:
-		var ch = LayerPreview.new()
-		var bt = load_button.duplicate()
-		bt.connect("pressed", self, "_on_load", [i])
-		channels.add_child(ch)
-		ch.add_child(bt)
-		ch.rect_min_size = Vector2(128, 128)
-		ch.channel = i
+		var preview = LayerPreview.new()
+		var load_button = Button.new()
+		load_button.icon = preload("res://addons/cartographer/icons/icon_load.svg")
+		load_button.rect_min_size = Vector2(button_size, button_size)
+		load_button.margin_top = padding
+		load_button.margin_left = padding
+		load_button.connect("pressed", self, "_on_load", [i])
+		preview.add_child(load_button)
+		preview.rect_min_size = Vector2(128, 128)
+		preview.channel = i
+		channels.add_child(preview)
 
 func _init_file_dialog():
 	file_dialog.window_title = "Load image..."
