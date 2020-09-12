@@ -83,14 +83,6 @@ func _on_create_pressed():
 
 func _on_create_acknowledged(ok, vals):
 	var data = texarr.create_data(vals[0], vals[1], vals[2], vals[3], Texture.FLAGS_DEFAULT)
-#	var data = {
-#		"width": vals[0],
-#		"height": vals[1],
-#		"depth": vals[2],
-#		"format": vals[3],
-#		"flags": Texture.FLAGS_DEFAULT,
-#		"layers": [],
-#	}
 	if not ok or not texarr:
 		return
 #	texarr.create(vals[0], vals[1], vals[2], vals[3], Texture.FLAGS_DEFAULT)
@@ -98,7 +90,7 @@ func _on_create_acknowledged(ok, vals):
 	for i in vals[2]:
 		var img = Image.new()
 		img.create(vals[0], vals[1], true, vals[3])
-		img.fill(Color(0, 1, 1, 1))
+		img.fill(Color(0, 0, 0, 0))
 		img.generate_mipmaps()
 		data.layers.append(img)
 	
