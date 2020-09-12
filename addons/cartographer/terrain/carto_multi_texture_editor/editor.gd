@@ -31,6 +31,10 @@ func _init():
 	create_dialog = CreateDialog.instance()
 	create_dialog.connect("acknowledged", self, "_on_create_acknowledged")
 
+#func _gui_input(event):
+#	if event is InputEventMouseButton:
+#		_on_create_acknowledged(true, [1024, 1024, 4, Image.FORMAT_RGBA8])
+
 func update_list():
 	var children = layer_list.get_children()
 	var have = children.size()
@@ -78,37 +82,27 @@ func _on_create_pressed():
 	create_dialog.popup_centered(Vector2(400, 200))
 
 func _on_create_acknowledged(ok, vals):
-#	var texarr = get_edited_object() as CartoMultiTexture
-#	var texarr = CartoMultiTexture.new()
-#	texarr = texarr
-#	var data = texarr.create_data(vals[0], vals[1], vals[2], vals[3], Texture.FLAGS_DEFAULT)
-	var data = {
-		"width": vals[0],
-		"height": vals[1],
-		"depth": vals[2],
-		"format": vals[3],
-		"flags": Texture.FLAGS_DEFAULT,
-		"layers": [],
-	}
+	var data = texarr.create_data(vals[0], vals[1], vals[2], vals[3], Texture.FLAGS_DEFAULT)
+#	var data = {
+#		"width": vals[0],
+#		"height": vals[1],
+#		"depth": vals[2],
+#		"format": vals[3],
+#		"flags": Texture.FLAGS_DEFAULT,
+#		"layers": [],
+#	}
 	if not ok or not texarr:
 		return
 #	texarr.create(vals[0], vals[1], vals[2], vals[3], Texture.FLAGS_DEFAULT)
-#	update_list()
 	
-#	texarr.data = data
-#
 	for i in vals[2]:
 		var img = Image.new()
 		img.create(vals[0], vals[1], true, vals[3])
 		img.fill(Color(0, 1, 1, 1))
 		img.generate_mipmaps()
 		data.layers.append(img)
-#		texarr.set_layer(img, i)
-#
-#	texarr.data = data
-#	yield(get_tree().create_timer(2.0), "timeout")
-#	yield(get_tree(), "idle_frame")
-	emit_changed("data", data)
+	
+	emit_changed("redata", data)
 	update_property()
 
 func _on_layer_toggled(on, i):
