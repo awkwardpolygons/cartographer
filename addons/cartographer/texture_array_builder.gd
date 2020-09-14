@@ -87,7 +87,6 @@ func import(source_file, save_path, options, r_platform_variants, r_gen_files):
 		var img: Image
 		if layer is String:
 			img = _load_image(layer, size)
-			images.append(img)
 		elif layer is Array and layer.size() > 0:
 			img = Image.new()
 			img.create(size.x, size.y, false, Image.FORMAT_RGBA8)
@@ -111,7 +110,7 @@ func import(source_file, save_path, options, r_platform_variants, r_gen_files):
 			for chn in channels:
 				var src = chn[0]
 				src.unlock()
-			images.append(img)
+		images.append(img)
 	
 	return _save_tex(images, "%s.%s" % [save_path, get_save_extension()])
 #	return ResourceSaver.save("%s.%s" % [save_path, get_save_extension()], obj)
@@ -122,6 +121,9 @@ func _load_image(path: String, size: Vector2) -> Image:
 		img = Image.new()
 		img.create(size.x, size.y, false, Image.FORMAT_RGBA8)
 		img.fill(Color(path))
+	elif path.begins_with("file://"):
+		img = Image.new()
+		img.load(path.substr(5))
 	else:
 		img = load(path)
 	if img is Texture:
