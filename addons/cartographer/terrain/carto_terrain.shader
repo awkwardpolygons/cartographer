@@ -26,7 +26,7 @@ float get_height(vec2 uv) {
 }
 
 // TODO: Fix the ground level being 0 rather than the height at cam position.
-vec3 clip_map(int id, vec3 cam, vec3 vtx, inout vec2 uv, inout vec4 clr) {
+vec3 clipmap(int id, vec3 cam, vec3 vtx, inout vec2 uv, inout vec4 clr) {
 	// Divide terrain_size by 2 to get the bounds around center, in local space
 	vec3 box = terrain_size / 2.0;
 	// Get the surface num, stored in the y val, 0 for the inner surface, 1 for the outer
