@@ -74,46 +74,56 @@ func import(source_file, save_path, options, r_platform_variants, r_gen_files):
 		return parsed.error
 	var obj = parsed.result
 	
-	var size: Vector2
-	if obj.has("size") and obj.size is Array:
-		size = Vector2(obj.size[0], obj.size[0])
-	else:
-		return ERR_INVALID_DATA
+	var compress = options["compress/mode"]
+	var flags = options["flags/flags"]
+	var images = []
 	
 	prints(options, r_platform_variants, r_gen_files)
 	
+	images = _parse(obj)
+	
+	return _save_tex(images, "%s.%s" % [save_path, get_save_extension()])
+
+func _parse(obj):
+	assert(obj.size is Array and len(obj.size) == 2, "Invalid size, must be an array of two ints: %s" % [obj.size])
+	var size = Vector2(obj.size[0], obj.size[1])
 	var images = []
+	
 	for layer in obj.layers:
 		var img: Image
 		if layer is String:
 			img = _load_image(layer, size)
-		elif layer is Array and layer.size() > 0:
-			img = Image.new()
-			img.create(size.x, size.y, false, Image.FORMAT_RGBA8)
-			var channels = []
-			for chn in layer:
-				var src = _load_image(chn[0], size)
-				var idx = chn[1]
-				channels.append([src, idx])
-				src.lock()
-			img.lock()
-			for y in size.y:
-				for x in size.x:
-					var clr = Color()
-					for i in channels.size():
-						var chn = channels[i]
-						var src = chn[0]
-						var idx = chn[1]
-						clr[i] = src.get_pixel(x, y)[idx]
-					img.set_pixel(x, y, clr)
-			img.unlock()
-			for chn in channels:
-				var src = chn[0]
-				src.unlock()
+		if layer is Dictionary:
+			img = _get_image_from_channels(layer, size)
+			prints("chn img:", img)
 		images.append(img)
 	
-	return _save_tex(images, "%s.%s" % [save_path, get_save_extension()])
-#	return ResourceSaver.save("%s.%s" % [save_path, get_save_extension()], obj)
+	return images
+
+func _get_image_from_channels(channels, size: Vector2, format: int = Image.FORMAT_RGBA8):
+	var dst_img = Image.new()
+	dst_img.create(size.x, size.y, false, format)
+	
+	for dst in channels:
+		assert(channels[dst] is Array and len(channels[dst]) == 2 and channels[dst][0] is String and channels[dst][1] is String, "Invalid format for channels layer: %s" % [channels[dst]])
+		assert(len(dst) == len(channels[dst][1]), "Channel index length mismatch: %s, %s" % [dst, channels[dst]])
+		var src_img = _load_image(channels[dst][0], size)
+		var src = channels[dst][1]
+		src_img.lock()
+		dst_img.lock()
+		for y in size.y:
+			for x in size.x:
+				var dst_px = dst_img.get_pixel(x, y)
+				var src_px = src_img.get_pixel(x, y)
+				for i in len(dst):
+					var dst_ch = dst[i]
+					var src_ch = src[i]
+					dst_px[dst_ch] = src_px[src_ch]
+				dst_img.set_pixel(x, y, dst_px)
+		dst_img.unlock()
+		src_img.unlock()
+	
+	return dst_img
 
 func _load_image(path: String, size: Vector2) -> Image:
 	var img
