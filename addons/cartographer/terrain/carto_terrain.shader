@@ -1,5 +1,5 @@
 shader_type spatial;
-render_mode cull_disabled;
+render_mode skip_vertex_transform,blend_mix,depth_draw_opaque,cull_disabled,diffuse_burley,specular_schlick_ggx;
 
 const float MESH_STRIDE = 16.0;
 const int NUM_LAYERS = 16;
@@ -8,10 +8,12 @@ uniform int INSTANCE_COUNT = 1;
 uniform sampler2D heightmap : hint_black;
 uniform sampler2D weightmap : hint_black;
 uniform sampler2DArray albedo_textures : hint_albedo;
-uniform sampler2DArray orm_textures : hint_black;
-uniform sampler2DArray normal_textures : hint_black;
+uniform sampler2DArray orm_textures;
+uniform sampler2DArray normal_textures;
 uniform vec3 terrain_size;
 uniform float terrain_diameter = 256;
+uniform float normal_scale : hint_range(-16,16);
+uniform float triplanar_sharpness = 2.0;
 uniform vec2 uv1_scale = vec2(1);
 uniform uint use_triplanar = 0;
 uniform float is_editing = 0.0;
@@ -19,6 +21,8 @@ uniform vec2 brush_pos;
 uniform float brush_scale = 0.1;
 varying vec3 position;
 varying vec3 normal;
+varying vec3 UV3D;
+varying vec3 triplanar_blend;
 
 float get_height(vec2 uv) {
 	vec4 h = texture(heightmap, uv);
@@ -64,31 +68,38 @@ vec3 clipmap(int id, vec3 cam, vec3 vtx, inout vec2 uv, inout vec4 clr) {
 	return vtx * vec3(1, 1.0 / float(clip), 1);
 }
 
-vec3 calc_normal(vec2 uv, float rng) {
-	// TODO: Modify this gradient step resolution based on the density of the mesh,
-	// vertices closer together use smaller steps to calc normal, vertices further
-	// apart use larger steps.
-//	vec3 e = vec2(1.0 / terrain_diameter, 0.0).xxy;
-//	vec3 e = vec2(1.0 / terrain_diameter / float(rng), 0.0).xxy;
-	vec3 e = vec2(rng / terrain_diameter, 0.0).xxy;
-//	vec3 e = vec2(clamp(rng / terrain_diameter * 0.01, 1.0 / terrain_diameter, terrain_diameter), 0.0).xxy;
-//	float x = h - get_height(uv + e.xz);
-//	float y = h - get_height(uv + e.zy);
-	float x = get_height(uv - e.xz) - get_height(uv + e.xz);
-	float y = get_height(uv - e.zy) - get_height(uv + e.zy);
-	return normalize(vec3(x, e.x * 2.0, y));
+vec3 calc_normal(vec2 uv, float _off) {
+	vec3 off = vec2(_off, 0.0).xxy;
+	float x = get_height(uv - off.xz) - get_height(uv + off.xz);
+	float y = get_height(uv - off.zy) - get_height(uv + off.zy);
+	return normalize(vec3(x, off.x * 1.0, y));
 }
 
 void vertex() {
-	VERTEX = clip_map(INSTANCE_ID, CAMERA_MATRIX[3].xyz, VERTEX, UV, COLOR);
+	position = clipmap(INSTANCE_ID, CAMERA_MATRIX[3].xyz, VERTEX, UV, COLOR);
+	VERTEX = position;
+	VERTEX = (MODELVIEW_MATRIX * vec4(VERTEX, 1.0)).xyz;
 	UV2 = UV;
 	UV *= uv1_scale;
-
-//	NORMAL = calc_normal(UV2, abs(length(CAMERA_MATRIX[3].xyz - VERTEX)));
-	NORMAL = calc_normal(UV2, float(INSTANCE_ID + 1));
+	UV3D = position;
+	UV3D.xz += 0.5 * terrain_diameter;
+	UV3D *= vec3(1, 1, -1) * vec3(uv1_scale.x, (uv1_scale.x + uv1_scale.y)/2.0, uv1_scale.y);
+	triplanar_blend = pow(abs(normal), vec3(triplanar_sharpness));
 	
-	position = VERTEX;
-	normal = NORMAL;
+	normal = calc_normal(UV2, 1.0 / terrain_diameter);
+	NORMAL = normal;
+	TANGENT = vec3(0.0,0.0,-1.0) * abs(NORMAL.x);
+	TANGENT+= vec3(1.0,0.0,0.0) * abs(NORMAL.y);
+	TANGENT+= vec3(1.0,0.0,0.0) * abs(NORMAL.z);
+	TANGENT = normalize(TANGENT);
+	BINORMAL = vec3(0.0,-1.0,0.0) * abs(NORMAL.x);
+	BINORMAL+= vec3(0.0,0.0,1.0) * abs(NORMAL.y);
+	BINORMAL+= vec3(0.0,-1.0,0.0) * abs(NORMAL.z);
+	BINORMAL = normalize(BINORMAL);
+
+	NORMAL = (MODELVIEW_MATRIX * vec4(NORMAL, 0.0)).xyz;
+	BINORMAL = (MODELVIEW_MATRIX * vec4(BINORMAL, 0.0)).xyz;
+	TANGENT = (MODELVIEW_MATRIX * vec4(TANGENT, 0.0)).xyz;
 }
 
 vec4 draw_gizmo(vec4 clr, vec2 uv, vec2 pos) {
@@ -98,7 +109,7 @@ vec4 draw_gizmo(vec4 clr, vec2 uv, vec2 pos) {
 }
 
 vec4 texture_triplanar(sampler2DArray sampler, vec3 tex_pos, float layer, vec3 blend) {
-	vec4 tx = texture(albedo_textures, vec3(tex_pos.yz, layer));
+	vec4 tx = texture(albedo_textures, vec3(tex_pos.yz * vec2(-1.0,1.0), layer));
 	vec4 ty = texture(albedo_textures, vec3(tex_pos.xz, layer));
 	vec4 tz = texture(albedo_textures, vec3(tex_pos.xy, layer));
 	return (tx * blend.x + ty * blend.y + tz * blend.z);
@@ -168,22 +179,16 @@ vec4 blend_terrain(vec2 uv2, vec3 uv3d, vec3 tri_blend, out vec4 orm, out vec4 n
 }
 
 void fragment() {
-	vec3 uv3d = position;
-	uv3d = uv3d / terrain_diameter * vec3(uv1_scale.x, (uv1_scale.x + uv1_scale.y)/2.0, uv1_scale.y);
-	vec3 b = normal;
-	b = normalize(vec3(b.x * b.x, b.y * b.y * 16.0, b.z * b.z));
-	
 	vec4 giz = draw_gizmo(vec4(1, 0, 1, 1), UV2, brush_pos);
 	vec4 orm;
 	vec4 nmp;
-	vec4 clr = blend_terrain(UV2, uv3d, b, orm, nmp);
+	vec4 clr = blend_terrain(UV2, UV3D, triplanar_blend, orm, nmp);
 	
-	ALBEDO = clr.rgb + giz.rgb;
-	AO = orm.r;
-	ROUGHNESS = orm.g;
-	METALLIC = orm.b;
+	ALBEDO = (clr.rgb + giz.rgb);
 	NORMALMAP = nmp.rgb;
-//	ALBEDO = texture(weightmap, UV2).rgb;
-//	ALBEDO = clr.rgb;
-//	ALBEDO = COLOR.rgb;
+	NORMALMAP_DEPTH = 4.0;
+//	ALBEDO = (CAMERA_MATRIX * (vec4(NORMAL, 0.0))).rgb;
+	METALLIC = 0.0;
+	ROUGHNESS = 1.0;
+	SPECULAR = 0.5;
 }
