@@ -88,13 +88,13 @@ void vertex() {
 	
 	normal = calc_normal(UV2, 1.0 / terrain_diameter);
 	NORMAL = normal;
-	TANGENT = vec3(0.0,0.0,-1.0) * abs(NORMAL.x);
-	TANGENT+= vec3(1.0,0.0,0.0) * abs(NORMAL.y);
-	TANGENT+= vec3(1.0,0.0,0.0) * abs(NORMAL.z);
+	TANGENT = vec3(0.0,0.0,-1.0) * NORMAL.x;
+	TANGENT+= vec3(1.0,0.0,0.0) * NORMAL.y;
+	TANGENT+= vec3(1.0,0.0,0.0) * NORMAL.z;
 	TANGENT = normalize(TANGENT);
-	BINORMAL = vec3(0.0,-1.0,0.0) * abs(NORMAL.x);
-	BINORMAL+= vec3(0.0,0.0,1.0) * abs(NORMAL.y);
-	BINORMAL+= vec3(0.0,-1.0,0.0) * abs(NORMAL.z);
+	BINORMAL = vec3(0.0,-1.0,0.0) * NORMAL.x;
+	BINORMAL+= vec3(0.0,0.0,1.0) * NORMAL.y;
+	BINORMAL+= vec3(0.0,-1.0,0.0) * NORMAL.z;
 	BINORMAL = normalize(BINORMAL);
 
 	NORMAL = (MODELVIEW_MATRIX * vec4(NORMAL, 0.0)).xyz;
