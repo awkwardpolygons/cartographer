@@ -132,6 +132,23 @@ func _load_image(path: String, size: Vector2) -> Image:
 	img.resize(size.x, size.y)
 	return img
 
+func _save_tex_vram(images: Array, path: String, flags: int, r_comp: Array):
+	if ProjectSettings.get("rendering/vram_compression/import_bptc"):
+		r_comp.append("bptc")
+		_save_tex(images, "%s.%s.%s" % [path, "bptc", get_save_extension()], Compress.VRAM, Image.COMPRESS_BPTC, flags)
+	if ProjectSettings.get("rendering/vram_compression/import_s3tc"):
+		r_comp.append("s3tc")
+		_save_tex(images, "%s.%s.%s" % [path, "s3tc", get_save_extension()], Compress.VRAM, Image.COMPRESS_S3TC, flags)
+	if ProjectSettings.get("rendering/vram_compression/import_etc2"):
+		r_comp.append("etc2")
+		_save_tex(images, "%s.%s.%s" % [path, "etc2", get_save_extension()], Compress.VRAM, Image.COMPRESS_ETC2, flags)
+	if ProjectSettings.get("rendering/vram_compression/import_etc"):
+		r_comp.append("etc")
+		_save_tex(images, "%s.%s.%s" % [path, "etc", get_save_extension()], Compress.VRAM, Image.COMPRESS_ETC, flags)
+	if ProjectSettings.get("rendering/vram_compression/import_pvrtc"):
+		r_comp.append("pvrtc")
+		_save_tex(images, "%s.%s.%s" % [path, "pvrtc", get_save_extension()], Compress.VRAM, Image.COMPRESS_PVRTC4, flags)
+
 func _save_tex(images: Array, path: String, compression: int = 2, vram_compression: int = Image.COMPRESS_S3TC, flags: int = 7):
 	prints(path, images)
 #	return FAILED
