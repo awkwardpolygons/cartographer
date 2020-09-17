@@ -165,3 +165,4 @@ func _save_tex(images: Array, path: String, compression: int = 2, vram_compressi
 		file.store_buffer(img.get_data())
 
 	file.close()
+	return OK
