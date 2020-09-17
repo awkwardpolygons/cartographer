@@ -186,9 +186,11 @@ void fragment() {
 	
 	ALBEDO = (clr.rgb + giz.rgb);
 	NORMALMAP = nmp.rgb;
-	NORMALMAP_DEPTH = 4.0;
+	float nmp_fade = (1.0 - length(CAMERA_MATRIX[3].xyz - UV3D) / terrain_diameter);
+	NORMALMAP_DEPTH = nmp_fade * 4.0;
 //	ALBEDO = (CAMERA_MATRIX * (vec4(NORMAL, 0.0))).rgb;
-	METALLIC = 0.0;
-	ROUGHNESS = 1.0;
+	AO = orm.r;
+	ROUGHNESS = orm.g;
+	METALLIC = orm.b;
 	SPECULAR = 0.5;
 }
