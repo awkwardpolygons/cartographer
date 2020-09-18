@@ -78,13 +78,18 @@ vec3 calc_normal(vec2 uv, float _off) {
 void vertex() {
 	position = clipmap(INSTANCE_ID, CAMERA_MATRIX[3].xyz, VERTEX, UV, COLOR);
 	VERTEX = position;
-	VERTEX = (MODELVIEW_MATRIX * vec4(VERTEX, 1.0)).xyz;
+	
 	UV2 = UV;
-	UV *= uv1_scale;
 	UV3D = position;
 	UV3D.xz += 0.5 * terrain_diameter;
 	UV3D *= vec3(1, 1, -1) * vec3(uv1_scale.x, (uv1_scale.x + uv1_scale.y)/2.0, uv1_scale.y);
 	triplanar_blend = pow(abs(normal), vec3(triplanar_sharpness));
+	UV = UV3D.xz;
+	
+	// Experimenting with displacement
+//	VERTEX.y += (texture(normal_textures, vec3(UV, 0)).a - 0.5);
+	
+	VERTEX = (MODELVIEW_MATRIX * vec4(VERTEX, 1.0)).xyz;
 	
 	normal = calc_normal(UV2, 1.0 / terrain_diameter);
 	NORMAL = normal;
