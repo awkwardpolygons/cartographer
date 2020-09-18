@@ -99,7 +99,11 @@ func import(source_file, save_path, options, r_platform_variants, r_gen_files):
 	
 	images = _parse(obj)
 	
-	return _save_tex(images, "%s.%s" % [save_path, get_save_extension()])
+	if compress == Compress.VRAM:
+		err = _save_tex_vram(images, save_path, flags, r_platform_variants)
+	else:
+		err = _save_tex(images, "%s.%s" % [save_path, get_save_extension()], compress, -1, flags)
+	return err
 
 func _parse(obj):
 	assert(obj.size is Array and len(obj.size) == 2, "Invalid size, must be an array of two ints: %s" % [obj.size])
