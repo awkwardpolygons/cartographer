@@ -8,17 +8,27 @@ uniform int INSTANCE_COUNT = 1;
 uniform sampler2D heightmap : hint_black;
 uniform sampler2D weightmap : hint_black;
 uniform sampler2DArray albedo_textures : hint_albedo;
-uniform sampler2DArray orm_textures;
-uniform sampler2DArray normal_textures;
+uniform sampler2DArray orm_textures : hint_white;
+uniform sampler2DArray normal_textures : hint_normal;
 uniform vec3 terrain_size;
 uniform float terrain_diameter = 256;
-uniform float normal_scale : hint_range(-16,16);
+
+uniform float normal_scale : hint_range(-16, 16);
+uniform float ao_light_affect = 0.0;
+uniform float roughness : hint_range(0, 1) = 1.0;
+uniform float metallic = 0.0;
+uniform float specular = 0.5;
+
 uniform float triplanar_sharpness = 2.0;
 uniform vec2 uv1_scale = vec2(1);
+uniform vec3 uv1_offset = vec3(0);
 uniform uint use_triplanar = 0;
+uniform uint use_pbr = 0;
+
 uniform float is_editing = 0.0;
 uniform vec2 brush_pos;
 uniform float brush_scale = 0.1;
+
 varying vec3 position;
 varying vec3 normal;
 varying vec3 UV3D;
@@ -185,13 +195,14 @@ void fragment() {
 	// Use the weights to blend the layers of the various texture arrays
 	vec4 clr = blend_terrain(wg1, wg2, wg3, wg4, wt, UV3D, triplanar_blend, orm, nmp);
 	
+	//	ALBEDO = (CAMERA_MATRIX * (vec4(NORMAL, 0.0))).rgb;
 	ALBEDO = (clr.rgb + giz.rgb);
 	NORMALMAP = nmp.xyz;
 	float nmp_fade = (1.0 - length(CAMERA_MATRIX[3].xyz - UV3D) / terrain_diameter);
 	NORMALMAP_DEPTH = nmp_fade * 4.0;
-//	ALBEDO = (CAMERA_MATRIX * (vec4(NORMAL, 0.0))).rgb;
 	AO = orm.r;
-	ROUGHNESS = orm.g;
-	METALLIC = orm.b;
-	SPECULAR = 0.5;
+	AO_LIGHT_AFFECT = ao_light_affect;
+	ROUGHNESS = orm.g * roughness;
+	METALLIC = orm.b * metallic;
+	SPECULAR = specular;
 }
