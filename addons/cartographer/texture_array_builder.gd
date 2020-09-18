@@ -159,7 +159,7 @@ func _save_tex_vram(images: Array, path: String, flags: int, r_comp: Array):
 		r_comp.append("pvrtc")
 		_save_tex(images, "%s.%s.%s" % [path, "pvrtc", get_save_extension()], Compress.VRAM, Image.COMPRESS_PVRTC4, flags)
 
-func _save_tex(images: Array, path: String, compression: int = 2, vram_compression: int = Image.COMPRESS_S3TC, flags: int = 7):
+func _save_tex(images: Array, path: String, compression: int = Compress.Uncompressed, vram_compression: int = Image.COMPRESS_S3TC, flags: int = 7):
 	prints(path, images)
 #	return FAILED
 	if images.size() == 0:
@@ -174,22 +174,50 @@ func _save_tex(images: Array, path: String, compression: int = 2, vram_compressi
 	file.store_8(ord('D'))
 	file.store_8(ord('A')) # Godot ArrayTexture
 	file.store_8(ord('T')) # Godot streamable texture
-
+	
 	file.store_32(images[0].get_width())
 	file.store_32(images[0].get_height())
 	file.store_32(images.size())
 	file.store_32(flags)
-	file.store_32(images[0].get_format())
-	file.store_32(compression) # Compression: 0 - lossless (PNG), 1 - vram, 2 - uncompressed
-
-
+	if compression != Compress.VRAM:
+		file.store_32(images[0].get_format())
+		file.store_32(compression) # Compression: 0 - lossless (PNG), 1 - vram, 2 - uncompressed
+	
+	var dim = max(images[0].get_width(), images[0].get_height())
+	var mipmap_count =  log(dim) / log(2) + 1
+	
 	for i in images.size():
-		var img = images[i] as Image
+		var img = images[i].duplicate() as Image
+		var data: PoolByteArray;
+		
 		if flags & TextureLayered.FLAG_MIPMAPS:
 			img.generate_mipmaps()
 		else:
 			img.clear_mipmaps()
-		file.store_buffer(img.get_data())
+		
+		match compression:
+			Compress.Lossless:
+				file.store_32(mipmap_count)
+				for j in mipmap_count:
+					if j > 0:
+						img.shrink_x2()
+					data = img.save_png_to_buffer()
+					file.store_32(data.size() + 4)
+					file.store_8(ord('P'))
+					file.store_8(ord('N'))
+					file.store_8(ord('G'))
+					file.store_8(ord(' '))
+					file.store_buffer(data)
+			Compress.VRAM:
+				img.compress(vram_compression, 3, 0.7) # COMPRESS_SOURCE_LAYERED = 3, not bound to GDScript?
+				if i == 0:
+					file.store_32(img.get_format())
+					file.store_32(compression)
+				data = img.get_data()
+				file.store_buffer(data)
+			Compress.Uncompressed:
+				data = img.get_data()
+				file.store_buffer(data)
 
 	file.close()
 	return OK
