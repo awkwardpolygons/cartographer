@@ -136,7 +136,7 @@ vec4 blend_alpha(vec4 dst, vec4 src) {
 	return vec4(rgb, a);
 }
 
-vec4 blend_terrain(vec4 wg1, vec4 wg2, vec4 wg3, vec4 wg4, float wt, vec2 uv2, vec3 uv3d, vec3 tri_blend, out vec4 orm, out vec4 nrm) {
+vec4 blend_terrain(vec4 wg1, vec4 wg2, vec4 wg3, vec4 wg4, float wt, vec3 uv3d, vec3 tri_blend, out vec4 orm, out vec4 nrm) {
 	vec4 alb = vec4(0);
 	float alp = 0.0;
 	float weights[16] = {wg1.r, wg1.g, wg1.b, wg1.a, 
@@ -183,7 +183,7 @@ void fragment() {
 	// Get the weight total
 	float wt = dot(wg1 + wg2 + wg3 + wg4, vec4(1));
 	// Use the weights to blend the layers of the various texture arrays
-	vec4 clr = blend_terrain(wg1, wg2, wg3, wg4, wt, UV2, UV3D, triplanar_blend, orm, nmp);
+	vec4 clr = blend_terrain(wg1, wg2, wg3, wg4, wt, UV3D, triplanar_blend, orm, nmp);
 	
 	ALBEDO = (clr.rgb + giz.rgb);
 	NORMALMAP = nmp.xyz;
