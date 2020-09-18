@@ -136,44 +136,35 @@ vec4 blend_alpha(vec4 dst, vec4 src) {
 	return vec4(rgb, a);
 }
 
-vec4 blend_terrain(vec2 uv2, vec3 uv3d, vec3 tri_blend, out vec4 orm, out vec4 nrm) {
+vec4 blend_terrain(vec4 wg1, vec4 wg2, vec4 wg3, vec4 wg4, float wt, vec2 uv2, vec3 uv3d, vec3 tri_blend, out vec4 orm, out vec4 nrm) {
 	vec4 alb = vec4(0);
 	float alp = 0.0;
-	vec4 wgt;
-	vec4 alb_arr[4];
-	vec4 orm_arr[4];
-	vec4 nrm_arr[4];
+	float weights[16] = {wg1.r, wg1.g, wg1.b, wg1.a, 
+						wg2.r,wg2.g, wg2.b, wg2.a,
+						wg3.r, wg3.g, wg3.b, wg3.a,
+						wg4.r, wg4.g, wg4.b, wg4.a};
 	
-	for (int i = 0; i < NUM_LAYERS; i += 4) {
-		wgt = get_weight(i, uv2);
+	for (int lyr = 0; lyr < weights.length(); lyr++) {
+		float w = weights[lyr];
+		uint flg = uint(pow(2.0, float(lyr)));
+		vec4 a, o, n;
 		
-		for (int j = 0; j < 4; j++) {
-			int lyr = i + j;
-			uint flg = uint(pow(2.0, float(lyr)));
-			
-			if ((flg & use_triplanar) > uint(0)) {
-				alb_arr[j] = texture_triplanar(albedo_textures, uv3d, float(lyr), tri_blend);
-			}
-			else {
-				alb_arr[j] = texture(albedo_textures, vec3(uv3d.xz, float(lyr)));
-				orm_arr[j] = texture(orm_textures, vec3(uv3d.xz, float(lyr)));
-				nrm_arr[j] = texture(normal_textures, vec3(uv3d.xz, float(lyr)));
-			}
+		if ((flg & use_triplanar) > uint(0)) {
+			a = texture_triplanar(albedo_textures, uv3d, float(lyr), tri_blend);
+			o = texture_triplanar(orm_textures, uv3d, float(lyr), tri_blend);
+			n = texture_triplanar(normal_textures, uv3d, float(lyr), tri_blend);
+		}
+		else {
+			a = texture(albedo_textures, vec3(uv3d.xz, float(lyr)));
+			o = texture(orm_textures, vec3(uv3d.xz, float(lyr)));
+			n = texture(normal_textures, vec3(uv3d.xz, float(lyr)));
 		}
 		
-		// Move the vector into an array because Godot doesn't support variable
-		// indexing on vectors, constants only.
-		float wgt_arr[4] = {wgt[0], wgt[1], wgt[2], wgt[3]};
-		
-		for (int k = 0; k < 4; k++) {
-			float w = wgt_arr[k];
-			float a = alb_arr[k].a;
-			w = w * (w < 1.0 ? a : 1.0);
-			alb += alb_arr[k] * w;
-			orm += orm_arr[k] * w;
-			nrm += nrm_arr[k] * w;
-			alp += w;
-		}
+		w = w * (w < 1.0 ? a.a : 1.0);
+		alb += a * w;
+		orm += o * w;
+		nrm += n * w;
+		alp += w;
 	}
 	
 	alp = (alp < 1.0 ? 1.0 : alp);
@@ -187,10 +178,15 @@ void fragment() {
 	vec4 giz = draw_gizmo(vec4(1, 0, 1, 1), UV2, brush_pos);
 	vec4 orm;
 	vec4 nmp;
-	vec4 clr = blend_terrain(UV2, UV3D, triplanar_blend, orm, nmp);
+	// Get all the weights, for each layer, in groups of vec4 (cos GD shader array support is poor)
+	vec4 wg1 = get_weight(0, UV2), wg2 = get_weight(4, UV2), wg3 = get_weight(8, UV2), wg4 = get_weight(12, UV2);
+	// Get the weight total
+	float wt = dot(wg1 + wg2 + wg3 + wg4, vec4(1));
+	// Use the weights to blend the layers of the various texture arrays
+	vec4 clr = blend_terrain(wg1, wg2, wg3, wg4, wt, UV2, UV3D, triplanar_blend, orm, nmp);
 	
 	ALBEDO = (clr.rgb + giz.rgb);
-	NORMALMAP = nmp.rgb;
+	NORMALMAP = nmp.xyz;
 	float nmp_fade = (1.0 - length(CAMERA_MATRIX[3].xyz - UV3D) / terrain_diameter);
 	NORMALMAP_DEPTH = nmp_fade * 4.0;
 //	ALBEDO = (CAMERA_MATRIX * (vec4(NORMAL, 0.0))).rgb;
