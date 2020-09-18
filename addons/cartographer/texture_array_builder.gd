@@ -3,7 +3,16 @@ extends EditorImportPlugin
 class_name CartoTextureArrayBuilder
 
 enum Presets { DEFAULT }
-enum Compress { Lossless, Lossy, VRAM, Uncompressed }
+enum Compress { Lossless, VRAM, Uncompressed }
+enum Format { FORMAT_L8, FORMAT_LA8, FORMAT_R8, FORMAT_RG8, FORMAT_RGB8, FORMAT_RGBA8 }
+const formats = {
+	"FORMAT_L8": Image.FORMAT_L8,
+	"FORMAT_LA8": Image.FORMAT_LA8,
+	"FORMAT_R8": Image.FORMAT_R8,
+	"FORMAT_RG8": Image.FORMAT_RG8,
+	"FORMAT_RGB8": Image.FORMAT_RGB8,
+	"FORMAT_RGBA8": Image.FORMAT_RGBA8,
+}
 
 func get_importer_name():
 	return "texture_array_builder"
@@ -31,25 +40,31 @@ func get_import_options(preset):
 		Presets.DEFAULT:
 			return [
 				{
-					"name": "compress",
-					"default_value": null,
-					"hint_string": "compress/",
-					"usage": PROPERTY_USAGE_GROUP | PROPERTY_USAGE_CATEGORY,
+					"name": "format",
+					"default_value": Format.FORMAT_RGBA8,
+					"property_hint": PROPERTY_HINT_ENUM,
+					"hint_string": "FORMAT_L8,FORMAT_LA8,FORMAT_R8,FORMAT_RG8,FORMAT_RGB8,FORMAT_RGBA8"
 				},
+#				{
+#					"name": "compress",
+#					"default_value": null,
+#					"hint_string": "compress/",
+#					"usage": PROPERTY_USAGE_GROUP | PROPERTY_USAGE_CATEGORY,
+#				},
 				{
-					"name": "compress/mode",
+					"name": "compress",
 					"default_value": Compress.Uncompressed,
 					"property_hint": PROPERTY_HINT_ENUM,
-					"hint_string": "Lossless,Lossy,VRAM,Uncompressed"
+					"hint_string": "Lossless,VRAM,Uncompressed"
 				},
+#				{
+#					"name": "flags",
+#					"default_value": null,
+#					"hint_string": "flags/",
+#					"usage": PROPERTY_USAGE_GROUP | PROPERTY_USAGE_CATEGORY,
+#				},
 				{
 					"name": "flags",
-					"default_value": null,
-					"hint_string": "flags/",
-					"usage": PROPERTY_USAGE_GROUP | PROPERTY_USAGE_CATEGORY,
-				},
-				{
-					"name": "flags/flags",
 					"default_value": 7,
 					"property_hint": PROPERTY_HINT_FLAGS,
 					"hint_string": "Mipmaps,Repeat,Filter"
@@ -74,9 +89,11 @@ func import(source_file, save_path, options, r_platform_variants, r_gen_files):
 		return parsed.error
 	var obj = parsed.result
 	
-	var compress = options["compress/mode"]
-	var flags = options["flags/flags"]
+	var format = options["format"]
+	var compress = options["compress"]
+	var flags = options["flags"]
 	var images = []
+	obj.format = format
 	
 	prints(options, r_platform_variants, r_gen_files)
 	
@@ -87,6 +104,7 @@ func import(source_file, save_path, options, r_platform_variants, r_gen_files):
 func _parse(obj):
 	assert(obj.size is Array and len(obj.size) == 2, "Invalid size, must be an array of two ints: %s" % [obj.size])
 	var size = Vector2(obj.size[0], obj.size[1])
+	var format = obj.format
 	var images = []
 	
 	for layer in obj.layers:
@@ -94,7 +112,7 @@ func _parse(obj):
 		if layer is String:
 			img = _load_image(layer, size)
 		if layer is Dictionary:
-			img = _get_image_from_channels(layer, size)
+			img = _get_image_from_channels(layer, size, format)
 			prints("chn img:", img)
 		images.append(img)
 	
@@ -125,11 +143,11 @@ func _get_image_from_channels(channels, size: Vector2, format: int = Image.FORMA
 	
 	return dst_img
 
-func _load_image(path: String, size: Vector2) -> Image:
+func _load_image(path: String, size: Vector2, format: int = Image.FORMAT_RGBA8) -> Image:
 	var img
 	if path.begins_with("#"):
 		img = Image.new()
-		img.create(size.x, size.y, false, Image.FORMAT_RGBA8)
+		img.create(size.x, size.y, false, format)
 		img.fill(Color(path))
 	elif path.begins_with("file://"):
 		img = Image.new()
