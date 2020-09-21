@@ -10,6 +10,7 @@ var albedo_textures: TextureArray setget set_albedo_textures
 var orm_textures: TextureArray setget set_orm_textures
 var normal_textures: TextureArray setget set_normal_textures
 
+var normal_enabled: int = 0 setget set_normal_enabled
 var normal_scale: float = 1 setget set_normal_scale
 var orm_light_affect: float = 0 setget set_orm_light_affect
 var orm_roughness: float = 1 setget set_orm_roughness
@@ -22,11 +23,11 @@ var heightmap: ImageTexture setget set_heightmap
 var uv1_scale: Vector3 = Vector3(1, 1, 1) setget set_uv1_scale
 var uv1_offset: Vector3 = Vector3(0, 0, 0) setget set_uv1_offset
 var uv1_triplanar: int = 0 setget set_uv1_triplanar
-var _uv1_triplanar_layers: PoolStringArray
 var uv1_triplanar_sharpness: float = 2 setget set_uv1_triplanar_sharpness
 var selected: int = 0
 var sculptor: TexturePainter
 var painter: TexturePainter
+var _layers: String = "Layer1,Layer2,Layer3,Layer4,Layer4,Layer5,Layer6,Layer7,Layer8,Layer9,Layer10,Layer11,Layer12,Layer13,Layer14,Layer15,Layer16"
 
 func set_albedo_textures(ta: TextureArray):
 	albedo_textures = _prep_textures("albedo_textures", ta, albedo_textures)
@@ -48,6 +49,10 @@ func _prep_textures(name: String, new: TextureArray, old: TextureArray):
 	
 	_on_layer_changed(name, new)
 	return new
+
+func set_normal_enabled(v):
+	normal_enabled = v
+	set_shader_param("normal_enabled", v)
 
 func set_normal_scale(v):
 	normal_scale = v
@@ -153,10 +158,6 @@ func _on_layer_changed(name, ta):
 		selected = ta.selected
 		if ta.get_depth() > 0:
 			set_shader_param(name, ta)
-			var layers = PoolStringArray()
-			for i in ta.get_depth():
-				layers.append("Layer%s" % i)
-			_uv1_triplanar_layers = layers
 	else:
 		set_shader_param(name, null)
 	emit_signal("changed")
@@ -175,13 +176,14 @@ func _get_property_list():
 	properties.append(_prop_info("orm_textures", TYPE_OBJECT, PROPERTY_HINT_RESOURCE_TYPE, "TextureArray"))
 	
 	properties.append(_prop_group("Normal Map", "normal_"))
+	properties.append(_prop_info("normal_enabled", TYPE_INT, PROPERTY_HINT_FLAGS, _layers))
 	properties.append(_prop_info("normal_scale", TYPE_REAL, PROPERTY_HINT_RANGE, "-16,16"))
 	properties.append(_prop_info("normal_textures", TYPE_OBJECT, PROPERTY_HINT_RESOURCE_TYPE, "TextureArray"))
 	
 	properties.append(_prop_group("UV1", "uv1_"))
 	properties.append(_prop_info("uv1_scale", TYPE_VECTOR3))
 	properties.append(_prop_info("uv1_offset", TYPE_VECTOR3))
-	properties.append(_prop_info("uv1_triplanar", TYPE_INT, PROPERTY_HINT_FLAGS, _uv1_triplanar_layers.join(",")))
+	properties.append(_prop_info("uv1_triplanar", TYPE_INT, PROPERTY_HINT_FLAGS, _layers))
 	properties.append(_prop_info("uv1_triplanar_sharpness", TYPE_REAL, PROPERTY_HINT_EXP_EASING))
 	
 	properties.append(_prop_info("heightmap", TYPE_OBJECT, PROPERTY_HINT_RESOURCE_TYPE, "ImageTexture"))

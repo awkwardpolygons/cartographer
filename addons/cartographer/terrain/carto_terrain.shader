@@ -13,6 +13,7 @@ uniform sampler2DArray normal_textures : hint_normal;
 uniform vec3 terrain_size;
 uniform float terrain_diameter = 256;
 
+uniform uint normal_enabled = 0;
 uniform float normal_scale : hint_range(-16, 16);
 uniform float ao_light_affect = 0.0;
 uniform float roughness : hint_range(0, 1) = 1.0;
@@ -174,7 +175,7 @@ vec4 blend_terrain(vec4 wg1, vec4 wg2, vec4 wg3, vec4 wg4, float wt, vec3 uv3d, 
 		w = w * (w < 1.0 ? a.a : 1.0);
 		alb += a * w;
 		orm += o * w;
-		nrm += n * w;
+		nrm += (flg & normal_enabled) > uint(0) ? n * w : vec4(0.5, 0.5, 0, 0) * w;
 		alp += w;
 	}
 	
@@ -199,10 +200,10 @@ void fragment() {
 	//	ALBEDO = (CAMERA_MATRIX * (vec4(NORMAL, 0.0))).rgb;
 	ALBEDO = (clr.rgb + giz.rgb);
 	NORMALMAP = nmp.xyz;
-	NORMALMAP_DEPTH = 1.0 * 4.0;
-//	AO = orm.r;
-//	AO_LIGHT_AFFECT = ao_light_affect;
-//	ROUGHNESS = orm.g * roughness;
-//	METALLIC = orm.b * metallic;
-//	SPECULAR = specular;
+	NORMALMAP_DEPTH = normal_scale;
+	AO = orm.r;
+	AO_LIGHT_AFFECT = ao_light_affect;
+	ROUGHNESS = orm.g * roughness;
+	METALLIC = orm.b * metallic;
+	SPECULAR = specular;
 }
