@@ -11,12 +11,15 @@ var toolbar
 var editor: EditorInterface
 var terrain
 var inspector_plugin
+var import_plugin
 
 func _init():
 	editor = get_editor_interface()
 	add_autoload_singleton("Cartographer", "res://addons/cartographer/cartographer_singleton.gd")
 	inspector_plugin = CartoTerrainInspector.new()
 	add_inspector_plugin(inspector_plugin)
+	import_plugin = CartoTextureArrayBuilder.new()
+	add_import_plugin(import_plugin)
 
 func _enter_tree():
 	brushes_panel = BrushesPanel.instance()
@@ -42,7 +45,8 @@ func _exit_tree():
 		brushes_panel.free()
 	if toolbar:
 		toolbar.free()
-
+	
+	remove_import_plugin(import_plugin)
 	remove_inspector_plugin(inspector_plugin)
 	remove_autoload_singleton("Cartographer")
 
