@@ -19,10 +19,10 @@ uniform float roughness : hint_range(0, 1) = 1.0;
 uniform float metallic = 0.0;
 uniform float specular = 0.5;
 
-uniform float triplanar_sharpness = 2.0;
-uniform vec2 uv1_scale = vec2(1);
+uniform vec3 uv1_scale = vec3(1);
 uniform vec3 uv1_offset = vec3(0);
-uniform uint use_triplanar = 0;
+uniform uint uv1_triplanar = 0;
+uniform float uv1_triplanar_sharpness = 2.0;
 uniform uint use_pbr = 0;
 
 uniform float is_editing = 0.0;
@@ -92,8 +92,7 @@ void vertex() {
 	UV2 = UV;
 	UV3D = position;
 	UV3D.xz += 0.5 * terrain_diameter;
-	UV3D *= vec3(1, 1, 1) * vec3(uv1_scale.x, (uv1_scale.x + uv1_scale.y)/2.0, uv1_scale.y);
-	triplanar_blend = pow(abs(normal), vec3(triplanar_sharpness));
+	UV3D = UV3D * uv1_scale.xzy + uv1_offset.xzy;
 	UV = UV3D.xz;
 	
 	// Experimenting with displacement
@@ -102,6 +101,8 @@ void vertex() {
 	VERTEX = (MODELVIEW_MATRIX * vec4(VERTEX, 1.0)).xyz;
 	
 	normal = calc_normal(UV2, 1.0 / terrain_diameter);
+	triplanar_blend = pow(abs(normal), vec3(uv1_triplanar_sharpness));
+	triplanar_blend /= dot(triplanar_blend, vec3(1.0));
 	NORMAL = normal;
 	TANGENT = vec3(0.0,0.0,-1.0) * (NORMAL.x);
 	TANGENT+= vec3(1.0,0.0,0.0) * (NORMAL.y);
@@ -124,9 +125,9 @@ vec4 draw_gizmo(vec4 clr, vec2 uv, vec2 pos) {
 }
 
 vec4 texture_triplanar(sampler2DArray sampler, vec3 tex_pos, float layer, vec3 blend) {
-	vec4 tx = texture(albedo_textures, vec3(tex_pos.yz * vec2(-1.0,1.0), layer));
-	vec4 ty = texture(albedo_textures, vec3(tex_pos.xz, layer));
-	vec4 tz = texture(albedo_textures, vec3(tex_pos.xy, layer));
+	vec4 tx = texture(sampler, vec3(tex_pos.yz * vec2(-1.0, 1.0), layer));
+	vec4 ty = texture(sampler, vec3(tex_pos.xz, layer));
+	vec4 tz = texture(sampler, vec3(tex_pos.xy, layer));
 	return (tx * blend.x + ty * blend.y + tz * blend.z);
 }
 
@@ -159,7 +160,7 @@ vec4 blend_terrain(vec4 wg1, vec4 wg2, vec4 wg3, vec4 wg4, float wt, vec3 uv3d, 
 		uint flg = uint(pow(2.0, float(lyr)));
 		vec4 a, o, n;
 		
-		if ((flg & use_triplanar) > uint(0)) {
+		if ((flg & uv1_triplanar) > uint(0)) {
 			a = texture_triplanar(albedo_textures, uv3d, float(lyr), tri_blend);
 			o = texture_triplanar(orm_textures, uv3d, float(lyr), tri_blend);
 			n = texture_triplanar(normal_textures, uv3d, float(lyr), tri_blend);
@@ -198,11 +199,10 @@ void fragment() {
 	//	ALBEDO = (CAMERA_MATRIX * (vec4(NORMAL, 0.0))).rgb;
 	ALBEDO = (clr.rgb + giz.rgb);
 	NORMALMAP = nmp.xyz;
-	float nmp_fade = (1.0 - length(CAMERA_MATRIX[3].xyz - UV3D) / terrain_diameter);
 	NORMALMAP_DEPTH = 1.0 * 4.0;
-	AO = orm.r;
-	AO_LIGHT_AFFECT = ao_light_affect;
-	ROUGHNESS = orm.g * roughness;
-	METALLIC = orm.b * metallic;
-	SPECULAR = specular;
+//	AO = orm.r;
+//	AO_LIGHT_AFFECT = ao_light_affect;
+//	ROUGHNESS = orm.g * roughness;
+//	METALLIC = orm.b * metallic;
+//	SPECULAR = specular;
 }
