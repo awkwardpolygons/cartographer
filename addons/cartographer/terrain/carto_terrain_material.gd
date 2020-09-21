@@ -27,7 +27,7 @@ var uv1_triplanar_sharpness: float = 2 setget set_uv1_triplanar_sharpness
 var selected: int = 0
 var sculptor: TexturePainter
 var painter: TexturePainter
-var _layers: String = "Layer1,Layer2,Layer3,Layer4,Layer4,Layer5,Layer6,Layer7,Layer8,Layer9,Layer10,Layer11,Layer12,Layer13,Layer14,Layer15,Layer16"
+var _layers: String = "Layer1,Layer2,Layer3,Layer4,Layer5,Layer6,Layer7,Layer8,Layer9,Layer10,Layer11,Layer12,Layer13,Layer14,Layer15,Layer16"
 
 func set_albedo_textures(ta: TextureArray):
 	albedo_textures = _prep_textures("albedo_textures", ta, albedo_textures)
