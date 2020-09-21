@@ -182,7 +182,7 @@ func _get_property_list():
 	properties.append(_prop_info("uv1_scale", TYPE_VECTOR3))
 	properties.append(_prop_info("uv1_offset", TYPE_VECTOR3))
 	properties.append(_prop_info("uv1_triplanar", TYPE_INT, PROPERTY_HINT_FLAGS, _uv1_triplanar_layers.join(",")))
-	properties.append(_prop_info("uv1_triplanar_sharpness", TYPE_INT))
+	properties.append(_prop_info("uv1_triplanar_sharpness", TYPE_REAL, PROPERTY_HINT_EXP_EASING))
 	
 	properties.append(_prop_info("heightmap", TYPE_OBJECT, PROPERTY_HINT_RESOURCE_TYPE, "ImageTexture"))
 	properties.append(_prop_info("weightmap", TYPE_OBJECT, PROPERTY_HINT_RESOURCE_TYPE, "ImageTexture"))
