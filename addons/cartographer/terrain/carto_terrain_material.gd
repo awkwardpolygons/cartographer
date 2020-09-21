@@ -27,17 +27,15 @@ func _set_normal_textures(ta: TextureArray):
 	normal_textures = _prep_textures("normal_textures", ta, normal_textures)
 
 func _prep_textures(name: String, new: TextureArray, old: TextureArray):
-	if old and old.has_signal("selected"):
-		old.disconnect("selected", self, "_on_layer_selected")
+#	prints("_prep_textures:", name, new, old)
 	if old and old.has_signal("changed"):
 		old.disconnect("changed", self, "_on_layer_changed")
 	if new:
 		if not new is CartoMultiTexture:
 			new.set_script(preload("res://addons/cartographer/terrain/carto_multi_texture.gd"))
-		new.connect("selected", self, "_on_layer_selected", [name, new])
 		new.connect("changed", self, "_on_layer_changed", [name, new])
-	else:
-		_on_layer_changed(name, new)
+	
+	_on_layer_changed(name, new)
 	return new
 
 func _set_weightmap(m: ImageTexture):
@@ -103,12 +101,12 @@ func commit_sculptor():
 	heightmap.set_data(img)
 	emit_signal("changed")
 
-func _on_layer_selected(name, ta):
-	selected = ta.selected
-
 func _on_layer_changed(name, ta):
-	if ta and ta.get_depth() > 0:
-		set_shader_param(name, ta)
+	prints("_on_layer_changed", name, ta)
+	if ta:
+		selected = ta.selected
+		if ta.get_depth() > 0:
+			set_shader_param(name, ta)
 	else:
 		set_shader_param(name, null)
 	emit_signal("changed")
