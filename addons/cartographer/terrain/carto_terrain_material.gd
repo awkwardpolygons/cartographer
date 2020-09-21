@@ -6,24 +6,35 @@ enum TextureChannel {RED = 0, GREEN = 1, BLUE = 2, ALPHA = 3}
 const MAX_LAYERS = 16
 
 var albedo_colors: PoolColorArray
-var albedo_textures: TextureArray setget _set_albedo_textures
-var orm_textures: TextureArray setget _set_orm_textures
-var normal_textures: TextureArray setget _set_normal_textures
+var albedo_textures: TextureArray setget set_albedo_textures
+var orm_textures: TextureArray setget set_orm_textures
+var normal_textures: TextureArray setget set_normal_textures
 
-var weightmap: ImageTexture setget _set_weightmap
-var heightmap: ImageTexture setget _set_heightmap
-var uv1_scale: Vector2 = Vector2(1, 1) setget _set_uv1_scale
+var normal_scale: float = 1 setget set_normal_scale
+var orm_light_affect: float = 0 setget set_orm_light_affect
+var orm_roughness: float = 1 setget set_orm_roughness
+var orm_metallic: float = 0 setget set_orm_metallic
+var orm_specular: float = 0.5 setget set_orm_specular
+
+var weightmap: ImageTexture setget set_weightmap
+var heightmap: ImageTexture setget set_heightmap
+
+var uv1_scale: Vector3 = Vector3(1, 1, 1) setget set_uv1_scale
+var uv1_offset: Vector3 = Vector3(0, 0, 0) setget set_uv1_offset
+var uv1_triplanar: int = 0 setget set_uv1_triplanar
+var _uv1_triplanar_layers: PoolStringArray
+var uv1_triplanar_sharpness: float = 2 setget set_uv1_triplanar_sharpness
 var selected: int = 0
 var sculptor: TexturePainter
 var painter: TexturePainter
 
-func _set_albedo_textures(ta: TextureArray):
+func set_albedo_textures(ta: TextureArray):
 	albedo_textures = _prep_textures("albedo_textures", ta, albedo_textures)
 
-func _set_orm_textures(ta: TextureArray):
+func set_orm_textures(ta: TextureArray):
 	orm_textures = _prep_textures("orm_textures", ta, orm_textures)
 
-func _set_normal_textures(ta: TextureArray):
+func set_normal_textures(ta: TextureArray):
 	normal_textures = _prep_textures("normal_textures", ta, normal_textures)
 
 func _prep_textures(name: String, new: TextureArray, old: TextureArray):
@@ -38,23 +49,58 @@ func _prep_textures(name: String, new: TextureArray, old: TextureArray):
 	_on_layer_changed(name, new)
 	return new
 
-func _set_weightmap(m: ImageTexture):
+func set_normal_scale(v):
+	normal_scale = v
+	set_shader_param("normal_scale", v)
+
+func set_orm_light_affect(v):
+	orm_light_affect = v
+	set_shader_param("ao_light_affect", v)
+
+func set_orm_roughness(v):
+	orm_roughness = v
+	set_shader_param("roughness", v)
+
+func set_orm_metallic(v):
+	orm_metallic = v
+	set_shader_param("metallic", v)
+
+func set_orm_specular(v):
+	orm_specular = v
+	set_shader_param("specular", v)
+
+func set_weightmap(m: ImageTexture):
 	weightmap = m
 	if painter:
 		painter.texture = m
 	set_shader_param("weightmap", get_weightmap())
 	emit_signal("changed")
 
-func _set_heightmap(m: ImageTexture):
+func set_heightmap(m: ImageTexture):
 	heightmap = m
 	if sculptor:
 		sculptor.texture = m
 	set_shader_param("heightmap", get_heightmap())
 	emit_signal("changed")
 
-func _set_uv1_scale(s):
-	uv1_scale = s
+func set_uv1_scale(v):
+	uv1_scale = v
 	set_shader_param("uv1_scale", uv1_scale)
+	emit_signal("changed")
+
+func set_uv1_offset(v):
+	uv1_offset = v
+	set_shader_param("uv1_offset", uv1_offset)
+	emit_signal("changed")
+
+func set_uv1_triplanar(v):
+	uv1_triplanar = v
+	set_shader_param("uv1_triplanar", uv1_triplanar)
+	emit_signal("changed")
+
+func set_uv1_triplanar_sharpness(v):
+	uv1_triplanar_sharpness = v
+	set_shader_param("uv1_triplanar_sharpness", uv1_triplanar_sharpness)
 	emit_signal("changed")
 
 func _init():
@@ -79,12 +125,12 @@ func create_weightmap():
 	var img = Image.new()
 	img.create(2048, 2048, false, Image.FORMAT_RGBA8)
 	tex.create_from_image(img)
-	_set_weightmap(tex)
+	set_weightmap(tex)
 
 func create_heightmap():
 	var tex = ImageTexture.new()
 	tex.create(2048, 2048, Image.FORMAT_RH)
-	_set_heightmap(tex)
+	set_heightmap(tex)
 
 func commit_painter():
 	if not weightmap:
@@ -102,11 +148,15 @@ func commit_sculptor():
 	emit_signal("changed")
 
 func _on_layer_changed(name, ta):
-	prints("_on_layer_changed", name, ta)
+#	prints("_on_layer_changed", name, ta)
 	if ta:
 		selected = ta.selected
 		if ta.get_depth() > 0:
 			set_shader_param(name, ta)
+			var layers = PoolStringArray()
+			for i in ta.get_depth():
+				layers.append("Layer%s" % i)
+			_uv1_triplanar_layers = layers
 	else:
 		set_shader_param(name, null)
 	emit_signal("changed")
@@ -116,16 +166,27 @@ func _get_property_list():
 	properties.append(_prop_group("Albedo", "albedo_"))
 	properties.append(_prop_info("albedo_colors", TYPE_COLOR_ARRAY))
 	properties.append(_prop_info("albedo_textures", TYPE_OBJECT, PROPERTY_HINT_RESOURCE_TYPE, "TextureArray"))
-
+	
 	properties.append(_prop_group("AO, Roughness, Metallic", "orm_"))
+	properties.append(_prop_info("orm_light_affect", TYPE_REAL, PROPERTY_HINT_RANGE, "0,1"))
+	properties.append(_prop_info("orm_roughness", TYPE_REAL, PROPERTY_HINT_RANGE, "0,1"))
+	properties.append(_prop_info("orm_metallic", TYPE_REAL, PROPERTY_HINT_RANGE, "0,1"))
+	properties.append(_prop_info("orm_specular", TYPE_REAL, PROPERTY_HINT_RANGE, "0,1"))
 	properties.append(_prop_info("orm_textures", TYPE_OBJECT, PROPERTY_HINT_RESOURCE_TYPE, "TextureArray"))
-
+	
 	properties.append(_prop_group("Normal Map", "normal_"))
+	properties.append(_prop_info("normal_scale", TYPE_REAL, PROPERTY_HINT_RANGE, "-16,16"))
 	properties.append(_prop_info("normal_textures", TYPE_OBJECT, PROPERTY_HINT_RESOURCE_TYPE, "TextureArray"))
-
+	
+	properties.append(_prop_group("UV1", "uv1_"))
+	properties.append(_prop_info("uv1_scale", TYPE_VECTOR3))
+	properties.append(_prop_info("uv1_offset", TYPE_VECTOR3))
+	properties.append(_prop_info("uv1_triplanar", TYPE_INT, PROPERTY_HINT_FLAGS, _uv1_triplanar_layers.join(",")))
+	properties.append(_prop_info("uv1_triplanar_sharpness", TYPE_INT))
+	
 	properties.append(_prop_info("heightmap", TYPE_OBJECT, PROPERTY_HINT_RESOURCE_TYPE, "ImageTexture"))
 	properties.append(_prop_info("weightmap", TYPE_OBJECT, PROPERTY_HINT_RESOURCE_TYPE, "ImageTexture"))
-	properties.append(_prop_info("uv1_scale", TYPE_VECTOR2))
+	
 	return properties
 
 func _prop_group(name: String, prefix: String) -> Dictionary:
