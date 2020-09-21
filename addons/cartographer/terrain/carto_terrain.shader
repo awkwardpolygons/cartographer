@@ -92,7 +92,7 @@ void vertex() {
 	UV2 = UV;
 	UV3D = position;
 	UV3D.xz += 0.5 * terrain_diameter;
-	UV3D *= vec3(1, 1, -1) * vec3(uv1_scale.x, (uv1_scale.x + uv1_scale.y)/2.0, uv1_scale.y);
+	UV3D *= vec3(1, 1, 1) * vec3(uv1_scale.x, (uv1_scale.x + uv1_scale.y)/2.0, uv1_scale.y);
 	triplanar_blend = pow(abs(normal), vec3(triplanar_sharpness));
 	UV = UV3D.xz;
 	
@@ -103,13 +103,13 @@ void vertex() {
 	
 	normal = calc_normal(UV2, 1.0 / terrain_diameter);
 	NORMAL = normal;
-	TANGENT = vec3(0.0,0.0,-1.0) * NORMAL.x;
-	TANGENT+= vec3(1.0,0.0,0.0) * NORMAL.y;
-	TANGENT+= vec3(1.0,0.0,0.0) * NORMAL.z;
+	TANGENT = vec3(0.0,0.0,-1.0) * (NORMAL.x);
+	TANGENT+= vec3(1.0,0.0,0.0) * (NORMAL.y);
+	TANGENT+= vec3(1.0,0.0,0.0) * (NORMAL.z);
 	TANGENT = normalize(TANGENT);
-	BINORMAL = vec3(0.0,-1.0,0.0) * NORMAL.x;
-	BINORMAL+= vec3(0.0,0.0,1.0) * NORMAL.y;
-	BINORMAL+= vec3(0.0,-1.0,0.0) * NORMAL.z;
+	BINORMAL = vec3(0.0,-1.0,0.0) * abs(NORMAL.x);
+	BINORMAL+= vec3(0.0,0.0,-1.0) * abs(NORMAL.y);
+	BINORMAL+= vec3(0.0,-1.0,0.0) * abs(NORMAL.z);
 	BINORMAL = normalize(BINORMAL);
 
 	NORMAL = (MODELVIEW_MATRIX * vec4(NORMAL, 0.0)).xyz;
@@ -199,7 +199,7 @@ void fragment() {
 	ALBEDO = (clr.rgb + giz.rgb);
 	NORMALMAP = nmp.xyz;
 	float nmp_fade = (1.0 - length(CAMERA_MATRIX[3].xyz - UV3D) / terrain_diameter);
-	NORMALMAP_DEPTH = nmp_fade * 4.0;
+	NORMALMAP_DEPTH = 1.0 * 4.0;
 	AO = orm.r;
 	AO_LIGHT_AFFECT = ao_light_affect;
 	ROUGHNESS = orm.g * roughness;
