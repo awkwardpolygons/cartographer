@@ -40,7 +40,7 @@ func set_normal_textures(ta: TextureArray):
 
 func _prep_textures(name: String, new: TextureArray, old: TextureArray):
 #	prints("_prep_textures:", name, new, old)
-	if old and old.has_signal("changed"):
+	if old and old.is_connected("changed", self, "_on_layer_changed"):
 		old.disconnect("changed", self, "_on_layer_changed")
 	if new:
 		if not new is CartoMultiTexture:
