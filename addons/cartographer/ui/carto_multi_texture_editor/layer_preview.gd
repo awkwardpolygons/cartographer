@@ -22,7 +22,7 @@ func set_channel(ch):
 
 func _init():
 	material = ShaderMaterial.new()
-	material.shader = preload("res://addons/cartographer/terrain/carto_multi_texture_editor/layer.shader")
+	material.shader = preload("res://addons/cartographer/ui/carto_multi_texture_editor/layer.shader")
 
 func _ready():
 	material.set_shader_param("idx", idx)

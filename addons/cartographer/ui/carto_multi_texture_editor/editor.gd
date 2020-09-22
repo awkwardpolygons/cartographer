@@ -1,8 +1,8 @@
 tool
 extends EditorProperty
 
-const CreateDialog = preload("res://addons/cartographer/terrain/carto_multi_texture_editor/create_dialog.tscn")
-const Layer = preload("res://addons/cartographer/terrain/carto_multi_texture_editor/layer.gd")
+const CreateDialog = preload("res://addons/cartographer/ui/carto_multi_texture_editor/create_dialog.tscn")
+const Layer = preload("res://addons/cartographer/ui/carto_multi_texture_editor/layer.gd")
 var texarr
 var undo_redo
 var layer_list: CartoAxisLayout

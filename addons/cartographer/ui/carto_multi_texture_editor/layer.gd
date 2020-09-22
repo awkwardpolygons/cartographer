@@ -1,7 +1,7 @@
 tool
 extends CartoAxisLayout
 
-const LayerPreview = preload("res://addons/cartographer/terrain/carto_multi_texture_editor/layer_preview.gd")
+const LayerPreview = preload("res://addons/cartographer/ui/carto_multi_texture_editor/layer_preview.gd")
 export(int) var idx: int setget set_idx
 export(TextureArray) var texarr: TextureArray setget set_texarr
 export(ButtonGroup) var group: ButtonGroup setget set_group

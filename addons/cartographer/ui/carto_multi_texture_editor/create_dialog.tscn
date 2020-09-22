@@ -8,6 +8,7 @@ var width_input
 var height_input
 var depth_input
 var format_input
+var compress_input
 var formats = {
 	\"FORMAT_L8\": Image.FORMAT_L8,
 	\"FORMAT_LA8\": Image.FORMAT_LA8,
@@ -17,6 +18,15 @@ var formats = {
 	\"FORMAT_RGBA8\": Image.FORMAT_RGBA8,
 }
 
+var compress_modes = {
+	\"NONE\": -1,
+	\"COMPRESS_S3TC\": Image.COMPRESS_S3TC,
+	\"COMPRESS_PVRTC2\": Image.COMPRESS_PVRTC2,
+	\"COMPRESS_PVRTC4\": Image.COMPRESS_PVRTC4,
+	\"COMPRESS_ETC\": Image.COMPRESS_ETC,
+	\"COMPRESS_ETC2\": Image.COMPRESS_ETC2,
+}
+
 signal acknowledged
 
 func _ready():
@@ -24,10 +34,16 @@ func _ready():
 	height_input = $Box/HeightInput/Height
 	depth_input = $Box/DepthInput/Depth
 	format_input = $Box/FormatInput/Format
+	compress_input = $Box/CompressInput/CompressMode
 	
 	for k in formats:
 		var v = formats[k]
 		format_input.add_item(k, v)
+	format_input.selected = 5
+	
+	for k in compress_modes:
+		var v = compress_modes[k]
+		compress_input.add_item(k, v)
 
 func _on_action(ok):
 	var vals = []
@@ -40,8 +56,8 @@ func _on_action(ok):
 "
 
 [node name="CreateDialog" type="WindowDialog"]
-margin_right = 200.0
-margin_bottom = 70.0
+margin_right = 350.0
+margin_bottom = 200.0
 rect_min_size = Vector2( 350, 200 )
 window_title = "Create layers..."
 script = SubResource( 1 )
@@ -142,8 +158,31 @@ margin_left = 169.0
 margin_right = 334.0
 margin_bottom = 32.0
 size_flags_horizontal = 3
+text = "FORMAT_RGBA8"
+items = [ "FORMAT_L8", null, false, 0, null, "FORMAT_LA8", null, false, 1, null, "FORMAT_R8", null, false, 2, null, "FORMAT_RG8", null, false, 3, null, "FORMAT_RGB8", null, false, 4, null, "FORMAT_RGBA8", null, false, 5, null, "FORMAT_L8", null, false, 0, null, "FORMAT_LA8", null, false, 1, null, "FORMAT_R8", null, false, 2, null, "FORMAT_RG8", null, false, 3, null, "FORMAT_RGB8", null, false, 4, null, "FORMAT_RGBA8", null, false, 5, null, "FORMAT_L8", null, false, 0, null, "FORMAT_LA8", null, false, 1, null, "FORMAT_R8", null, false, 2, null, "FORMAT_RG8", null, false, 3, null, "FORMAT_RGB8", null, false, 4, null, "FORMAT_RGBA8", null, false, 5, null, "FORMAT_L8", null, false, 0, null, "FORMAT_LA8", null, false, 1, null, "FORMAT_R8", null, false, 2, null, "FORMAT_RG8", null, false, 3, null, "FORMAT_RGB8", null, false, 4, null, "FORMAT_RGBA8", null, false, 5, null ]
+selected = 5
+
+[node name="CompressInput" type="HBoxContainer" parent="Box"]
+visible = false
+margin_top = 144.0
+margin_right = 334.0
+margin_bottom = 176.0
+rect_min_size = Vector2( 0, 32 )
+
+[node name="Label" type="Label" parent="Box/CompressInput"]
+margin_top = 9.0
+margin_right = 165.0
+margin_bottom = 23.0
+size_flags_horizontal = 3
+text = "Compression"
+
+[node name="CompressMode" type="OptionButton" parent="Box/CompressInput"]
+margin_left = 169.0
+margin_right = 334.0
+margin_bottom = 32.0
+size_flags_horizontal = 3
 text = "FORMAT_L8"
-items = [ "FORMAT_L8", null, false, 0, null, "FORMAT_LA8", null, false, 1, null, "FORMAT_R8", null, false, 2, null, "FORMAT_RG8", null, false, 3, null, "FORMAT_RGB8", null, false, 4, null, "FORMAT_RGBA8", null, false, 5, null ]
+items = [ "FORMAT_L8", null, false, 0, null, "FORMAT_LA8", null, false, 1, null, "FORMAT_R8", null, false, 2, null, "FORMAT_RG8", null, false, 3, null, "FORMAT_RGB8", null, false, 4, null, "FORMAT_RGBA8", null, false, 5, null, "FORMAT_L8", null, false, 0, null, "FORMAT_LA8", null, false, 1, null, "FORMAT_R8", null, false, 2, null, "FORMAT_RG8", null, false, 3, null, "FORMAT_RGB8", null, false, 4, null, "FORMAT_RGBA8", null, false, 5, null ]
 selected = 0
 
 [node name="Spacer" type="Control" parent="Box"]
