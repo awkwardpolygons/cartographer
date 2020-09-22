@@ -1,7 +1,6 @@
 extends EditorInspectorPlugin
 class_name CartoTerrainInspector
 
-# const LayersEditor = preload("res://addons/cartographer/terrain/carto_terrain_material_editor/layers_editor.gd")
 const MultiTextureEditor = preload("res://addons/cartographer/ui/carto_multi_texture_editor/editor.gd")
 const FlagsEditor = preload("res://addons/cartographer/ui/flags_editor.gd")
 const skip_props = ["selected", "shader"]
