@@ -82,7 +82,7 @@ func _on_create_pressed():
 	create_dialog.popup_centered(Vector2(400, 200))
 
 func _on_create_acknowledged(ok, vals):
-	var data = texarr.create_data(vals[0], vals[1], vals[2], vals[3], Texture.FLAGS_DEFAULT)
+	var data = texarr.create_data(vals[0], vals[1], vals[2], vals[3], vals[4])
 	if not ok or not texarr:
 		return
 #	texarr.create(vals[0], vals[1], vals[2], vals[3], Texture.FLAGS_DEFAULT)

@@ -9,6 +9,7 @@ var height_input
 var depth_input
 var format_input
 var compress_input
+var compress_vram_input
 var formats = {
 	\"FORMAT_L8\": Image.FORMAT_L8,
 	\"FORMAT_LA8\": Image.FORMAT_LA8,
@@ -18,13 +19,19 @@ var formats = {
 	\"FORMAT_RGBA8\": Image.FORMAT_RGBA8,
 }
 
-var compress_modes = {
+var compression_vram = {
 	\"NONE\": -1,
 	\"COMPRESS_S3TC\": Image.COMPRESS_S3TC,
 	\"COMPRESS_PVRTC2\": Image.COMPRESS_PVRTC2,
 	\"COMPRESS_PVRTC4\": Image.COMPRESS_PVRTC4,
 	\"COMPRESS_ETC\": Image.COMPRESS_ETC,
 	\"COMPRESS_ETC2\": Image.COMPRESS_ETC2,
+}
+
+var compression = {
+	\"Lossless\": 0,
+	\"VRAM\": 1,
+	\"Uncompressed\": 2
 }
 
 signal acknowledged
@@ -35,27 +42,46 @@ func _ready():
 	depth_input = $Box/DepthInput/Depth
 	format_input = $Box/FormatInput/Format
 	compress_input = $Box/CompressInput/CompressMode
+	compress_vram_input = $Box/CompressVRAMInput/CompressMode
 	
+	format_input.clear()
 	for k in formats:
 		var v = formats[k]
 		format_input.add_item(k, v)
 	format_input.selected = 5
 	
-	for k in compress_modes:
-		var v = compress_modes[k]
+	compress_input.clear()
+	for k in compression:
+		var v = compression[k]
 		compress_input.add_item(k, v)
+	
+	compress_vram_input.clear()
+	for k in compression_vram:
+		var v = compression_vram[k]
+		compress_vram_input.add_item(k, v)
+	
+#	call_deferred(\"popup_centered\")
 
 func _on_action(ok):
 	var vals = []
 	if ok:
 		var selected = format_input.selected
 		var format = format_input.get_item_id(selected) if selected > -1 else -1
-		vals = [width_input.value, height_input.value, depth_input.value, format]
+		selected = compress_input.selected
+		var compress = compress_input.get_item_id(selected) if selected > -1 else -1
+		selected = compress_vram_input.selected
+		var compress_vram = compress_vram_input.get_item_id(selected) if selected > -1 else -1
+		vals = [width_input.value, height_input.value, depth_input.value, format, Texture.FLAGS_DEFAULT, compress, compress_vram]
 	emit_signal(\"acknowledged\", ok, vals)
 	hide()
+
+func _on_compression_selected(i):
+	$Box/CompressVRAMInput.visible = i == 1
+	rect_size.y = rect_min_size.y + compress_vram_input.rect_size.y * int(i == 1)
 "
 
 [node name="CreateDialog" type="WindowDialog"]
+visible = true
 margin_right = 350.0
 margin_bottom = 200.0
 rect_min_size = Vector2( 350, 200 )
@@ -67,10 +93,11 @@ __meta__ = {
 
 [node name="Box" type="VBoxContainer" parent="."]
 anchor_right = 1.0
+anchor_bottom = 1.0
 margin_left = 8.0
 margin_top = 8.0
 margin_right = -8.0
-margin_bottom = 164.0
+margin_bottom = -8.0
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -159,7 +186,7 @@ margin_right = 334.0
 margin_bottom = 32.0
 size_flags_horizontal = 3
 text = "FORMAT_RGBA8"
-items = [ "FORMAT_L8", null, false, 0, null, "FORMAT_LA8", null, false, 1, null, "FORMAT_R8", null, false, 2, null, "FORMAT_RG8", null, false, 3, null, "FORMAT_RGB8", null, false, 4, null, "FORMAT_RGBA8", null, false, 5, null, "FORMAT_L8", null, false, 0, null, "FORMAT_LA8", null, false, 1, null, "FORMAT_R8", null, false, 2, null, "FORMAT_RG8", null, false, 3, null, "FORMAT_RGB8", null, false, 4, null, "FORMAT_RGBA8", null, false, 5, null, "FORMAT_L8", null, false, 0, null, "FORMAT_LA8", null, false, 1, null, "FORMAT_R8", null, false, 2, null, "FORMAT_RG8", null, false, 3, null, "FORMAT_RGB8", null, false, 4, null, "FORMAT_RGBA8", null, false, 5, null, "FORMAT_L8", null, false, 0, null, "FORMAT_LA8", null, false, 1, null, "FORMAT_R8", null, false, 2, null, "FORMAT_RG8", null, false, 3, null, "FORMAT_RGB8", null, false, 4, null, "FORMAT_RGBA8", null, false, 5, null ]
+items = [ "FORMAT_L8", null, false, 0, null, "FORMAT_LA8", null, false, 1, null, "FORMAT_R8", null, false, 2, null, "FORMAT_RG8", null, false, 3, null, "FORMAT_RGB8", null, false, 4, null, "FORMAT_RGBA8", null, false, 5, null ]
 selected = 5
 
 [node name="CompressInput" type="HBoxContainer" parent="Box"]
@@ -181,8 +208,31 @@ margin_left = 169.0
 margin_right = 334.0
 margin_bottom = 32.0
 size_flags_horizontal = 3
-text = "FORMAT_L8"
-items = [ "FORMAT_L8", null, false, 0, null, "FORMAT_LA8", null, false, 1, null, "FORMAT_R8", null, false, 2, null, "FORMAT_RG8", null, false, 3, null, "FORMAT_RGB8", null, false, 4, null, "FORMAT_RGBA8", null, false, 5, null, "FORMAT_L8", null, false, 0, null, "FORMAT_LA8", null, false, 1, null, "FORMAT_R8", null, false, 2, null, "FORMAT_RG8", null, false, 3, null, "FORMAT_RGB8", null, false, 4, null, "FORMAT_RGBA8", null, false, 5, null ]
+text = "Lossless"
+items = [ "Lossless", null, false, 0, null, "VRAM", null, false, 1, null, "Uncompressed", null, false, 2, null ]
+selected = 0
+
+[node name="CompressVRAMInput" type="HBoxContainer" parent="Box"]
+visible = false
+margin_top = 180.0
+margin_right = 334.0
+margin_bottom = 212.0
+rect_min_size = Vector2( 0, 32 )
+
+[node name="Label" type="Label" parent="Box/CompressVRAMInput"]
+margin_top = 9.0
+margin_right = 165.0
+margin_bottom = 23.0
+size_flags_horizontal = 3
+text = "VRAM Compression"
+
+[node name="CompressMode" type="OptionButton" parent="Box/CompressVRAMInput"]
+margin_left = 169.0
+margin_right = 334.0
+margin_bottom = 32.0
+size_flags_horizontal = 3
+text = "NONE"
+items = [ "NONE", null, false, 0, null, "COMPRESS_S3TC", null, false, 0, null, "COMPRESS_PVRTC2", null, false, 1, null, "COMPRESS_PVRTC4", null, false, 2, null, "COMPRESS_ETC", null, false, 3, null, "COMPRESS_ETC2", null, false, 4, null ]
 selected = 0
 
 [node name="Spacer" type="Control" parent="Box"]
@@ -209,5 +259,6 @@ margin_right = 334.0
 margin_bottom = 32.0
 size_flags_horizontal = 3
 text = "Create"
+[connection signal="item_selected" from="Box/CompressInput/CompressMode" to="." method="_on_compression_selected"]
 [connection signal="pressed" from="Box/Buttons/Cancel" to="." method="_on_action" binds= [ false ]]
 [connection signal="pressed" from="Box/Buttons/Accept" to="." method="_on_action" binds= [ true ]]
