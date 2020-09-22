@@ -40,6 +40,23 @@ float get_height(vec2 uv) {
 	return h.r;
 }
 
+vec4 get_weight(int layer, vec2 uv) {
+	uv /= WEIGHTMAP_SCALE;
+	int x = (layer / 4);
+	x = x % 2;
+	int y = layer / 8;
+	vec2 region = vec2(float(x), float(y)) / WEIGHTMAP_SCALE;
+	vec4 weight = texture(weightmap, uv + region);
+	return weight;
+}
+
+vec4 texture_triplanar(sampler2DArray sampler, vec3 tex_pos, float layer, vec3 blend) {
+	vec4 tx = texture(sampler, vec3(tex_pos.yz * vec2(-1.0, 1.0), layer));
+	vec4 ty = texture(sampler, vec3(tex_pos.xz, layer));
+	vec4 tz = texture(sampler, vec3(tex_pos.xy, layer));
+	return (tx * blend.x + ty * blend.y + tz * blend.z);
+}
+
 // TODO: Fix the ground level being 0 rather than the height at cam position.
 vec3 clipmap(int id, vec3 cam, vec3 vtx, inout vec2 uv, inout vec4 clr) {
 	// Divide terrain_size by 2 to get the bounds around center, in local space
@@ -86,9 +103,45 @@ vec3 calc_normal(vec2 uv, float _off) {
 	return normalize(vec3(x, off.x * 1.0, y));
 }
 
+float get_displacement(vec2 uv2, vec3 uv3d, vec3 tri_blend) {
+	// Get all the weights, for each layer, in groups of vec4 (cos GD shader array support is poor)
+	vec4 wg1 = get_weight(0, uv2), wg2 = get_weight(4, uv2), wg3 = get_weight(8, uv2), wg4 = get_weight(12, uv2);
+	float weights[16] = {wg1.r, wg1.g, wg1.b, wg1.a, 
+						wg2.r,wg2.g, wg2.b, wg2.a,
+						wg3.r, wg3.g, wg3.b, wg3.a,
+						wg4.r, wg4.g, wg4.b, wg4.a};
+	vec4 alb = vec4(0), nrm = vec4(0);
+	float alp = 0.0;
+	
+	for (int lyr = 0; lyr < weights.length(); lyr++) {
+		float w = weights[lyr];
+		uint flg = uint(pow(2.0, float(lyr)));
+		vec4 a, n;
+		
+		if ((flg & uv1_triplanar) > uint(0)) {
+			a = texture_triplanar(albedo_textures, uv3d, float(lyr), tri_blend);
+			n = texture_triplanar(normal_textures, uv3d, float(lyr), tri_blend);
+		}
+		else {
+			a = texture(albedo_textures, vec3(uv3d.xz, float(lyr)));
+			n = texture(normal_textures, vec3(uv3d.xz, float(lyr)));
+		}
+		
+		w = w * (w < 1.0 ? a.a : 1.0);
+		nrm += (flg & normal_enabled) > uint(0) ? n * w : vec4(0);
+		alp += w;
+	}
+	
+	alp = (alp < 1.0 ? 1.0 : alp);
+	nrm = nrm / alp;
+	return nrm.a;
+}
+
 void vertex() {
 	position = clipmap(INSTANCE_ID, CAMERA_MATRIX[3].xyz, VERTEX, UV, COLOR);
-	VERTEX = position;
+	normal = calc_normal(UV, 1.0 / terrain_diameter);
+	triplanar_blend = pow(abs(normal), vec3(uv1_triplanar_sharpness));
+	triplanar_blend /= dot(triplanar_blend, vec3(1.0));
 	
 	UV2 = UV;
 	UV3D = position;
@@ -96,14 +149,12 @@ void vertex() {
 	UV3D = UV3D * uv1_scale.xzy + uv1_offset.xzy;
 	UV = UV3D.xz;
 	
+	VERTEX = position;
 	// Experimenting with displacement
-//	VERTEX.y += (texture(normal_textures, vec3(UV, 0)).a - 0.5);
-	
+//	float disp = get_displacement(UV2, UV3D, triplanar_blend) - 0.15;
+//	VERTEX += normal * disp;
 	VERTEX = (MODELVIEW_MATRIX * vec4(VERTEX, 1.0)).xyz;
 	
-	normal = calc_normal(UV2, 1.0 / terrain_diameter);
-	triplanar_blend = pow(abs(normal), vec3(uv1_triplanar_sharpness));
-	triplanar_blend /= dot(triplanar_blend, vec3(1.0));
 	NORMAL = normal;
 	TANGENT = vec3(0.0,0.0,-1.0) * (NORMAL.x);
 	TANGENT+= vec3(1.0,0.0,0.0) * (NORMAL.y);
@@ -123,23 +174,6 @@ vec4 draw_gizmo(vec4 clr, vec2 uv, vec2 pos) {
 	float r = length(uv - pos);
 	float w = 1.0 / terrain_diameter * 2.0;
 	return r > brush_scale || r < brush_scale - w ? vec4(0) : clr;
-}
-
-vec4 texture_triplanar(sampler2DArray sampler, vec3 tex_pos, float layer, vec3 blend) {
-	vec4 tx = texture(sampler, vec3(tex_pos.yz * vec2(-1.0, 1.0), layer));
-	vec4 ty = texture(sampler, vec3(tex_pos.xz, layer));
-	vec4 tz = texture(sampler, vec3(tex_pos.xy, layer));
-	return (tx * blend.x + ty * blend.y + tz * blend.z);
-}
-
-vec4 get_weight(int layer, vec2 uv) {
-	uv /= WEIGHTMAP_SCALE;
-	int x = (layer / 4);
-	x = x % 2;
-	int y = layer / 8;
-	vec2 region = vec2(float(x), float(y)) / WEIGHTMAP_SCALE;
-	vec4 weight = texture(weightmap, uv + region);
-	return weight;
 }
 
 vec4 blend_alpha(vec4 dst, vec4 src) {
@@ -198,6 +232,7 @@ void fragment() {
 	vec4 clr = blend_terrain(wg1, wg2, wg3, wg4, wt, UV3D, triplanar_blend, orm, nmp);
 	
 	//	ALBEDO = (CAMERA_MATRIX * (vec4(NORMAL, 0.0))).rgb;
+//	NORMAL = NORMAL + (nmp.a - 0.65);
 	ALBEDO = (clr.rgb + giz.rgb);
 	NORMALMAP = nmp.xyz;
 	NORMALMAP_DEPTH = normal_scale;
