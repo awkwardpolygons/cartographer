@@ -100,7 +100,7 @@ vec3 calc_normal(vec2 uv, float _off) {
 	vec3 off = vec2(_off, 0.0).xxy;
 	float x = get_height(uv - off.xz) - get_height(uv + off.xz);
 	float y = get_height(uv - off.zy) - get_height(uv + off.zy);
-	return normalize(vec3(x, off.x * 1.0, y));
+	return normalize(vec3(x, off.x * 8.0, y));
 }
 
 float get_displacement(vec2 uv2, vec3 uv3d, vec3 tri_blend) {
@@ -232,7 +232,7 @@ void fragment() {
 	vec4 clr = blend_terrain(wg1, wg2, wg3, wg4, wt, UV3D, triplanar_blend, orm, nmp);
 	
 	//	ALBEDO = (CAMERA_MATRIX * (vec4(NORMAL, 0.0))).rgb;
-//	NORMAL = NORMAL + (nmp.a - 0.65);
+//	NORMAL = (vec4(calc_normal(UV2, 1.0 / 1024.0), 1) * CAMERA_MATRIX).xyz;
 	ALBEDO = (clr.rgb + giz.rgb);
 	NORMALMAP = nmp.xyz;
 	NORMALMAP_DEPTH = normal_scale;
