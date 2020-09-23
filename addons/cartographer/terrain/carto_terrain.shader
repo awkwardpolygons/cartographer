@@ -152,7 +152,7 @@ void vertex() {
 	VERTEX = position;
 	// Experimenting with displacement
 //	float disp = get_displacement(UV2, UV3D, triplanar_blend) - 0.15;
-//	VERTEX += normal * disp;
+//	VERTEX += normal * disp * 0.3;
 	VERTEX = (MODELVIEW_MATRIX * vec4(VERTEX, 1.0)).xyz;
 	
 	NORMAL = normal;
@@ -170,9 +170,11 @@ void vertex() {
 	TANGENT = (MODELVIEW_MATRIX * vec4(TANGENT, 0.0)).xyz;
 }
 
-vec4 draw_gizmo(vec4 clr, vec2 uv, vec2 pos) {
+vec4 draw_gizmo(vec4 clr, vec2 uv, vec2 pos, vec3 cam) {
 	float r = length(uv - pos);
-	float w = 1.0 / terrain_diameter * 2.0;
+	float l = length(cam - vec3(pos.x, 0, pos.y));
+	float w = 10.0 / terrain_diameter * brush_scale;
+//	w = w * (l / terrain_diameter * 10.0);
 	return r > brush_scale || r < brush_scale - w ? vec4(0) : clr;
 }
 
@@ -221,7 +223,7 @@ vec4 blend_terrain(vec4 wg1, vec4 wg2, vec4 wg3, vec4 wg4, float wt, vec3 uv3d, 
 }
 
 void fragment() {
-	vec4 giz = draw_gizmo(vec4(1, 0, 1, 1), UV2, brush_pos);
+	vec4 giz = draw_gizmo(vec4(1, 0, 1, 1), UV2, brush_pos, CAMERA_MATRIX[3].xyz);
 	vec4 orm;
 	vec4 nmp;
 	// Get all the weights, for each layer, in groups of vec4 (cos GD shader array support is poor)
