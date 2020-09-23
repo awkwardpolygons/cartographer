@@ -87,13 +87,13 @@ vec4 paint_masks(sampler2D scr, vec2 uv, vec2 scale, int act) {
 	float br = brush_val(uv - pt, scale); // Value of the brush mask at this point
 	bool tr = cr == ar; // Is this the targeted region
 //	vec4 md = length(tx * ch) < 1.0 && tr && !er ? vec4(0) : vec4(1); // Modifier (add or sub mode)
-	vec4 md = length(tx * ch) < 1.0 && !er ? vec4(0) : vec4(1); // Modifier (add or sub mode)
+	vec4 md = length(tx * ch) < 2.0 && !er ? vec4(0) : vec4(1); // Modifier (add or sub mode)
 	ch = ch * float(tr && !er) - md;
 	return ch * br * brush_strength * brush_strength;
 }
 
 vec4 paint_fill(vec2 uv) {
-	return float(which_region(uv) == active_region) * active_channel;
+	return float(which_region(uv) == active_region) * active_channel * 2.0;
 }
 
 vec4 paint_height(vec2 uv, vec2 scale) {
@@ -135,7 +135,7 @@ void fragment() {
 	}
 	else if ((act & (PAINT | ERASE)) > 0) {
 		bt = paint_masks(SCREEN_TEXTURE, SCREEN_UV, vec2(brush_scale), act);
-		COLOR = st + bt;
+		COLOR = clamp(st + bt, 0.0, 2.0);
 	}
 	else if (act == FILL) {
 		COLOR = paint_fill(SCREEN_UV);

@@ -208,7 +208,8 @@ vec4 blend_terrain(vec4 wg1, vec4 wg2, vec4 wg3, vec4 wg4, float wt, vec3 uv3d, 
 			n = texture(normal_textures, vec3(uv3d.xz, float(lyr)));
 		}
 		
-		w = w * (w < 1.0 ? a.a : 1.0);
+		w = w * (w < 2.0 ? a.a * 2.0 : 1.0);
+//		w = w < 0.1 ? w : (w < 2.0 ? a.a * 2.0 : w);
 		alb += a * w;
 		orm += o * w;
 		nrm += (flg & normal_enabled) > uint(0) ? n * w : vec4(0.5, 0.5, 0, 0) * w;

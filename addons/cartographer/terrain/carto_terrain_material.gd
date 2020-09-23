@@ -117,6 +117,8 @@ func _init():
 		sculptor.usage = Viewport.USAGE_3D
 		sculptor.name = "Sculptor"
 		painter = TexturePainter.new()
+		painter.hdr = true
+		painter.usage = Viewport.USAGE_3D
 		painter.name = "Painter"
 
 func get_weightmap():
@@ -128,7 +130,7 @@ func get_heightmap():
 func create_weightmap():
 	var tex = ImageTexture.new()
 	var img = Image.new()
-	img.create(2048, 2048, false, Image.FORMAT_RGBA8)
+	img.create(2048, 2048, false, Image.FORMAT_RGBAH)
 	tex.create_from_image(img)
 	set_weightmap(tex)
 
