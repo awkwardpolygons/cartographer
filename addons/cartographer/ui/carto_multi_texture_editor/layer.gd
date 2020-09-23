@@ -76,7 +76,7 @@ func _init_channels():
 func _init_file_dialog():
 	file_dialog.window_title = "Load image..."
 	file_dialog.mode = EditorFileDialog.MODE_OPEN_FILE
-	file_dialog.add_filter("*.png; PNG, *.jpg; JPEG, *.webp; WEBP, *.exr; EXR")
+	file_dialog.add_filter("*.png, *.jpg, *.webp, *.exr; Images")
 	file_dialog.connect("file_selected", self, "_on_file_selected")
 	
 	var file_dialog_box = file_dialog.get_vbox()
