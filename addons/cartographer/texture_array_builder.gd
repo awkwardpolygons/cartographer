@@ -3,7 +3,7 @@ extends EditorImportPlugin
 class_name CartoTextureArrayBuilder
 
 enum Presets { DEFAULT }
-enum Compress { Lossless, VRAM, Uncompressed }
+enum Compress { LOSSLESS, VRAM, UNCOMPRESSED }
 enum Format { FORMAT_L8, FORMAT_LA8, FORMAT_R8, FORMAT_RG8, FORMAT_RGB8, FORMAT_RGBA8 }
 const formats = {
 	"FORMAT_L8": Image.FORMAT_L8,
@@ -53,7 +53,7 @@ func get_import_options(preset):
 #				},
 				{
 					"name": "compress",
-					"default_value": Compress.Uncompressed,
+					"default_value": Compress.UNCOMPRESSED,
 					"property_hint": PROPERTY_HINT_ENUM,
 					"hint_string": "Lossless,VRAM,Uncompressed"
 				},
@@ -181,7 +181,7 @@ func _save_tex_vram(images: Array, path: String, flags: int, r_comp: Array):
 		r_comp.append("pvrtc")
 		_save_tex(images, "%s.%s.%s" % [path, "pvrtc", get_save_extension()], Compress.VRAM, Image.COMPRESS_PVRTC4, flags)
 
-func _save_tex(images: Array, path: String, compression: int = Compress.Uncompressed, vram_compression: int = Image.COMPRESS_S3TC, flags: int = 7):
+func _save_tex(images: Array, path: String, compression: int = Compress.UNCOMPRESSED, vram_compression: int = Image.COMPRESS_S3TC, flags: int = 7):
 	prints(path, images)
 #	return FAILED
 	if images.size() == 0:
@@ -203,7 +203,7 @@ func _save_tex(images: Array, path: String, compression: int = Compress.Uncompre
 	file.store_32(flags)
 	if compression != Compress.VRAM:
 		file.store_32(images[0].get_format())
-		file.store_32(compression) # Compression: 0 - lossless (PNG), 1 - vram, 2 - uncompressed
+		file.store_32(compression) # Compression: 0 - LOSSLESS (PNG), 1 - vram, 2 - UNCOMPRESSED
 	
 	var dim = max(images[0].get_width(), images[0].get_height())
 	var mipmap_count =  log(dim) / log(2) + 1
@@ -218,7 +218,7 @@ func _save_tex(images: Array, path: String, compression: int = Compress.Uncompre
 			img.clear_mipmaps()
 		
 		match compression:
-			Compress.Lossless:
+			Compress.LOSSLESS:
 				file.store_32(mipmap_count)
 				for j in mipmap_count:
 					if j > 0:
@@ -237,7 +237,7 @@ func _save_tex(images: Array, path: String, compression: int = Compress.Uncompre
 					file.store_32(compression)
 				data = img.get_data()
 				file.store_buffer(data)
-			Compress.Uncompressed:
+			Compress.UNCOMPRESSED:
 				data = img.get_data()
 				file.store_buffer(data)
 
