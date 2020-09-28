@@ -95,7 +95,7 @@ func import(source_file, save_path, options, r_platform_variants, r_gen_files):
 	var images = []
 	obj.format = format
 	
-	prints(options, r_platform_variants, r_gen_files)
+#	prints(options, r_platform_variants, r_gen_files)
 	
 	images = _parse(obj)
 	
@@ -112,12 +112,13 @@ func _parse(obj):
 	var images = []
 	
 	for layer in obj.layers:
-		var img: Image
+		prints("--> ", layer)
+		var img: Image = null
 		if layer is String:
 			img = _load_image(layer, size)
-		if layer is Dictionary:
+		elif layer is Dictionary:
 			img = _get_image_from_channels(layer, size, format)
-			prints("chn img:", img)
+#			prints("chn img:", img)
 		images.append(img)
 	
 	return images
@@ -161,6 +162,7 @@ func _load_image(path: String, size: Vector2, format: int = Image.FORMAT_RGBA8) 
 	if img is Texture:
 		img = img.get_data()
 	img.decompress()
+	img.convert(format)
 	img.resize(size.x, size.y)
 	return img
 
