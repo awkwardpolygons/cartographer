@@ -192,24 +192,49 @@ vec4 blend_terrain(vec4 wg1, vec4 wg2, vec4 wg3, vec4 wg4, float wt, vec3 uv3d, 
 						wg3.r, wg3.g, wg3.b, wg3.a,
 						wg4.r, wg4.g, wg4.b, wg4.a};
 	
+	// EXPERIMENTAL mask blending
+	float w_adj = 0.0;
+	vec4 alb_arr[16];
+	for (int lyr = 0; lyr < weights.length(); lyr++) {
+		uint flg = uint(pow(2.0, float(lyr)));
+		vec4 a;
+		
+		if ((flg & uv1_triplanar) > uint(0)) {
+			a = texture_triplanar(albedo_textures, uv3d, float(lyr), tri_blend);
+		}
+		else {
+			a = texture(albedo_textures, vec3(uv3d.xz, float(lyr)));
+		}
+		
+		float adj = weights[lyr] * a.a * 16.0;
+		weights[lyr] += adj + adj/16.0;
+		w_adj += adj/16.0;
+		alb_arr[lyr] = a;
+	}
+	
 	for (int lyr = 0; lyr < weights.length(); lyr++) {
 		float w = weights[lyr];
 		uint flg = uint(pow(2.0, float(lyr)));
 		vec4 a, o, n;
 		
 		if ((flg & uv1_triplanar) > uint(0)) {
-			a = texture_triplanar(albedo_textures, uv3d, float(lyr), tri_blend);
+//			a = texture_triplanar(albedo_textures, uv3d, float(lyr), tri_blend);
+			a = alb_arr[lyr];
 			o = texture_triplanar(orm_textures, uv3d, float(lyr), tri_blend);
 			n = texture_triplanar(normal_textures, uv3d, float(lyr), tri_blend);
 		}
 		else {
-			a = texture(albedo_textures, vec3(uv3d.xz, float(lyr)));
+//			a = texture(albedo_textures, vec3(uv3d.xz, float(lyr)));
+			a = alb_arr[lyr];
 			o = texture(orm_textures, vec3(uv3d.xz, float(lyr)));
 			n = texture(normal_textures, vec3(uv3d.xz, float(lyr)));
 		}
 		
-		w = w * (w < 2.0 ? a.a * 2.0 : 1.0);
+		// EXPERIMENTAL mask blending
+		w = w * (w < 2.0 ? a.a * 2.0 : 2.0);
 //		w = w < 0.1 ? w : (w < 2.0 ? a.a * 2.0 : w);
+//		w -= w_adj / 16.0;
+		
 		alb += a * w;
 		orm += o * w;
 		nrm += (flg & normal_enabled) > uint(0) ? n * w : vec4(0.5, 0.5, 0, 0) * w;
