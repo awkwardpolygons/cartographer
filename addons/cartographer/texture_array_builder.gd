@@ -53,7 +53,7 @@ func get_import_options(preset):
 #				},
 				{
 					"name": "compress",
-					"default_value": Compress.UNCOMPRESSED,
+					"default_value": Compress.VRAM,
 					"property_hint": PROPERTY_HINT_ENUM,
 					"hint_string": "Lossless,VRAM,Uncompressed"
 				},
