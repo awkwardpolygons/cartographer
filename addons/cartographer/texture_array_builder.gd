@@ -95,14 +95,13 @@ func import(source_file, save_path, options, r_platform_variants, r_gen_files):
 	var images = []
 	obj.format = format
 	
-#	prints(options, r_platform_variants, r_gen_files)
-	
 	images = _parse(obj)
 	
 	if compress == Compress.VRAM:
 		err = _save_tex_vram(images, save_path, flags, r_platform_variants)
 	else:
 		err = _save_tex(images, "%s.%s" % [save_path, get_save_extension()], compress, -1, flags)
+	prints("TextureArray %s built and saved" % [source_file])
 	return err
 
 func _parse(obj):
@@ -112,13 +111,11 @@ func _parse(obj):
 	var images = []
 	
 	for layer in obj.layers:
-		prints("--> ", layer)
 		var img: Image = null
 		if layer is String:
 			img = _load_image(layer, size)
 		elif layer is Dictionary:
 			img = _get_image_from_channels(layer, size, format)
-#			prints("chn img:", img)
 		images.append(img)
 	
 	return images
@@ -184,8 +181,6 @@ func _save_tex_vram(images: Array, path: String, flags: int, r_comp: Array):
 		_save_tex(images, "%s.%s.%s" % [path, "pvrtc", get_save_extension()], Compress.VRAM, Image.COMPRESS_PVRTC4, flags)
 
 func _save_tex(images: Array, path: String, compression: int = Compress.UNCOMPRESSED, vram_compression: int = Image.COMPRESS_S3TC, flags: int = 7):
-	prints(path, images)
-#	return FAILED
 	if images.size() == 0:
 		return FAILED
 	
