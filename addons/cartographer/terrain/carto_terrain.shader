@@ -1,5 +1,5 @@
 shader_type spatial;
-render_mode skip_vertex_transform,blend_mix,depth_draw_opaque,cull_disabled,diffuse_burley,specular_schlick_ggx;
+render_mode skip_vertex_transform,blend_mix,depth_draw_opaque,cull_back,diffuse_burley,specular_schlick_ggx;
 
 const float MESH_STRIDE = 16.0;
 const int NUM_LAYERS = 16;
@@ -151,8 +151,10 @@ void vertex() {
 	
 	VERTEX = position;
 	// Experimenting with displacement
-//	float disp = get_displacement(UV2, UV3D, triplanar_blend) - 0.15;
-//	VERTEX += normal * disp * 0.3;
+//	if (INSTANCE_ID == 0) {
+//		float disp = get_displacement(UV2, UV3D, triplanar_blend) - 0.15;
+//		VERTEX += normal * disp * 0.3;
+//	}
 	VERTEX = (MODELVIEW_MATRIX * vec4(VERTEX, 1.0)).xyz;
 	
 	NORMAL = normal;
@@ -262,6 +264,14 @@ void fragment() {
 	//	ALBEDO = (CAMERA_MATRIX * (vec4(NORMAL, 0.0))).rgb;
 //	NORMAL = (vec4(calc_normal(UV2, 1.0 / 1024.0), 1) * CAMERA_MATRIX).xyz;
 	ALBEDO = (clr.rgb + giz.rgb);
+	
+	//NOTE: Get adjacent heights stored in the heightmap, to calc normal
+//	vec4 h = texture(heightmap, UV2);
+//	vec3 n = normalize(vec3(h.x - h.y, 0.002, h.x - h.z));
+//	ALBEDO = n;
+//	NORMAL = (vec4(n.xyz, 1) * CAMERA_MATRIX).xyz;
+//	NORMAL = (vec4(calc_normal(UV2, 1.0 / 2048.0), 1) * CAMERA_MATRIX).xyz;
+	
 	NORMALMAP = nmp.xyz;
 	NORMALMAP_DEPTH = normal_scale;
 	AO = orm.r;
