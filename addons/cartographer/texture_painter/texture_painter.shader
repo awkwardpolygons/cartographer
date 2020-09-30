@@ -97,10 +97,15 @@ vec4 paint_fill(vec2 uv) {
 }
 
 vec4 paint_height(vec2 uv, vec2 scale) {
-	vec4 chn = vec4(1, 0, 0, 0);
 	vec2 pt = uv - brush_pos;
 	float h = brush_val(pt, scale);
-	return h * brush_strength * brush_strength * chn;
+	h = h * brush_strength * brush_strength;
+	vec4 hgt = vec4(0);
+	hgt.x = h;
+	hgt.y = dFdx(h) + h;
+	hgt.z = dFdy(h) + h;
+//	nrm.z = sqrt(1.0 - nrm.x*nrm.x - nrm.y * nrm.y);
+	return hgt;
 }
 
 void fragment() {
