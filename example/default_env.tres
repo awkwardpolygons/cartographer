@@ -8,3 +8,6 @@ background_sky = SubResource( 1 )
 ambient_light_energy = 0.25
 fog_depth_begin = 50.0
 fog_depth_end = 650.0
+tonemap_mode = 2
+glow_blend_mode = 1
+adjustment_enabled = true
