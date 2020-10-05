@@ -261,9 +261,7 @@ void fragment() {
 	// Use the weights to blend the layers of the various texture arrays
 	vec4 clr = blend_terrain(wg1, wg2, wg3, wg4, wt, UV3D, triplanar_blend, orm, nmp);
 	
-	//	ALBEDO = (CAMERA_MATRIX * (vec4(NORMAL, 0.0))).rgb;
 //	NORMAL = (vec4(calc_normal(UV2, 1.0 / 1024.0), 1) * CAMERA_MATRIX).xyz;
-	ALBEDO = (clr.rgb + giz.rgb);
 	
 	//NOTE: Get adjacent heights stored in the heightmap, to calc normal
 //	vec4 h = texture(heightmap, UV2);
@@ -272,6 +270,7 @@ void fragment() {
 //	NORMAL = (vec4(n.xyz, 1) * CAMERA_MATRIX).xyz;
 //	NORMAL = (vec4(calc_normal(UV2, 1.0 / 2048.0), 1) * CAMERA_MATRIX).xyz;
 	
+	ALBEDO = clr.rgb + giz.rgb;
 	NORMALMAP = nmp.xyz;
 	NORMALMAP_DEPTH = normal_scale;
 	AO = orm.r;
