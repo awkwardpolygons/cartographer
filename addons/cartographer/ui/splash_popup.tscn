@@ -1,0 +1,97 @@
+[gd_scene load_steps=6 format=2]
+
+[ext_resource path="res://addons/cartographer/ui/splash_popup.gd" type="Script" id=1]
+
+[sub_resource type="StyleBoxFlat" id=1]
+bg_color = Color( 0.0941176, 0.0941176, 0.0941176, 1 )
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+shadow_color = Color( 0, 0, 0, 0.196078 )
+shadow_size = 30
+shadow_offset = Vector2( 4, 4 )
+
+[sub_resource type="StyleBoxEmpty" id=2]
+
+[sub_resource type="StyleBoxFlat" id=3]
+bg_color = Color( 1, 0.403922, 0.2, 1 )
+corner_radius_top_left = 100
+corner_radius_top_right = 100
+corner_radius_bottom_right = 100
+corner_radius_bottom_left = 100
+
+[sub_resource type="StyleBoxFlat" id=4]
+bg_color = Color( 0.2, 0.32549, 1, 1 )
+corner_radius_top_left = 100
+corner_radius_top_right = 100
+corner_radius_bottom_right = 100
+corner_radius_bottom_left = 100
+
+[node name="PopupDialog" type="PopupDialog"]
+visible = true
+margin_left = 332.0
+margin_top = 40.0
+margin_right = 692.0
+margin_bottom = 560.0
+rect_min_size = Vector2( 360, 520 )
+custom_styles/panel = SubResource( 1 )
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 60.0
+margin_right = -60.0
+margin_bottom = -40.0
+custom_constants/separation = 16
+alignment = 2
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Label" type="Label" parent="VBoxContainer"]
+margin_top = 290.0
+margin_right = 240.0
+margin_bottom = 321.0
+text = "Cartographer
+0.9.0"
+align = 1
+
+[node name="HSeparator" type="HSeparator" parent="VBoxContainer"]
+margin_top = 337.0
+margin_right = 240.0
+margin_bottom = 341.0
+custom_styles/separator = SubResource( 2 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="RichTextLabel" type="RichTextLabel" parent="VBoxContainer"]
+margin_top = 357.0
+margin_right = 240.0
+margin_bottom = 372.0
+bbcode_enabled = true
+bbcode_text = "[center][b]Support the Project[/b][/center]"
+text = "Support the Project"
+fit_content_height = true
+
+[node name="Button" type="Button" parent="VBoxContainer"]
+margin_top = 388.0
+margin_right = 240.0
+margin_bottom = 426.0
+rect_min_size = Vector2( 0, 38 )
+custom_styles/normal = SubResource( 3 )
+text = "Patreon"
+
+[node name="Button2" type="Button" parent="VBoxContainer"]
+margin_top = 442.0
+margin_right = 240.0
+margin_bottom = 480.0
+rect_min_size = Vector2( 0, 38 )
+custom_styles/normal = SubResource( 4 )
+text = "OpenCollective"
+[connection signal="pressed" from="VBoxContainer/Button" to="." method="_on_patreon_pressed"]

@@ -12,6 +12,7 @@ var editor: EditorInterface
 var terrain
 var inspector_plugin
 var import_plugin
+var splash_popup
 
 func _init():
 	editor = get_editor_interface()
@@ -49,6 +50,12 @@ func _exit_tree():
 	remove_import_plugin(import_plugin)
 	remove_inspector_plugin(inspector_plugin)
 	remove_autoload_singleton("Cartographer")
+
+# TODO: Add plugin splash
+#func enable_plugin():
+#	splash_popup = load("res://addons/cartographer/ui/splash_popup.tscn").instance() as PopupDialog
+#	add_child(splash_popup)
+#	splash_popup.popup_centered()
 
 func save_external_data():
 	Cartographer.save()
