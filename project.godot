@@ -9,6 +9,21 @@
 config_version=4
 
 _global_script_classes=[ {
+"base": "Container",
+"class": "CartoAxisLayout",
+"language": "GDScript",
+"path": "res://addons/cartographer/ui/carto_axis_layout.gd"
+}, {
+"base": "TextureArray",
+"class": "CartoMultiTexture",
+"language": "GDScript",
+"path": "res://addons/cartographer/terrain/carto_multi_texture.gd"
+}, {
+"base": "ResourceFormatSaver",
+"class": "CartoMultiTextureSaver",
+"language": "GDScript",
+"path": "res://addons/cartographer/terrain/carto_multi_texture_saver.gd"
+}, {
 "base": "MultiMeshInstance",
 "class": "CartoTerrain",
 "language": "GDScript",
@@ -23,6 +38,11 @@ _global_script_classes=[ {
 "class": "CartoTerrainMaterial",
 "language": "GDScript",
 "path": "res://addons/cartographer/terrain/carto_terrain_material.gd"
+}, {
+"base": "EditorImportPlugin",
+"class": "CartoTextureArrayBuilder",
+"language": "GDScript",
+"path": "res://addons/cartographer/texture_array_builder.gd"
 }, {
 "base": "CollisionShape",
 "class": "CollisionCartoTerrain",
@@ -60,9 +80,13 @@ _global_script_classes=[ {
 "path": "res://example/shaders/vsn_pixelate.gd"
 } ]
 _global_script_class_icons={
+"CartoAxisLayout": "",
+"CartoMultiTexture": "",
+"CartoMultiTextureSaver": "",
 "CartoTerrain": "res://addons/cartographer/terrain_icon.svg",
 "CartoTerrainInspector": "",
 "CartoTerrainMaterial": "",
+"CartoTextureArrayBuilder": "",
 "CollisionCartoTerrain": "",
 "HeightmapPicker": "",
 "PaintBrush": "",
@@ -76,7 +100,7 @@ _global_script_class_icons={
 
 config/name="Cartographer"
 config/description="GPU powered terrain editor for Godot"
-run/main_scene="res://example/test_terrain.tscn"
+run/main_scene="res://example/example.tscn"
 config/icon="res://icon.svg"
 
 [autoload]
