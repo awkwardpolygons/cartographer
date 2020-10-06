@@ -2,21 +2,23 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/round0.exr-bde87fdf7d910f0aa3eb2bef91032fca.stex"
+path.s3tc="res://.import/round0.exr-bde87fdf7d910f0aa3eb2bef91032fca.s3tc.stex"
+path.etc2="res://.import/round0.exr-bde87fdf7d910f0aa3eb2bef91032fca.etc2.stex"
 metadata={
-"vram_texture": false
+"imported_formats": [ "s3tc", "etc2" ],
+"vram_texture": true
 }
 
 [deps]
 
 source_file="res://addons/cartographer/brush_masks/round0.exr"
-dest_files=[ "res://.import/round0.exr-bde87fdf7d910f0aa3eb2bef91032fca.stex" ]
+dest_files=[ "res://.import/round0.exr-bde87fdf7d910f0aa3eb2bef91032fca.s3tc.stex", "res://.import/round0.exr-bde87fdf7d910f0aa3eb2bef91032fca.etc2.stex" ]
 
 [params]
 
-compress/mode=0
+compress/mode=2
 compress/lossy_quality=0.7
-compress/hdr_mode=0
+compress/hdr_mode=1
 compress/bptc_ldr=0
 compress/normal_map=0
 flags/repeat=0
