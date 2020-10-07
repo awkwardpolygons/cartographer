@@ -1,0 +1,115 @@
+[gd_scene load_steps=16 format=2]
+
+[ext_resource path="res://addons/cartographer/meshes/clipmap_multi.obj" type="ArrayMesh" id=1]
+[ext_resource path="res://addons/cartographer/terrain/carto_terrain.gd" type="Script" id=2]
+[ext_resource path="res://addons/cartographer/terrain/carto_terrain_material.gd" type="Script" id=3]
+[ext_resource path="res://addons/cartographer/terrain/carto_terrain.shader" type="Shader" id=4]
+[ext_resource path="res://example/assets/textures/example/ex_alb.tabld" type="TextureArray" id=5]
+[ext_resource path="res://example/assets/textures/example/hmap.res" type="Texture" id=6]
+[ext_resource path="res://example/assets/textures/example/wmap.res" type="Texture" id=7]
+[ext_resource path="res://example/assets/textures/example/ex_nrm.tabld" type="TextureArray" id=8]
+[ext_resource path="res://example/assets/textures/example/ex_orm.tabld" type="TextureArray" id=9]
+
+
+
+
+
+
+
+
+
+[sub_resource type="ProceduralSky" id=1]
+
+[sub_resource type="Environment" id=2]
+background_mode = 2
+background_sky = SubResource( 1 )
+background_sky_orientation = Basis( -1, 0, -3.25841e-07, 0, 1, 0, 3.25841e-07, 0, -1 )
+background_energy = 0.68
+ambient_light_color = Color( 0.964706, 0.862745, 0.513726, 1 )
+ambient_light_sky_contribution = 0.97
+
+[sub_resource type="ViewportTexture" id=3]
+
+[sub_resource type="ViewportTexture" id=4]
+
+[sub_resource type="ShaderMaterial" id=5]
+shader = ExtResource( 4 )
+shader_param/INSTANCE_COUNT = 3
+shader_param/terrain_size = Vector3( 256, 64, 256 )
+shader_param/terrain_diameter = 256.0
+shader_param/normal_enabled = 127
+shader_param/normal_scale = 2.0
+shader_param/ao_light_affect = 0.0
+shader_param/roughness = 1.0
+shader_param/metallic = 0.0
+shader_param/specular = 0.5
+shader_param/uv1_scale = Vector3( 0.1, 0.1, 0.1 )
+shader_param/uv1_offset = Vector3( 0, 0, 0 )
+shader_param/uv1_triplanar = 0
+shader_param/uv1_triplanar_sharpness = 2.0
+shader_param/use_pbr = 0
+shader_param/is_editing = 0.0
+shader_param/brush_pos = Vector2( 0.581339, 0.809477 )
+shader_param/brush_scale = 0.03875
+shader_param/heightmap = SubResource( 3 )
+shader_param/weightmap = SubResource( 4 )
+shader_param/albedo_textures = ExtResource( 5 )
+shader_param/orm_textures = ExtResource( 9 )
+shader_param/normal_textures = ExtResource( 8 )
+script = ExtResource( 3 )
+albedo_colors = PoolColorArray(  )
+albedo_textures = ExtResource( 5 )
+orm_light_affect = 0.0
+orm_roughness = 1.0
+orm_metallic = 0.0
+orm_specular = 0.5
+orm_textures = ExtResource( 9 )
+normal_enabled = 127
+normal_scale = 2.0
+normal_textures = ExtResource( 8 )
+uv1_scale = Vector3( 0.1, 0.1, 0.1 )
+uv1_offset = Vector3( 0, 0, 0 )
+uv1_triplanar = 0
+uv1_triplanar_sharpness = 2.0
+heightmap = ExtResource( 6 )
+weightmap = ExtResource( 7 )
+
+[sub_resource type="MultiMesh" id=6]
+instance_count = 3
+mesh = ExtResource( 1 )
+transform_2d_array = PoolVector2Array( 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0 )
+
+[node name="Spatial" type="Spatial"]
+
+[node name="Camera" type="Camera" parent="."]
+transform = Transform( 0.965926, -0.12941, 0.224144, 0, 0.866025, 0.5, -0.258819, -0.482963, 0.836516, 30, 41, 92 )
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource( 2 )
+
+[node name="DirectionalLight" type="DirectionalLight" parent="."]
+transform = Transform( 1, 0, 0, 0, 0.965926, 0.258819, 0, -0.258819, 0.965926, 0, 28, 0 )
+light_color = Color( 0.968627, 0.741176, 0.133333, 1 )
+light_energy = 0.9
+shadow_enabled = true
+
+[node name="SpotLight" type="SpotLight" parent="."]
+transform = Transform( 1, 0, 0, 0, 0.965926, 0.258819, 0, -0.258819, 0.965926, 26, 15, 45 )
+light_energy = 5.0
+spot_range = 40.0
+
+[node name="SpotLight2" type="SpotLight" parent="."]
+transform = Transform( 0.866025, 0.12941, -0.482963, 0, 0.965926, 0.258819, 0.5, -0.224144, 0.836516, 82, 15, 36 )
+light_energy = 5.0
+spot_range = 40.0
+
+[node name="SpotLight3" type="SpotLight" parent="."]
+transform = Transform( 0.866025, 8.88178e-16, 0.5, -0.12941, 0.965926, 0.224144, -0.482963, -0.258819, 0.836516, 30.2942, 27.5874, 107.432 )
+light_energy = 7.0
+spot_range = 40.0
+
+[node name="CartoTerrain" type="MultiMeshInstance" parent="."]
+material_override = SubResource( 5 )
+multimesh = SubResource( 6 )
+script = ExtResource( 2 )
+material = SubResource( 5 )
