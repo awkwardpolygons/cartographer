@@ -90,7 +90,7 @@ Cartographer is a GPU powered terrain editor for Godot 3.
 9. Sculpt and paint your terrain.
 10. Remember to save with `ctrl-s` while working.
 11. **IMPORTANT!** To improve editing and runtime performance, under the Material property find the heightmap and
-maskmap textures and save them to external files (as `.res`).
+weightmap textures and save them to external files (as `.res`).
 
 ## Physics
 
@@ -103,5 +103,37 @@ maskmap textures and save them to external files (as `.res`).
    2. Or only add the Terrain Path to the CollisionCartoTerrain once you are done editing.
 
 ## Custom TextureArray Importer
+Cartographer now comes with a custom TextureArray Importer, this is the most stable and performant way to generate TextureArrays for your terrain material.
+Godot comes with a built-in TextureArray importer, but it works by requiring you to merge all your textures into one large image in a grid pattern, then importing that image and telling the importer how many rows and columns it should split the image by.
+
+Cartographer's TextureArray Importer builds the TextureArray from a simple JSON file. In the JSON build file you can set the texture width and height, list the images you'd like to use for each layer, and even build a layer channel by channel. The format is simple:
+
+```js
+{
+  // Set the width and height for each layer
+  "size": [1024, 1024],
+  // Set each layer in the array
+  "layers": [
+    // A layer in the array can be a resource path
+    "res://assets/textures/rock_albedo.jpg",
+    // or a file system path
+    "file://home/user/project/assets/textures/rock_albedo.jpg",
+    // or simply a hex color
+    "#FFFFFF",
+    // Layers can also be created by mixing channels directly, using an object like this
+    {
+      // The key selects the destination channels, the value is an array,
+      // with the first item being the image (or color hex #FFFFFF) source,
+      // the second item are the source channels, here they are being read in reverse,
+      // mapping blue to red, green to green, and red to blue
+      "rgb": ["res://assets/textures/rock_albedo.jpg", "bgr"],
+      // Here the alpha channel is set to the red channel from the rock_mask image
+      "a": ["res://assets/textures/rock_mask.jpg", "r"],
+    },
+  ],
+}
+```
+
+Save the file with a `.tabld` file extension, select the file in the editor and go to the import tab to choose your build import options.
 
 ## Experimental Masked Weight Blending
