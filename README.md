@@ -1,4 +1,5 @@
 [screenshot]: https://raw.githubusercontent.com/awkwardpolygons/cartographer/master/addons/cartographer/screenshot.png "Cartographer screenshot"
+[masked_blending]: https://raw.githubusercontent.com/awkwardpolygons/cartographer/master/addons/cartographer/masked_blending.jpg "Cartographer masked blending"
 # Cartographer
 Cartographer is a GPU powered terrain editor for Godot 3.
 
@@ -139,4 +140,7 @@ Save the file with a `.tabld` file extension, select the file in the editor and 
 
 ## Experimental Masked Weight Blending
 
-There is experimental support for masked weight blending in Cartographer. Masked weight blending uses a mask added to the alpha channel on an Albedo layer to boost or reduce the weight of a layer where it blends into another layer. This breaks up smooth gradient blends from the brush used to paint the layer, and makes the blending look more natural for the texture. For example; a brick layer with a mask blending into a sand layer will have the sand seem to fill the gaps between bricks more than the surface of the bricks.
+There is experimental support for masked weight blending in Cartographer. Masked weight blending uses a mask added to the alpha channel on an Albedo layer to boost or reduce the weight of a layer where it blends into another layer. This breaks up smooth gradient blends from the brush used to paint the layer, and makes the blending look more natural for the texture. For example; a brick layer with a mask blending into a sand layer will have the sand seem to fill the gaps between bricks more than the surface of the bricks. An example below:
+
+![][masked_blending]
+**Comparison of the same weight blend with and without masked blending**
