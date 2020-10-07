@@ -101,3 +101,7 @@ maskmap textures and save them to external files (as `.res`).
 5. **IMPORTANT!** Do not add the physics while sculpting your terrain, it will be very slow as the HeightMapShape will be forced to update as you make changes.
    1. Either only add the physics nodes once you are done editing.
    2. Or only add the Terrain Path to the CollisionCartoTerrain once you are done editing.
+
+## Custom TextureArray Importer
+
+## Experimental Masked Weight Blending
