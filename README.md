@@ -75,8 +75,8 @@ Cartographer is a GPU powered terrain editor for Godot 3.
    add the AO texture to index 2 channel 0 (Red), the Roughness texture to index 2 channel 1 (Green),
    the Mettalic texture to index 2 channel 2 (Blue).
    8. If you add a NormalMap to a layer, don't forget to enable that layer for NormalMapping.
-   7. **ATTENTION** Godot's texture arrays are quite buggy. Cartographer comes with tools to help work around this.
-   You should save you texture array to an external file for perfomance, but saving the texture array in the scene
+   7. **ATTENTION!** Godot's texture arrays are quite buggy. Cartographer comes with tools to help work around this.
+   You should save your texture array to an external file for perfomance, but saving the texture array in the scene
    or as a standard Godot resource (.tres or .res) causes errors. Cartographer has a custom texture array resource saver,
    click the `Save` option and choose to save the texture array as a `.texarr` file type.
    **Even better**, use the custom TextureArray Importer that builds TextureArrays from JSON files. More info below.
@@ -89,14 +89,15 @@ Cartographer is a GPU powered terrain editor for Godot 3.
    2. Hold `alt` while using a tool to do the opposite, ie. while raising hold `alt` to lower.
 9. Sculpt and paint your terrain.
 10. Remember to save with `ctrl-s` while working.
-11. **IMPORTANT!** To improve the editing experience, under the Material property find the HeightMap and MaskMap textures and save them to external files.
+11. **IMPORTANT!** To improve editing and runtime performance, under the Material property find the heightmap and
+maskmap textures and save them to external files (as `.res`).
 
 ## Physics
 
 1. To add collision physics to your terrain add a StaticBody to your terrain node.
 2. Add a CollisionCartoTerrain node to the StaticBody.
 3. Select the CollisionCartoTerrain node and in the inspector choose the Terrain Path, (select your terrain node).
-4. The HeightMapShape will be auto generated and updated when the terrain changes.
+4. The HeightmapShape will be auto generated and updated when the terrain changes.
 5. **IMPORTANT!** Do not add the physics while sculpting your terrain, it will be very slow as the HeightMapShape will be forced to update as you make changes.
    1. Either only add the physics nodes once you are done editing.
    2. Or only add the Terrain Path to the CollisionCartoTerrain once you are done editing.
