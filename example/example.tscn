@@ -10,14 +10,6 @@
 [ext_resource path="res://example/assets/textures/example/ex_nrm.tabld" type="TextureArray" id=8]
 [ext_resource path="res://example/assets/textures/example/ex_orm.tabld" type="TextureArray" id=9]
 
-
-
-
-
-
-
-
-
 [sub_resource type="ProceduralSky" id=1]
 
 [sub_resource type="Environment" id=2]
