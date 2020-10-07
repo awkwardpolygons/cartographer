@@ -103,6 +103,7 @@ weightmap textures and save them to external files (as `.res`).
    2. Or only add the Terrain Path to the CollisionCartoTerrain once you are done editing.
 
 ## Custom TextureArray Importer
+
 Cartographer now comes with a custom TextureArray Importer, this is the most stable and performant way to generate TextureArrays for your terrain material.
 Godot comes with a built-in TextureArray importer, but it works by requiring you to merge all your textures into one large image in a grid pattern, then importing that image and telling the importer how many rows and columns it should split the image by.
 
@@ -137,3 +138,5 @@ Cartographer's TextureArray Importer builds the TextureArray from a simple JSON 
 Save the file with a `.tabld` file extension, select the file in the editor and go to the import tab to choose your build import options.
 
 ## Experimental Masked Weight Blending
+
+There is experimental support for masked weight blending in Cartographer. Masked weight blending uses a mask added to the alpha channel on an Albedo layer to boost or reduce the weight of a layer where it blends into another layer. This breaks up smooth gradient blends from the brush used to paint the layer, and makes the blending look more natural for the texture. For example, a brick layer with a mask blending with a sand layer will have the sand seem to fill the gaps between bricks more than the surface of the bricks.
