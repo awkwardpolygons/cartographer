@@ -1,6 +1,7 @@
 shader_type spatial;
 render_mode blend_mix,depth_draw_opaque,cull_back,diffuse_burley,specular_schlick_ggx;
 
+const float MESH_SIZE = 96.0;
 const float MESH_STRIDE = 16.0;
 uniform int INSTANCE_COUNT = 1;
 uniform vec3 terrain_size;
@@ -71,15 +72,16 @@ vec3 better_clipmap(int id, vec3 cam, vec3 vtx, inout vec2 uv, inout vec4 clr) {
 //	// Set the stride, or number of units it moves per step,
 //	// which is the max quad size (16) so you don't get wavy terrain.
 //	off = floor(off / MESH_STRIDE) * MESH_STRIDE;
-	
+	id = id - 1;
 	int sfc = int(ceil(vtx.y));
 	float lvl = float(id / 4);
 	float mul = pow(3.0, lvl);
 	
-	float rot = radians(float(id % 4) * 90.0);
-	vec3 trn = (sfc == 1 ? vec3(1, 0, 1) : vec3(0, 0, 1)) * 128.0 * mul;
+	float rot = radians(float((id < 0 ? 0 : id) % 4) * 90.0);
+	vec3 dir = (sfc == 0 ? vec3(1, 0, 1) : vec3(0, 0, 1));
+	vec3 trn = dir * MESH_SIZE * mul * float(id < 0 ? 0 : 1);
 	
-	clr = vec4(trn / 128.0, 1);
+	clr = vec4(trn / MESH_SIZE, 1);
 	vtx = (vtx * mul + trn) * mat3(rotationY(rot));
 	uv = ((vtx.xz * 1.0) / 2048.0) + 0.5;
 	return vtx;
@@ -109,5 +111,7 @@ void vertex() {
 }
 
 void fragment() {
+	vec3 n = calc_normal(UV, 1.0 / 2048.0);
+	NORMAL = (vec4(n.xyz, 1) * CAMERA_MATRIX).xyz;
 	ALBEDO = COLOR.rgb;
 }

@@ -37,7 +37,7 @@ func _init():
 	material_override = ShaderMaterial.new()
 	material_override.shader = preload("res://addons/cartographer/terrain/carto_clipmap.shader")
 	multimesh = MultiMesh.new()
-	multimesh.mesh = preload("res://addons/cartographer/meshes/better_clipmap.obj")
+	multimesh.mesh = preload("res://addons/cartographer/meshes/better_clipmap_by_3.obj")
 	mesh_diameter = multimesh.mesh.get_aabb().get_longest_axis_size()
 	_update_bounds()
 
