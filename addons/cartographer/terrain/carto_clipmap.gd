@@ -2,9 +2,9 @@ tool
 extends MultiMeshInstance
 class_name CartoClipmap
 
-export(float, 32, 1024, 32) var width: float = 256 setget set_width
-export(float, 32, 1024, 32) var depth: float = 256 setget set_depth
-export(float, 32, 1024, 32) var height: float = 64 setget set_height
+export(float, 24, 4096, 24) var width: float = 256 setget set_width
+export(float, 24, 4096, 24) var depth: float = 256 setget set_depth
+export(float, 24, 4096, 24) var height: float = 64 setget set_height
 export(Material) var material: Material setget set_material
 var size: Vector3 = Vector3(256, 64, 256) setget set_size
 var diameter: float = max(size.x, size.z)
@@ -27,6 +27,7 @@ func set_height(h: float):
 func set_size(s):
 	size = s
 	_update_bounds()
+	_update_transforms()
 	emit_signal("size_changed", size)
 
 func set_material(v):
@@ -37,9 +38,11 @@ func _init():
 	material_override = ShaderMaterial.new()
 	material_override.shader = preload("res://addons/cartographer/terrain/carto_clipmap.shader")
 	multimesh = MultiMesh.new()
+	multimesh.transform_format = MultiMesh.TRANSFORM_3D
 	multimesh.mesh = preload("res://addons/cartographer/meshes/better_clipmap_by_3.obj")
-	mesh_diameter = multimesh.mesh.get_aabb().get_longest_axis_size()
+	mesh_diameter = 96.0
 	_update_bounds()
+	_update_transforms()
 
 func _update_bounds():
 	diameter = max(size.x, size.z)
@@ -48,8 +51,24 @@ func _update_bounds():
 	multimesh.mesh.custom_aabb = aabb
 	# Calculate the instance count based on the mesh size,
 	# plus one to correct the count, and plus one extra for clipping
-	multimesh.instance_count = ceil(log(diameter / mesh_diameter) / log(2)) + 1 + 1
-	if material:
-		material.set_shader_param("INSTANCE_COUNT", multimesh.instance_count)
-		material.set_shader_param("terrain_size", size)
-		material.set_shader_param("terrain_diameter", diameter)
+	multimesh.instance_count = ceil(log(diameter / mesh_diameter) / log(3)) * 4 + 1
+	if material_override:
+		material_override.set_shader_param("INSTANCE_COUNT", multimesh.instance_count)
+		material_override.set_shader_param("terrain_size", size)
+		material_override.set_shader_param("terrain_diameter", diameter)
+
+func _update_transforms():
+	for idx in multimesh.instance_count:
+#		prints(idx)
+		idx -= 1;
+		var lvl = float(int(idx) / 4);
+		var mul = pow(3.0, lvl);
+		var rot = deg2rad(float((0 if idx < 0 else int(idx)) % 4) * 90.0)
+		var mov = 96.0 * float(0 if idx < 0 else 1)
+#		prints(rot, mov, mul)
+		var trn: Transform = Transform(Vector3(1, 0, 0), Vector3(0, 1, 0), Vector3(0, 0, 1), Vector3(0, 0, 0))
+		trn = trn.rotated(Vector3.UP, rot)
+		trn = trn.scaled(Vector3(mul, 1, mul))
+		trn = trn.translated(Vector3(-mov, 0, mov))
+#		prints(trn)
+		multimesh.set_instance_transform(idx + 1, trn)
