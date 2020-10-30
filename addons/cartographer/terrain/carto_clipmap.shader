@@ -1,7 +1,7 @@
 shader_type spatial;
 render_mode skip_vertex_transform,blend_mix,depth_draw_opaque,cull_back,diffuse_burley,specular_schlick_ggx;
 
-const float MESH_SIZE = 96.0;
+const float MESH_SIZE = 128.0;
 const float MESH_STRIDE = 27.0;
 uniform int INSTANCE_COUNT = 1;
 uniform vec3 terrain_size;
@@ -10,21 +10,17 @@ uniform sampler2D heightmap : hint_black;
 varying vec3 UV3D;
 
 vec3 better_clipmap(int idx, vec3 cam, vec3 vtx, inout vec2 uv, inout vec4 clr) {
-	idx = idx - 1;
 	int sfc = int(ceil(vtx.y));
 	vec3 box = vec3(terrain_diameter) / 2.0;
 	vec3 off = clamp(cam, -box, box);
-	off = vec3(0);
-	off = floor(off / MESH_STRIDE) * MESH_STRIDE;
+//	off = vec3(0);
+	off = trunc(off / MESH_STRIDE) * MESH_STRIDE;
 	vtx.xz += off.xz;
 	uv = (vtx.xz / terrain_diameter) + 0.5;
 	
-	
+//	vec3 lim = terrain_size / 2.0;
+//	vtx *= 1.0 / (abs(vtx.x) > lim.x || abs(vtx.z) > lim.z ? 0.0 : 1.0);
 	clr = vec4((sfc == 0 ? vec3(1, 0, 1) : vec3(0, 0, 1)), 1);
-//	clr = idx < 0 && sfc == 1 ? vec4(1, 0, 0, 1) : clr;
-	// Remove the uneeded second surface at the first level, by setting its position to INF
-//	vtx.xz += cam.xz;
-	vtx = idx < 0 && sfc == 1 ? vec3(1.0/0.0) : vtx;
 	return vtx;
 }
 
@@ -47,11 +43,17 @@ void vertex() {
 	vtx = (WORLD_MATRIX * vec4(vtx, 1)).xyz;
 	VERTEX = better_clipmap(INSTANCE_ID, CAMERA_MATRIX[3].xyz, vtx, UV, COLOR);
 	
+	UV2 = UV;
+	UV3D = VERTEX;
+	UV3D.xz += 0.5 * terrain_diameter;
+//	UV3D = UV3D * uv1_scale.xzy + uv1_offset.xzy;
+	UV = UV3D.xz;
+	
 //	UV = (vtx.xz / 1024.0) + 0.5;
-	float h = get_height(UV);
-	vec3 n = calc_normal(UV, 1.0 / 2048.0);
-//	VERTEX.y = 0.0;
-//	VERTEX.y = h * 1024.0;
+	float h = get_height(UV2);
+	vec3 n = calc_normal(UV2, 1.0 / 2048.0);
+	VERTEX.y = 0.0;
+	VERTEX.y = h * terrain_size.y;
 	NORMAL = n;
 //	VERTEX.y += 10.0;
 //	VERTEX = vec3(VERTEX);
@@ -71,7 +73,7 @@ void vertex() {
 }
 
 void fragment() {
-	vec3 n = calc_normal(UV, 1.0 / 2048.0);
+	vec3 n = calc_normal(UV2, 1.0 / 2048.0);
 	NORMAL = (vec4(n.xyz, 1) * CAMERA_MATRIX).xyz;
 	ALBEDO = COLOR.rgb;
 }
