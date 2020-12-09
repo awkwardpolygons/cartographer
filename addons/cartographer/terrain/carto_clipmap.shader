@@ -4,21 +4,21 @@ render_mode skip_vertex_transform,blend_mix,depth_draw_opaque,cull_back,diffuse_
 const float MESH_SIZE = 128.0;
 const float MESH_STRIDE = 27.0;
 uniform int INSTANCE_COUNT = 1;
-uniform vec3 terrain_size;
-uniform float terrain_diameter = 256;
+uniform vec3 clipmap_size;
+uniform float clipmap_diameter = 256;
 uniform sampler2D heightmap : hint_black;
 varying vec3 UV3D;
 
 vec3 better_clipmap(int idx, vec3 cam, vec3 vtx, inout vec2 uv, inout vec4 clr) {
 	int sfc = int(ceil(vtx.y));
-	vec3 box = vec3(terrain_diameter) / 2.0;
+	vec3 box = vec3(clipmap_diameter) / 2.0;
 	vec3 off = clamp(cam, -box, box);
 //	off = vec3(0);
 	off = trunc(off / MESH_STRIDE) * MESH_STRIDE;
 	vtx.xz += off.xz;
-	uv = (vtx.xz / terrain_diameter) + 0.5;
+	uv = (vtx.xz / clipmap_diameter) + 0.5;
 	
-//	vec3 lim = terrain_size / 2.0;
+//	vec3 lim = clipmap_size / 2.0;
 //	vtx *= 1.0 / (abs(vtx.x) > lim.x || abs(vtx.z) > lim.z ? 0.0 : 1.0);
 	clr = vec4((sfc == 0 ? vec3(1, 0, 1) : vec3(0, 0, 1)), 1);
 	return vtx;
@@ -45,15 +45,16 @@ void vertex() {
 	
 	UV2 = UV;
 	UV3D = VERTEX;
-	UV3D.xz += 0.5 * terrain_diameter;
+	UV3D.xz += 0.5 * clipmap_diameter;
 //	UV3D = UV3D * uv1_scale.xzy + uv1_offset.xzy;
 	UV = UV3D.xz;
+	COLOR = vec4(UV2, 0.0, 0.0);
 	
 //	UV = (vtx.xz / 1024.0) + 0.5;
 	float h = get_height(UV2);
 	vec3 n = calc_normal(UV2, 1.0 / 2048.0);
 	VERTEX.y = 0.0;
-	VERTEX.y = h * terrain_size.y;
+	VERTEX.y = h * clipmap_size.y;
 	NORMAL = n;
 //	VERTEX.y += 10.0;
 //	VERTEX = vec3(VERTEX);
@@ -66,14 +67,14 @@ void vertex() {
 	BINORMAL+= vec3(0.0,0.0,-1.0) * abs(NORMAL.y);
 	BINORMAL+= vec3(0.0,-1.0,0.0) * abs(NORMAL.z);
 	BINORMAL = normalize(BINORMAL);
-	NORMAL = (MODELVIEW_MATRIX * vec4(NORMAL, 0.0)).xyz;
-	BINORMAL = (MODELVIEW_MATRIX * vec4(BINORMAL, 0.0)).xyz;
-	TANGENT = (MODELVIEW_MATRIX * vec4(TANGENT, 0.0)).xyz;
+	NORMAL = (INV_CAMERA_MATRIX * vec4(NORMAL, 0.0)).xyz;
+	BINORMAL = (INV_CAMERA_MATRIX * vec4(BINORMAL, 0.0)).xyz;
+	TANGENT = (INV_CAMERA_MATRIX * vec4(TANGENT, 0.0)).xyz;
 	VERTEX = (INV_CAMERA_MATRIX * vec4(VERTEX, 1.0)).xyz;
 }
 
 void fragment() {
-	vec3 n = calc_normal(UV2, 1.0 / 2048.0);
-	NORMAL = (vec4(n.xyz, 1) * CAMERA_MATRIX).xyz;
-	ALBEDO = COLOR.rgb;
+//	vec3 n = calc_normal(UV2, 1.0 / 2048.0);
+//	NORMAL = (vec4(n.xyz, 1) * CAMERA_MATRIX).xyz;
+//	ALBEDO = COLOR.rgb;
 }

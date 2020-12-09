@@ -45,7 +45,8 @@ func set_material(v):
 
 func _init():
 	material_override = ShaderMaterial.new()
-	material_override.shader = preload("res://addons/cartographer/terrain/carto_clipmap.shader")
+	#material_override.shader = preload("res://addons/cartographer/terrain/carto_clipmap.shader")
+	material_override.shader = CartoClipmapVisualShader.new()
 	
 	center = MeshInstance.new()
 #	center.mesh = preload("res://addons/cartographer/meshes/better_clipmap_center_128_base_3.obj")
@@ -79,8 +80,8 @@ func _update_bounds():
 #	multimesh.instance_count = 2
 	if material_override:
 		material_override.set_shader_param("INSTANCE_COUNT", multimesh.instance_count)
-		material_override.set_shader_param("terrain_size", size)
-		material_override.set_shader_param("terrain_diameter", diameter)
+		material_override.set_shader_param("clipmap_size", size)
+		material_override.set_shader_param("clipmap_diameter", diameter)
 
 func _update_transforms():
 	for idx in multimesh.instance_count:
