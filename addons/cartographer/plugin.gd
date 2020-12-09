@@ -106,6 +106,8 @@ func get_action(event):
 
 func try_paint(camera, action):
 	var is_on = action & Action.ON > 0
+	if !is_on:
+		return is_on
 	var is_sculpting = action & (Cartographer.Action.RAISE | Cartographer.Action.LOWER)
 	if not Cartographer.active_brush:
 		if is_on:
