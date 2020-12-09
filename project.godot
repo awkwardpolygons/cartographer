@@ -14,6 +14,16 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://addons/cartographer/ui/carto_axis_layout.gd"
 }, {
+"base": "MultiMeshInstance",
+"class": "CartoClipmap",
+"language": "GDScript",
+"path": "res://addons/cartographer/terrain/carto_clipmap.gd"
+}, {
+"base": "VisualShader",
+"class": "CartoClipmapVisualShader",
+"language": "GDScript",
+"path": "res://addons/cartographer/terrain/carto_clipmap_visual_shader.gd"
+}, {
 "base": "TextureArray",
 "class": "CartoMultiTexture",
 "language": "GDScript",
@@ -43,6 +53,16 @@ _global_script_classes=[ {
 "class": "CartoTextureArrayBuilder",
 "language": "GDScript",
 "path": "res://addons/cartographer/texture_array_builder.gd"
+}, {
+"base": "ViewportTexture",
+"class": "CartoTexturePainterBase",
+"language": "GDScript",
+"path": "res://addons/cartographer/texture_painter/carto_texture_painter_base.gd"
+}, {
+"base": "ProxyTexture",
+"class": "CartoTexturePainterBase2",
+"language": "NativeScript",
+"path": "res://addons/cartographer/native/bin/carto_texture_painter_base.gdns"
 }, {
 "base": "CollisionShape",
 "class": "CollisionCartoTerrain",
@@ -75,24 +95,46 @@ _global_script_classes=[ {
 "path": "res://addons/cartographer/texture_painter/texture_painter.gd"
 }, {
 "base": "VisualShaderNodeCustom",
+"class": "VisualShaderNodeCartoClipmapTransform",
+"language": "GDScript",
+"path": "res://addons/cartographer/terrain/shaders/vsn_carto_clipmap_transform.gd"
+}, {
+"base": "VisualShaderNodeCustom",
+"class": "VisualShaderNodeCartoClipmapVertex",
+"language": "GDScript",
+"path": "res://addons/cartographer/terrain/shaders/vsn_carto_clipmap_vertex.gd"
+}, {
+"base": "VisualShaderNodeCustom",
+"class": "VisualShaderNodeCartoHeightmapCalc",
+"language": "GDScript",
+"path": "res://addons/cartographer/terrain/shaders/vsn_carto_heightmap_calc.gd"
+}, {
+"base": "VisualShaderNodeCustom",
 "class": "VisualShaderNodePixelate",
 "language": "GDScript",
 "path": "res://example/shaders/vsn_pixelate.gd"
 } ]
 _global_script_class_icons={
 "CartoAxisLayout": "",
+"CartoClipmap": "",
+"CartoClipmapVisualShader": "",
 "CartoMultiTexture": "",
 "CartoMultiTextureSaver": "",
 "CartoTerrain": "res://addons/cartographer/terrain_icon.svg",
 "CartoTerrainInspector": "",
 "CartoTerrainMaterial": "",
 "CartoTextureArrayBuilder": "",
+"CartoTexturePainterBase": "",
+"CartoTexturePainterBase2": "res://icon.svg",
 "CollisionCartoTerrain": "",
 "HeightmapPicker": "",
 "PaintBrush": "",
 "PaintBrushes": "",
 "TextureArrayRect": "",
 "TexturePainter": "",
+"VisualShaderNodeCartoClipmapTransform": "",
+"VisualShaderNodeCartoClipmapVertex": "",
+"VisualShaderNodeCartoHeightmapCalc": "",
 "VisualShaderNodePixelate": ""
 }
 
@@ -100,7 +142,7 @@ _global_script_class_icons={
 
 config/name="Cartographer"
 config/description="GPU powered terrain editor for Godot"
-run/main_scene="res://example/example.tscn"
+run/main_scene="res://native_test.tscn"
 config/icon="res://icon.svg"
 
 [autoload]
