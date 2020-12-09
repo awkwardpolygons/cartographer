@@ -153,7 +153,7 @@ void vertex() {
 	// Experimenting with displacement
 //	if (INSTANCE_ID == 0) {
 //		float disp = get_displacement(UV2, UV3D, triplanar_blend) - 0.15;
-//		VERTEX += normal * disp * 0.3;
+//		VERTEX += normal * disp * 4.8;
 //	}
 	VERTEX = (MODELVIEW_MATRIX * vec4(VERTEX, 1.0)).xyz;
 	
