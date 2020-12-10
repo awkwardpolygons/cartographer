@@ -12,7 +12,7 @@ func _get_description():
 	return "Clipmap vertex transform node."
 
 func _get_input_port_count():
-	return 0
+	return 2
 
 func _get_input_port_name(port):
 	match port:
