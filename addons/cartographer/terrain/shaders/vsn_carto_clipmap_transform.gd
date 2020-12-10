@@ -3,7 +3,7 @@ extends VisualShaderNodeCustom
 class_name VisualShaderNodeCartoClipmapTransform
 
 func _init():
-	set_default_input_values([0, float(0), 2, Vector3(0, 1, 0)])
+	set_default_input_values([0, float(0), 1, Vector3(0, 1, 0)])
 
 func _get_name():
 	return "ClipmapTransform"
