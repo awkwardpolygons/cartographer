@@ -41,23 +41,19 @@ func set_base(v):
 
 func set_material(v):
 	material = v
-	material_override.next_pass = material
+	material_override = material
+	center.material_override = material
 
 func _init():
-	material_override = ShaderMaterial.new()
-	#material_override.shader = preload("res://addons/cartographer/terrain/carto_clipmap.shader")
-	material_override.shader = CartoClipmapVisualShader.new()
-	
 	center = MeshInstance.new()
-#	center.mesh = preload("res://addons/cartographer/meshes/better_clipmap_center_128_base_3.obj")
-	center.material_override = material_override
 	add_child(center)
 	
 	multimesh = MultiMesh.new()
 	multimesh.transform_format = MultiMesh.TRANSFORM_3D
-#	multimesh.mesh = load("res://addons/cartographer/meshes/better_clipmap_128_base_%s.obj" % base)
 	
-#	mesh_diameter = 128.0
+	self.material = ShaderMaterial.new()
+	self.material.shader = CartoClipmapVisualShader.new()
+	
 	_load_meshes()
 	_update_bounds()
 	_update_transforms()
