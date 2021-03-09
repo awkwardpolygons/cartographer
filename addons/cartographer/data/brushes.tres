@@ -1,27 +1,18 @@
-[gd_resource type="Resource" load_steps=29 format=2]
+[gd_resource type="Resource" load_steps=11 format=2]
 
 [ext_resource path="res://addons/cartographer/texture_painter/paint_brushes_res.gd" type="Script" id=1]
 [ext_resource path="res://addons/cartographer/brush_masks/round_2.exr" type="Texture" id=2]
 [ext_resource path="res://addons/cartographer/texture_painter/paint_brush_res.gd" type="Script" id=3]
-[ext_resource path="res://addons/cartographer/brush_masks/vm_fine_dirt01.jpg" type="Texture" id=4]
 [ext_resource path="res://addons/cartographer/brush_masks/round_3.exr" type="Texture" id=5]
 [ext_resource path="res://addons/cartographer/brush_masks/round_1.exr" type="Texture" id=6]
 [ext_resource path="res://addons/cartographer/brush_masks/round_4.exr" type="Texture" id=7]
-[ext_resource path="res://addons/cartographer/brush_masks/terrain_alpha_7.exr" type="Texture" id=8]
-[ext_resource path="res://addons/cartographer/brush_masks/terrain_alpha_8.exr" type="Texture" id=9]
-[ext_resource path="res://addons/cartographer/brush_masks/terrain_alpha_5.exr" type="Texture" id=10]
-[ext_resource path="res://addons/cartographer/brush_masks/terrain_alpha_6.exr" type="Texture" id=11]
-[ext_resource path="res://addons/cartographer/brush_masks/terrain_alpha_3.exr" type="Texture" id=12]
-[ext_resource path="res://addons/cartographer/brush_masks/terrain_alpha_2.exr" type="Texture" id=13]
-[ext_resource path="res://addons/cartographer/brush_masks/terrain_alpha_4.exr" type="Texture" id=14]
-[ext_resource path="res://addons/cartographer/brush_masks/terrain_alpha_1.exr" type="Texture" id=15]
 
 [sub_resource type="Resource" id=1]
 script = ExtResource( 3 )
 brush_mask = ExtResource( 6 )
 mask_channel = 0
-brush_strength = 0.37
-brush_scale = 1.19
+brush_strength = 0.67
+brush_scale = 2.61
 brush_rotation = 0.0
 brush_spacing = 0.0
 brush_strength_jitter = 0.0
@@ -68,137 +59,11 @@ brush_scale_jitter = 0.0
 brush_rotation_jitter = 0.0
 brush_spacing_jitter = 0.0
 
-[sub_resource type="Resource" id=5]
-script = ExtResource( 3 )
-brush_mask = ExtResource( 15 )
-mask_channel = 0
-brush_strength = 0.5
-brush_scale = 1.0
-brush_rotation = 0.0
-brush_spacing = 0.0
-brush_strength_jitter = 0.0
-brush_scale_jitter = 0.0
-brush_rotation_jitter = 0.0
-brush_spacing_jitter = 0.0
-
-[sub_resource type="Resource" id=6]
-script = ExtResource( 3 )
-brush_mask = ExtResource( 13 )
-mask_channel = 0
-brush_strength = 1.0
-brush_scale = 1.0
-brush_rotation = 0.0
-brush_spacing = 0.0
-brush_strength_jitter = 0.0
-brush_scale_jitter = 0.0
-brush_rotation_jitter = 0.0
-brush_spacing_jitter = 0.0
-
-[sub_resource type="Resource" id=7]
-script = ExtResource( 3 )
-brush_mask = ExtResource( 12 )
-mask_channel = 0
-brush_strength = 0.5
-brush_scale = 0.53
-brush_rotation = 0.0
-brush_spacing = 0.0
-brush_strength_jitter = 0.0
-brush_scale_jitter = 0.0
-brush_rotation_jitter = 0.0
-brush_spacing_jitter = 0.0
-
-[sub_resource type="Resource" id=8]
-script = ExtResource( 3 )
-brush_mask = ExtResource( 14 )
-mask_channel = 0
-brush_strength = 0.5
-brush_scale = 0.91
-brush_rotation = 0.0
-brush_spacing = 0.0
-brush_strength_jitter = 0.0
-brush_scale_jitter = 0.0
-brush_rotation_jitter = 0.0
-brush_spacing_jitter = 0.0
-
-[sub_resource type="Resource" id=9]
-script = ExtResource( 3 )
-brush_mask = ExtResource( 10 )
-mask_channel = 0
-brush_strength = 0.5
-brush_scale = 1.0
-brush_rotation = 0.0
-brush_spacing = 0.0
-brush_strength_jitter = 0.0
-brush_scale_jitter = 0.0
-brush_rotation_jitter = 0.0
-brush_spacing_jitter = 0.0
-
-[sub_resource type="Resource" id=10]
-script = ExtResource( 3 )
-brush_mask = ExtResource( 11 )
-mask_channel = 0
-brush_strength = 0.5
-brush_scale = 1.0
-brush_rotation = 0.0
-brush_spacing = 0.0
-brush_strength_jitter = 0.0
-brush_scale_jitter = 0.0
-brush_rotation_jitter = 0.0
-brush_spacing_jitter = 0.0
-
-[sub_resource type="Resource" id=11]
-script = ExtResource( 3 )
-brush_mask = ExtResource( 8 )
-mask_channel = 0
-brush_strength = 0.5
-brush_scale = 1.0
-brush_rotation = 0.0
-brush_spacing = 0.0
-brush_strength_jitter = 0.0
-brush_scale_jitter = 0.0
-brush_rotation_jitter = 0.0
-brush_spacing_jitter = 0.0
-
-[sub_resource type="Resource" id=12]
-script = ExtResource( 3 )
-brush_mask = ExtResource( 9 )
-mask_channel = 0
-brush_strength = 0.5
-brush_scale = 1.0
-brush_rotation = 0.0
-brush_spacing = 0.0
-brush_strength_jitter = 0.0
-brush_scale_jitter = 0.0
-brush_rotation_jitter = 0.0
-brush_spacing_jitter = 0.0
-
-[sub_resource type="Resource" id=13]
-script = ExtResource( 3 )
-brush_mask = ExtResource( 4 )
-mask_channel = 0
-brush_strength = 0.5
-brush_scale = 1.0
-brush_rotation = 0.0
-brush_spacing = 0.0
-brush_strength_jitter = 0.0
-brush_scale_jitter = 0.0
-brush_rotation_jitter = 0.0
-brush_spacing_jitter = 0.0
-
 [resource]
 script = ExtResource( 1 )
 data = {
 "res://addons/cartographer/brush_masks/round_1.exr": SubResource( 1 ),
 "res://addons/cartographer/brush_masks/round_2.exr": SubResource( 2 ),
 "res://addons/cartographer/brush_masks/round_3.exr": SubResource( 3 ),
-"res://addons/cartographer/brush_masks/round_4.exr": SubResource( 4 ),
-"res://addons/cartographer/brush_masks/terrain_alpha_1.exr": SubResource( 5 ),
-"res://addons/cartographer/brush_masks/terrain_alpha_2.exr": SubResource( 6 ),
-"res://addons/cartographer/brush_masks/terrain_alpha_3.exr": SubResource( 7 ),
-"res://addons/cartographer/brush_masks/terrain_alpha_4.exr": SubResource( 8 ),
-"res://addons/cartographer/brush_masks/terrain_alpha_5.exr": SubResource( 9 ),
-"res://addons/cartographer/brush_masks/terrain_alpha_6.exr": SubResource( 10 ),
-"res://addons/cartographer/brush_masks/terrain_alpha_7.exr": SubResource( 11 ),
-"res://addons/cartographer/brush_masks/terrain_alpha_8.exr": SubResource( 12 ),
-"res://addons/cartographer/brush_masks/vm_fine_dirt01.jpg": SubResource( 13 )
+"res://addons/cartographer/brush_masks/round_4.exr": SubResource( 4 )
 }
