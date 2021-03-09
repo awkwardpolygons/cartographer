@@ -1,0 +1,19 @@
+[remap]
+
+importer="wavefront_obj"
+type="Mesh"
+path="res://.import/clipmap_ring_base2_poke2.obj-fa49ff4cf60c998a7cf49d1c52b9c934.mesh"
+
+[deps]
+
+files=[ "res://.import/clipmap_ring_base2_poke2.obj-fa49ff4cf60c998a7cf49d1c52b9c934.mesh" ]
+
+source_file="res://addons/cartographer/meshes/clipmap_ring_base2_poke2.obj"
+dest_files=[ "res://.import/clipmap_ring_base2_poke2.obj-fa49ff4cf60c998a7cf49d1c52b9c934.mesh", "res://.import/clipmap_ring_base2_poke2.obj-fa49ff4cf60c998a7cf49d1c52b9c934.mesh" ]
+
+[params]
+
+generate_tangents=true
+scale_mesh=Vector3( 1, 1, 1 )
+offset_mesh=Vector3( 0, 0, 0 )
+optimize_mesh=true
