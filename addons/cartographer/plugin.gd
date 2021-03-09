@@ -23,6 +23,7 @@ func _init():
 	add_import_plugin(import_plugin)
 
 func _enter_tree():
+	set_input_event_forwarding_always_enabled()
 	brushes_panel = BrushesPanel.instance()
 	toolbar = Toolbar.instance()
 	
@@ -83,6 +84,8 @@ func make_visible(visible):
 	toolbar.visible = visible
 
 func forward_spatial_gui_input(camera, event):
+	Cartographer.editor_camera = camera
+	Cartographer.editor_camera_transform = camera.get_camera_transform()
 	var action = get_action(event)
 	if terrain == null:
 		return
