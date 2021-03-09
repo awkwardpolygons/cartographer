@@ -34,19 +34,21 @@ func _get_output_port_count():
 func _get_output_port_name(port):
 	match port:
 		0:
-			return "height"
-		1:
 			return "normal"
+		1:
+			return "offset"
 
 func _get_output_port_type(port):
 	match port:
 		0:
-			return PORT_TYPE_SCALAR
+			return PORT_TYPE_VECTOR
 		1:
 			return PORT_TYPE_VECTOR
 
 func _get_global_code(mode):
 	return """// HeightmapCalc globals
+uniform sampler2D heightmap : hint_black;
+
 float get_height(sampler2D hmap, vec2 uv) {
 	vec4 h = texture(hmap, uv);
 	h = uv.x > 1.0 || uv.y > 1.0 ? vec4(0) : h;
@@ -69,8 +71,10 @@ func _get_code(input_vars, output_vars, mode, type):
 	for i in len(output_vars):
 		io[_get_output_port_name(i)] = output_vars[i]
 	
+	io["heightmap_in"] = io["heightmap_in"] if io["heightmap_in"] != "" else "heightmap"
+	
 	var tmpl = """// HeightmapCalc
-{height} = get_height({heightmap_in}, {uv_in}.xy);
+{offset} = vec3(0, get_height({heightmap_in}, {uv_in}.xy), 0);
 {normal} = calc_normal({heightmap_in}, {uv_in}.xy, 1.0/2048.0);
 """
 	return tmpl.format(io)

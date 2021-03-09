@@ -12,55 +12,51 @@ func _get_description():
 	return "Clipmap vertex transform node."
 
 func _get_input_port_count():
-	return 2
+	return 0
 
 func _get_input_port_name(port):
-	match port:
-		0:
-			return "height"
-		1:
-			return "normal"
+	return null
 
 func _get_input_port_type(port):
-	match port:
-		0:
-			return PORT_TYPE_SCALAR
-		1:
-			return PORT_TYPE_VECTOR
+	return null
 
 func _get_output_port_count():
-	return 4
+	return 5
 
 func _get_output_port_name(port):
 	match port:
 		0:
-			return "vertex"
+			return "size"
 		1:
-			return "uv"
+			return "diameter"
 		2:
-			return "uv2"
+			return "vertex"
 		3:
-			return "uv3d"
+			return "uv"
+		4:
+			return "uv2"
 
 func _get_output_port_type(port):
 	match port:
 		0:
 			return PORT_TYPE_VECTOR
 		1:
-			return PORT_TYPE_VECTOR
+			return PORT_TYPE_SCALAR
 		2:
 			return PORT_TYPE_VECTOR
 		3:
+			return PORT_TYPE_VECTOR
+		4:
 			return PORT_TYPE_VECTOR
 
 func _get_global_code(mode):
 	return """// Clipmap globals
 const float MESH_SIZE = 128.0;
-const float MESH_STRIDE = 27.0;
+const float MESH_STRIDE = 81.0;
 uniform int INSTANCE_COUNT = 1;
 uniform vec3 clipmap_size;
 uniform float clipmap_diameter = 256;
-varying vec3 UV3D;
+// varying vec3 UV3D;
 
 vec3 clipmap(int idx, vec3 cam, vec3 vtx, inout vec3 uv, inout vec3 clr) {
 	int sfc = int(ceil(vtx.y));
@@ -92,12 +88,16 @@ vec3 color = COLOR.rgb;
 {vertex} = (WORLD_MATRIX * vec4({vertex}, 1)).xyz;
 {vertex} = clipmap(INSTANCE_ID, CAMERA_MATRIX[3].xyz, {vertex}, {uv}, color);
 {vertex}.y = 0.0;
+{diameter} = clipmap_diameter;
+{size} = clipmap_size;
 
 {uv2} = {uv};
-UV3D = {vertex};
-UV3D.xz += 0.5 * clipmap_diameter;
-{uv3d} = UV3D;
+{uv} = {vertex};
+{uv} = vec3({uv}.xz + 0.5 * clipmap_diameter, 0);
+// UV3D = {vertex};
+// UV3D.xz += 0.5 * clipmap_diameter;
+// {uv3d} = UV3D;
 //	UV3D = UV3D * uv1_scale.xzy + uv1_offset.xzy;
-{uv} = vec3(UV3D.xz, 0);
+// {uv} = vec3(UV3D.xz, 0);
 """
 	return tmpl.format(io)
