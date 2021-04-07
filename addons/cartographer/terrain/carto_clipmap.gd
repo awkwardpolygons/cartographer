@@ -76,3 +76,6 @@ func _update_offset():
 	center_mesh_inst.transform.origin.z = off.z
 	ring_mesh_inst.transform.origin.x = off.x
 	ring_mesh_inst.transform.origin.z = off.z
+
+func get_aabb():
+	return ring_mesh_inst.get_aabb()
