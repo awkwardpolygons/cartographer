@@ -115,7 +115,7 @@ func scroll(offset: Vector2):
 # Property exports
 func _get_property_list():
 	var properties = []
-	properties.append(_prop_group("Lens", "lens_"))
+	properties.append(_prop_group("MegaLens", "lens_"))
 	properties.append(_prop_info("lens_resolution", TYPE_INT))
 	properties.append(_prop_info("lens_scale", TYPE_REAL))
 	properties.append(_prop_info("lens_tiers", TYPE_INT, PROPERTY_HINT_RANGE, "1,6"))
