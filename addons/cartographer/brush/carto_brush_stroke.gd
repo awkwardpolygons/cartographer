@@ -23,8 +23,8 @@ func _init():
 	multimesh.color_format = MultiMesh.COLOR_FLOAT
 	multimesh.custom_data_format = MultiMesh.CUSTOM_DATA_FLOAT
 	multimesh.instance_count = 1000
-	set_mesh(preload("res://addons/cartographer/brush_stroke.mesh"))
-	texture = preload("res://addons/cartographer/1.png")
+	set_mesh(preload("res://addons/cartographer/meshes/brush_stroke.mesh"))
+	texture = preload("res://addons/cartographer/brush/1.png")
 	curve = Curve2D.new()
 
 func _draw():
@@ -101,7 +101,8 @@ func update_stroke(from = 0):
 #		prints("position:", pos)
 		multimesh.set_instance_transform_2d(i, Transform2D(normal.angle(), pos))
 		multimesh.set_instance_custom_data(i, Color(i+1, 0, 0, 0))
-		multimesh.set_instance_color(i, Color(0.5 - tangent.x/2.0, 0.5 - tangent.y/2.0, 0.0, 1.0))
+#		multimesh.set_instance_color(i, Color(0.5 - tangent.x/2.0, 0.5 - tangent.y/2.0, 0.0, 1.0))
+		multimesh.set_instance_color(i, Color.darksalmon)
 #	_last_index += 1
 	
 	update()
