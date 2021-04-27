@@ -3,11 +3,12 @@ extends Spatial
 class_name CartoClipmap
 
 # Exported
+var layers: int = 1 setget set_layer_mask, get_layer_mask
+var material: Material setget set_material
 var clipmap_size: Vector3 = Vector3(2048, 1024, 2048) setget set_clipmap_size
-var clipmap_stride: int = 32
+var clipmap_stride: float = 32.0
 var clipmap_offset: Vector2 setget set_clipmap_offset
 var clipmap_tracking: bool = true setget set_clipmap_tracking
-export(Material) var material: Material setget set_material
 
 # Not exported
 var center_mesh: Mesh
@@ -21,6 +22,24 @@ var diameter
 var center_diameter
 var rings_diameter
 
+func set_layer_mask(v):
+	layers = v
+	if center_mesh_inst:
+		center_mesh_inst.layers = layers
+	if ring_mesh_inst:
+		ring_mesh_inst.layers = layers
+
+func get_layer_mask():
+	return layers
+
+func set_layer_mask_bit(layer: int, enabled: bool):
+	var b = 1 << layer
+	var v = layers | b if enabled else layers & ~b
+	set_layer_mask(v)
+
+func get_layer_mask_bit(layer: int):
+	return layers & (1 << layer)
+
 func set_clipmap_size(v: Vector3):
 	clipmap_size = v
 	_update_bounds()
@@ -28,10 +47,11 @@ func set_clipmap_size(v: Vector3):
 
 func set_clipmap_offset(v):
 	clipmap_offset = v
-	center_mesh_inst.transform.origin.x = clipmap_offset.x
-	center_mesh_inst.transform.origin.z = clipmap_offset.y
-	ring_mesh_inst.transform.origin.x = clipmap_offset.x
-	ring_mesh_inst.transform.origin.z = clipmap_offset.y
+	var off: Vector3 = Vector3(v.x, 0.0, v.y)
+	center_mesh_inst.transform.origin = off
+	ring_mesh_inst.transform.origin = off
+	if material:
+		material.set_shader_param("origin", off)
 
 func set_clipmap_tracking(v):
 	clipmap_tracking = v
@@ -61,11 +81,6 @@ func _physics_process(delta):
 func _ready():
 	set_clipmap_size(clipmap_size)
 
-func _exit_tree():
-	center_mesh_inst.queue_free()
-	ring_mesh_inst.queue_free()
-	queue_free()
-
 func _update_bounds():
 	var center_size = center_mesh.get_aabb().size
 	center_diameter = max(center_size.x, center_size.z)
@@ -91,9 +106,11 @@ func _update_transforms():
 func _update_offset():
 	var cam = get_tree().root.get_camera()
 	cam = cam if cam else Cartographer.editor_camera
-	var off = cam.get_camera_transform().origin
-	off = (off / clipmap_stride).floor() * clipmap_stride
-	set_clipmap_offset(Vector2(off.x, off.z))
+	var off3 = cam.get_camera_transform().origin
+	off3 = (off3 / clipmap_stride).floor() * clipmap_stride
+	var off2 = Vector2(off3.x, off3.z)
+	if off2 != clipmap_offset:
+		set_clipmap_offset(off2)
 
 func get_aabb():
 	return ring_mesh_inst.get_aabb()
@@ -101,6 +118,8 @@ func get_aabb():
 # Property exports
 func _get_property_list():
 	var properties = []
+	properties.append(_prop_info("layers", TYPE_INT, PROPERTY_HINT_LAYERS_3D_RENDER))
+	properties.append(_prop_info("material", TYPE_OBJECT, PROPERTY_HINT_RESOURCE_TYPE, "SpatialMaterial,ShaderMaterial"))
 	properties.append(_prop_group("Clipmap", "clipmap_"))
 	properties.append(_prop_info("clipmap_size", TYPE_VECTOR3))
 	properties.append(_prop_info("clipmap_stride", TYPE_INT))
